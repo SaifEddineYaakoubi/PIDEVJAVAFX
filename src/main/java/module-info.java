@@ -13,6 +13,12 @@ module org.example.pidev {
 
     requires java.sql;
 
-    opens org.example.pidev to javafx.fxml;
-    exports org.example.pidev;
+    opens org.example.pidev.models to javafx.fxml;
+    opens org.example.pidev.controllers to javafx.fxml;
+    exports org.example.pidev.test;
+    exports org.example.pidev.models;
+    exports org.example.pidev.services;
+    exports org.example.pidev.interfaces;
+    exports org.example.pidev.utils;
+    opens org.example.pidev.test to javafx.fxml;
 }

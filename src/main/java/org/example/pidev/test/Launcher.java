@@ -1,4 +1,4 @@
-package org.example.pidev;
+package org.example.pidev.test;
 
 import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
@@ -51,7 +51,7 @@ public class Launcher {
             boolean running = true;
             while (running) {
                 afficherMenuPrincipal();
-                int choix = lireEntier("Votre choix: ", 0, 3);
+                int choix = lireEntier("Votre choix: ");
 
                 switch (choix) {
                     case 1:
@@ -105,7 +105,7 @@ public class Launcher {
             System.out.println("║  0. Retour                              ║");
             System.out.println("╚════════════════════════════════════════╝");
 
-            int choix = lireEntier("Votre choix: ", 0, 5);
+            int choix = lireEntier("Votre choix: ");
 
             switch (choix) {
                 case 1:
@@ -144,7 +144,7 @@ public class Launcher {
             System.out.println("║  0. Retour                              ║");
             System.out.println("╚════════════════════════════════════════╝");
 
-            int choix = lireEntier("Votre choix: ", 0, 5);
+            int choix = lireEntier("Votre choix: ");
 
             switch (choix) {
                 case 1:
@@ -176,9 +176,9 @@ public class Launcher {
     private static void ajouterParcelle(int idUser) {
         System.out.println("\n--- ➕ AJOUTER UNE PARCELLE ---");
 
-        String nom = lireChaine("Nom de la parcelle: ", 2, 100);
-        double superficie = lireDouble("Superficie (en m²): ", 0.1, 100000);
-        String localisation = lireChaine("Localisation: ", 2, 150);
+        String nom = lireChaine("Nom de la parcelle: ");
+        double superficie = lireDouble("Superficie (en m²): ");
+        String localisation = lireChaine("Localisation: ");
         String etat = lireEtatParcelle();
 
         Parcelle parcelle = new Parcelle(nom, superficie, localisation, etat, idUser);
@@ -191,7 +191,7 @@ public class Launcher {
         System.out.println("\n--- ✏️ MODIFIER UNE PARCELLE ---");
         afficherParcelles();
 
-        int id = lireEntier("ID de la parcelle à modifier: ", 1, Integer.MAX_VALUE);
+        int id = lireEntier("ID de la parcelle à modifier: ");
         Parcelle parcelle = parcelleService.getById(id);
 
         if (parcelle == null) {
@@ -232,7 +232,7 @@ public class Launcher {
         System.out.println("\n--- 🗑️ SUPPRIMER UNE PARCELLE ---");
         afficherParcelles();
 
-        int id = lireEntier("ID de la parcelle à supprimer: ", 1, Integer.MAX_VALUE);
+        int id = lireEntier("ID de la parcelle à supprimer: ");
         Parcelle parcelle = parcelleService.getById(id);
 
         if (parcelle == null) {
@@ -241,7 +241,7 @@ public class Launcher {
         }
 
         System.out.println("⚠️ Êtes-vous sûr de vouloir supprimer: " + parcelle.getNom() + " ?");
-        String confirm = lireChaine("Tapez 'OUI' pour confirmer: ", 1, 10);
+        String confirm = lireChaine("Tapez 'OUI' pour confirmer: ");
 
         if (confirm.equalsIgnoreCase("OUI")) {
             parcelleService.delete(id);
@@ -270,7 +270,7 @@ public class Launcher {
 
     private static void rechercherParcelle() {
         System.out.println("\n--- 🔍 RECHERCHER UNE PARCELLE ---");
-        int id = lireEntier("ID de la parcelle: ", 1, Integer.MAX_VALUE);
+        int id = lireEntier("ID de la parcelle: ");
         Parcelle parcelle = parcelleService.getById(id);
 
         if (parcelle != null) {
@@ -300,16 +300,16 @@ public class Launcher {
         }
 
         afficherParcelles();
-        int idParcelle = lireEntier("ID de la parcelle pour cette culture: ", 1, Integer.MAX_VALUE);
+        int idParcelle = lireEntier("ID de la parcelle pour cette culture: ");
 
         if (parcelleService.getById(idParcelle) == null) {
             System.out.println("❌ Parcelle non trouvée !");
             return;
         }
 
-        String typeCulture = lireChaine("Type de culture (ex: Blé, Tomate, Olivier): ", 2, 100);
+        String typeCulture = lireChaine("Type de culture (ex: Blé, Tomate, Olivier): ");
         LocalDate datePlantation = lireDate("Date de plantation (jj/mm/aaaa): ");
-        LocalDate dateRecoltePrevue = lireDateApres("Date de récolte prévue (jj/mm/aaaa): ", datePlantation);
+        LocalDate dateRecoltePrevue = lireDateApres("Date de récolte prévue (jj/mm/aaaa): ");
         String etatCroissance = lireEtatCroissance();
 
         Culture culture = new Culture(typeCulture, datePlantation, dateRecoltePrevue, etatCroissance, idParcelle);
@@ -322,7 +322,7 @@ public class Launcher {
         System.out.println("\n--- ✏️ MODIFIER UNE CULTURE ---");
         afficherCultures();
 
-        int id = lireEntier("ID de la culture à modifier: ", 1, Integer.MAX_VALUE);
+        int id = lireEntier("ID de la culture à modifier: ");
         Culture culture = cultureService.getById(id);
 
         if (culture == null) {
@@ -364,7 +364,7 @@ public class Launcher {
         System.out.println("\n--- 🗑️ SUPPRIMER UNE CULTURE ---");
         afficherCultures();
 
-        int id = lireEntier("ID de la culture à supprimer: ", 1, Integer.MAX_VALUE);
+        int id = lireEntier("ID de la culture à supprimer: ");
         Culture culture = cultureService.getById(id);
 
         if (culture == null) {
@@ -373,7 +373,7 @@ public class Launcher {
         }
 
         System.out.println("⚠️ Êtes-vous sûr de vouloir supprimer: " + culture.getTypeCulture() + " ?");
-        String confirm = lireChaine("Tapez 'OUI' pour confirmer: ", 1, 10);
+        String confirm = lireChaine("Tapez 'OUI' pour confirmer: ");
 
         if (confirm.equalsIgnoreCase("OUI")) {
             cultureService.delete(id);
@@ -403,7 +403,7 @@ public class Launcher {
 
     private static void rechercherCulture() {
         System.out.println("\n--- 🔍 RECHERCHER UNE CULTURE ---");
-        int id = lireEntier("ID de la culture: ", 1, Integer.MAX_VALUE);
+        int id = lireEntier("ID de la culture: ");
         Culture culture = cultureService.getById(id);
 
         if (culture != null) {
@@ -428,19 +428,12 @@ public class Launcher {
     }
 
     // ==========================================
-    // MÉTHODES DE VALIDATION ET SAISIE
+    // MÉTHODES DE SAISIE (sans validation - la validation est dans les services)
     // ==========================================
 
-    private static String lireChaine(String message, int minLength, int maxLength) {
-        String input;
-        while (true) {
-            System.out.print(message);
-            input = scanner.nextLine().trim();
-            if (input.length() >= minLength && input.length() <= maxLength) {
-                return input;
-            }
-            System.out.println("❌ La saisie doit contenir entre " + minLength + " et " + maxLength + " caractères.");
-        }
+    private static String lireChaine(String message) {
+        System.out.print(message);
+        return scanner.nextLine().trim();
     }
 
     private static String lireChaineOptionnelle(String message) {
@@ -448,30 +441,22 @@ public class Launcher {
         return scanner.nextLine().trim();
     }
 
-    private static int lireEntier(String message, int min, int max) {
+    private static int lireEntier(String message) {
         while (true) {
             System.out.print(message);
             try {
-                int value = Integer.parseInt(scanner.nextLine().trim());
-                if (value >= min && value <= max) {
-                    return value;
-                }
-                System.out.println("❌ Veuillez entrer un nombre entre " + min + " et " + max + ".");
+                return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.println("❌ Veuillez entrer un nombre valide.");
             }
         }
     }
 
-    private static double lireDouble(String message, double min, double max) {
+    private static double lireDouble(String message) {
         while (true) {
             System.out.print(message);
             try {
-                double value = Double.parseDouble(scanner.nextLine().trim());
-                if (value >= min && value <= max) {
-                    return value;
-                }
-                System.out.println("❌ Veuillez entrer un nombre entre " + min + " et " + max + ".");
+                return Double.parseDouble(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.println("❌ Veuillez entrer un nombre valide.");
             }
@@ -490,16 +475,12 @@ public class Launcher {
         }
     }
 
-    private static LocalDate lireDateApres(String message, LocalDate dateMin) {
+    private static LocalDate lireDateApres(String message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         while (true) {
             System.out.print(message);
             try {
-                LocalDate date = LocalDate.parse(scanner.nextLine().trim(), formatter);
-                if (dateMin == null || date.isAfter(dateMin)) {
-                    return date;
-                }
-                System.out.println("❌ La date doit être après " + formatDate(dateMin) + ".");
+                return LocalDate.parse(scanner.nextLine().trim(), formatter);
             } catch (DateTimeParseException e) {
                 System.out.println("❌ Format de date invalide. Utilisez le format jj/mm/aaaa.");
             }
@@ -525,7 +506,7 @@ public class Launcher {
         System.out.println("  1. active");
         System.out.println("  2. repos");
         System.out.println("  3. exploitée");
-        int choix = lireEntier("Votre choix: ", 1, 3);
+        int choix = lireEntier("Votre choix: ");
         switch (choix) {
             case 1: return "active";
             case 2: return "repos";
@@ -550,7 +531,7 @@ public class Launcher {
         System.out.println("  3. floraison");
         System.out.println("  4. mature");
         System.out.println("  5. récolté");
-        int choix = lireEntier("Votre choix: ", 1, 5);
+        int choix = lireEntier("Votre choix: ");
         switch (choix) {
             case 1: return "germination";
             case 2: return "croissance";
