@@ -5,27 +5,38 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/smart_farm";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private final String URL = "jdbc:mysql://localhost:3306/smart_farm";
+    private final String USER = "root";
+    private final String PASSWORD = "";
+
+    private static Connection connection;
+    private static DBConnection instance;
+
+    // constructeur privé (Singleton)
+      private DBConnection() {
+
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("✅ Connected to database successfully");
+        } catch (SQLException e) {
+            System.out.println("❌ Database connection error: " + e.getMessage());
+        }
     }
 
-    public static void main(String[] args) {
-        try {
-            Connection connection = getConnection();
-            if (connection != null) {
-                System.out.println("✅ Connexion à la base de données établie avec succès !");
-                System.out.println("   URL: " + URL);
-                System.out.println("   User: " + USER);
-                connection.close();
-                System.out.println("✅ Connexion fermée.");
-            }
-        } catch (SQLException e) {
-            System.out.println("❌ Échec de la connexion à la base de données !");
-            System.out.println("   Erreur: " + e.getMessage());
+    // retourner l'instance unique
+    public static DBConnection getInstance() {
+        if (instance == null) {
+            instance = new DBConnection();
         }
+        return instance;
+    }
+
+    // retourner la connexion
+    public static Connection getConnection() {
+        if (instance == null) {
+            getInstance();
+        }
+        return connection;
     }
 }
