@@ -1,5 +1,9 @@
 package org.example.pidev.controllers;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,9 +27,8 @@ import org.example.pidev.services.CultureService;
 import org.example.pidev.services.ParcelleService;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -316,29 +319,132 @@ public class ConsulterCultureController implements Initializable {
     @FXML
     void exporterListe(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Exporter la liste des cultures");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier CSV", "*.csv"));
-        fileChooser.setInitialFileName("cultures_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".csv");
+        fileChooser.setTitle("Exporter la liste des cultures en PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier PDF", "*.pdf"));
+        fileChooser.setInitialFileName("cultures_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
 
         File file = fileChooser.showSaveDialog(tableViewCultures.getScene().getWindow());
         if (file != null) {
-            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-                // En-tête
-                writer.println("Type;Date Plantation;Date Récolte Prévue;État;Parcelle");
+            try {
+                Document document = new Document(PageSize.A4.rotate());
+                PdfWriter.getInstance(document, new FileOutputStream(file));
+                document.open();
 
-                // Données
-                for (Culture c : filteredCultures) {
-                    writer.println(String.format("%s;%s;%s;%s;%s",
-                            c.getTypeCulture(),
-                            c.getDatePlantation() != null ? c.getDatePlantation().toString() : "",
-                            c.getDateRecoltePrevue() != null ? c.getDateRecoltePrevue().toString() : "",
-                            c.getEtatCroissance(),
-                            c.getNomParcelle() != null ? c.getNomParcelle() : ""));
+                // Titre du document
+                Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, new BaseColor(255, 111, 0));
+                Paragraph title = new Paragraph("🌾 Liste des Cultures", titleFont);
+                title.setAlignment(Element.ALIGN_CENTER);
+                title.setSpacingAfter(10);
+                document.add(title);
+
+                // Date d'export
+                Font dateFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, BaseColor.GRAY);
+                Paragraph date = new Paragraph("Exporté le: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm")), dateFont);
+                date.setAlignment(Element.ALIGN_CENTER);
+                date.setSpacingAfter(20);
+                document.add(date);
+
+                // Statistiques
+                Font statsFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL);
+                long germination = culturesList.stream().filter(c -> "germination".equalsIgnoreCase(c.getEtatCroissance())).count();
+                long croissance = culturesList.stream().filter(c -> "croissance".equalsIgnoreCase(c.getEtatCroissance())).count();
+                long floraison = culturesList.stream().filter(c -> "floraison".equalsIgnoreCase(c.getEtatCroissance())).count();
+                long maturite = culturesList.stream().filter(c -> "maturité".equalsIgnoreCase(c.getEtatCroissance())).count();
+
+                Paragraph stats = new Paragraph(String.format("Total: %d cultures | Germination: %d | Croissance: %d | Floraison: %d | Maturité: %d",
+                        filteredCultures.size(), germination, croissance, floraison, maturite), statsFont);
+                stats.setAlignment(Element.ALIGN_CENTER);
+                stats.setSpacingAfter(15);
+                document.add(stats);
+
+                // Tableau
+                PdfPTable table = new PdfPTable(6);
+                table.setWidthPercentage(100);
+                table.setWidths(new float[]{2f, 1.5f, 1.5f, 1.2f, 1.5f, 2f});
+
+                // En-têtes
+                Font headerFont = new Font(Font.FontFamily.HELVETICA, 11, Font.BOLD, BaseColor.WHITE);
+                BaseColor headerColor = new BaseColor(255, 111, 0);
+
+                String[] headers = {"Type", "Plantation", "Récolte Prévue", "Jours Rest.", "État", "Parcelle"};
+                for (String header : headers) {
+                    PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+                    cell.setBackgroundColor(headerColor);
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setPadding(7);
+                    table.addCell(cell);
                 }
 
-                showMessage("✅ Export réussi: " + file.getName(), "#2E7D32");
-            } catch (IOException e) {
-                showMessage("❌ Erreur d'export: " + e.getMessage(), "#C62828");
+                // Données
+                Font dataFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+                boolean alternate = false;
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                for (Culture c : filteredCultures) {
+                    BaseColor rowColor = alternate ? new BaseColor(255, 248, 225) : BaseColor.WHITE;
+
+                    // Type
+                    PdfPCell cellType = new PdfPCell(new Phrase(c.getTypeCulture(), dataFont));
+                    cellType.setBackgroundColor(rowColor);
+                    cellType.setPadding(5);
+                    table.addCell(cellType);
+
+                    // Date Plantation
+                    String datePlant = c.getDatePlantation() != null ? c.getDatePlantation().format(dateFormatter) : "-";
+                    PdfPCell cellPlant = new PdfPCell(new Phrase(datePlant, dataFont));
+                    cellPlant.setBackgroundColor(rowColor);
+                    cellPlant.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cellPlant.setPadding(5);
+                    table.addCell(cellPlant);
+
+                    // Date Récolte
+                    String dateRec = c.getDateRecoltePrevue() != null ? c.getDateRecoltePrevue().format(dateFormatter) : "-";
+                    PdfPCell cellRec = new PdfPCell(new Phrase(dateRec, dataFont));
+                    cellRec.setBackgroundColor(rowColor);
+                    cellRec.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cellRec.setPadding(5);
+                    table.addCell(cellRec);
+
+                    // Jours restants
+                    String joursRestants = "-";
+                    if (c.getDateRecoltePrevue() != null) {
+                        long jours = ChronoUnit.DAYS.between(LocalDate.now(), c.getDateRecoltePrevue());
+                        joursRestants = jours >= 0 ? jours + " j" : "Passé";
+                    }
+                    PdfPCell cellJours = new PdfPCell(new Phrase(joursRestants, dataFont));
+                    cellJours.setBackgroundColor(rowColor);
+                    cellJours.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cellJours.setPadding(5);
+                    table.addCell(cellJours);
+
+                    // État
+                    PdfPCell cellEtat = new PdfPCell(new Phrase(c.getEtatCroissance(), dataFont));
+                    cellEtat.setBackgroundColor(rowColor);
+                    cellEtat.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cellEtat.setPadding(5);
+                    table.addCell(cellEtat);
+
+                    // Parcelle
+                    PdfPCell cellParcelle = new PdfPCell(new Phrase(c.getNomParcelle() != null ? c.getNomParcelle() : "-", dataFont));
+                    cellParcelle.setBackgroundColor(rowColor);
+                    cellParcelle.setPadding(5);
+                    table.addCell(cellParcelle);
+
+                    alternate = !alternate;
+                }
+
+                document.add(table);
+
+                // Pied de page
+                Paragraph footer = new Paragraph("\n© Smart Farm - Gestion Agricole Intelligente", dateFont);
+                footer.setAlignment(Element.ALIGN_CENTER);
+                document.add(footer);
+
+                document.close();
+                showMessage("✅ PDF exporté: " + file.getName(), "#2E7D32");
+
+            } catch (Exception e) {
+                showMessage("❌ Erreur d'export PDF: " + e.getMessage(), "#C62828");
             }
         }
     }

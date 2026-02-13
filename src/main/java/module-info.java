@@ -12,6 +12,7 @@ module org.example.pidev {
     // requires com.almasb.fxgl.all;
 
     requires java.sql;
+    requires itextpdf;
 
     opens org.example.pidev.models to javafx.fxml;
     opens org.example.pidev.controllers to javafx.fxml;

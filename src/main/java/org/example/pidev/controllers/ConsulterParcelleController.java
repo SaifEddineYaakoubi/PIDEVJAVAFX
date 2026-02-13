@@ -1,5 +1,9 @@
 package org.example.pidev.controllers;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -21,9 +25,8 @@ import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.ParcelleService;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -217,25 +220,100 @@ public class ConsulterParcelleController implements Initializable {
     @FXML
     void exporterListe(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Exporter la liste des parcelles");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier CSV", "*.csv"));
-        fileChooser.setInitialFileName("parcelles_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".csv");
+        fileChooser.setTitle("Exporter la liste des parcelles en PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier PDF", "*.pdf"));
+        fileChooser.setInitialFileName("parcelles_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
 
         File file = fileChooser.showSaveDialog(tableViewParcelles.getScene().getWindow());
         if (file != null) {
-            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-                // En-tête
-                writer.println("Nom;Superficie (m²);Localisation;État");
+            try {
+                Document document = new Document(PageSize.A4);
+                PdfWriter.getInstance(document, new FileOutputStream(file));
+                document.open();
 
-                // Données
-                for (Parcelle p : filteredParcelles) {
-                    writer.println(String.format("%s;%.2f;%s;%s",
-                            p.getNom(), p.getSuperficie(), p.getLocalisation(), p.getEtat()));
+                // Titre du document
+                Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, new BaseColor(46, 125, 50));
+                Paragraph title = new Paragraph("🌱 Liste des Parcelles", titleFont);
+                title.setAlignment(Element.ALIGN_CENTER);
+                title.setSpacingAfter(10);
+                document.add(title);
+
+                // Date d'export
+                Font dateFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, BaseColor.GRAY);
+                Paragraph date = new Paragraph("Exporté le: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm")), dateFont);
+                date.setAlignment(Element.ALIGN_CENTER);
+                date.setSpacingAfter(20);
+                document.add(date);
+
+                // Statistiques
+                Font statsFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL);
+                double superficieTotale = parcellesList.stream().mapToDouble(Parcelle::getSuperficie).sum();
+                Paragraph stats = new Paragraph(String.format("Total: %d parcelles | Superficie totale: %.2f m²", filteredParcelles.size(), superficieTotale), statsFont);
+                stats.setAlignment(Element.ALIGN_CENTER);
+                stats.setSpacingAfter(15);
+                document.add(stats);
+
+                // Tableau
+                PdfPTable table = new PdfPTable(4);
+                table.setWidthPercentage(100);
+                table.setWidths(new float[]{2.5f, 1.5f, 3f, 1.5f});
+
+                // En-têtes
+                Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+                BaseColor headerColor = new BaseColor(46, 125, 50);
+
+                String[] headers = {"Nom", "Superficie (m²)", "Localisation", "État"};
+                for (String header : headers) {
+                    PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+                    cell.setBackgroundColor(headerColor);
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setPadding(8);
+                    table.addCell(cell);
                 }
 
-                showMessage("✅ Export réussi: " + file.getName(), "#2E7D32");
-            } catch (IOException e) {
-                showMessage("❌ Erreur d'export: " + e.getMessage(), "#C62828");
+                // Données
+                Font dataFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
+                boolean alternate = false;
+                for (Parcelle p : filteredParcelles) {
+                    BaseColor rowColor = alternate ? new BaseColor(245, 245, 245) : BaseColor.WHITE;
+
+                    PdfPCell cellNom = new PdfPCell(new Phrase(p.getNom(), dataFont));
+                    cellNom.setBackgroundColor(rowColor);
+                    cellNom.setPadding(6);
+                    table.addCell(cellNom);
+
+                    PdfPCell cellSup = new PdfPCell(new Phrase(String.format("%.2f", p.getSuperficie()), dataFont));
+                    cellSup.setBackgroundColor(rowColor);
+                    cellSup.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cellSup.setPadding(6);
+                    table.addCell(cellSup);
+
+                    PdfPCell cellLoc = new PdfPCell(new Phrase(p.getLocalisation(), dataFont));
+                    cellLoc.setBackgroundColor(rowColor);
+                    cellLoc.setPadding(6);
+                    table.addCell(cellLoc);
+
+                    PdfPCell cellEtat = new PdfPCell(new Phrase(p.getEtat(), dataFont));
+                    cellEtat.setBackgroundColor(rowColor);
+                    cellEtat.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cellEtat.setPadding(6);
+                    table.addCell(cellEtat);
+
+                    alternate = !alternate;
+                }
+
+                document.add(table);
+
+                // Pied de page
+                Paragraph footer = new Paragraph("\n© Smart Farm - Gestion Agricole Intelligente", dateFont);
+                footer.setAlignment(Element.ALIGN_CENTER);
+                document.add(footer);
+
+                document.close();
+                showMessage("✅ PDF exporté: " + file.getName(), "#2E7D32");
+
+            } catch (Exception e) {
+                showMessage("❌ Erreur d'export PDF: " + e.getMessage(), "#C62828");
             }
         }
     }
