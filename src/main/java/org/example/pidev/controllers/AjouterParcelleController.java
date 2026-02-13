@@ -122,8 +122,14 @@ public class AjouterParcelleController implements Initializable {
 
     @FXML
     void annuler(ActionEvent event) {
+        navigateTo("/consulterparcelle.fxml", "Liste des Parcelles");
+    }
+
+    @FXML
+    void resetForm(ActionEvent event) {
         clearFields();
         clearMessages();
+        tfNom.requestFocus();
     }
 
     // ==================== NAVIGATION ====================

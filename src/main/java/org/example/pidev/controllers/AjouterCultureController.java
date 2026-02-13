@@ -17,6 +17,7 @@ import org.example.pidev.services.ParcelleService;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,10 +33,22 @@ public class AjouterCultureController implements Initializable {
     private DatePicker dpDateRecoltePrevue;
 
     @FXML
-    private ComboBox<String> cbEtatCroissance;
+    private ComboBox<String> cbParcelle;
 
     @FXML
-    private ComboBox<String> cbParcelle;
+    private RadioButton rbGermination;
+
+    @FXML
+    private RadioButton rbCroissance;
+
+    @FXML
+    private RadioButton rbFloraison;
+
+    @FXML
+    private RadioButton rbMaturite;
+
+    @FXML
+    private Label lblDureeEstimee;
 
     @FXML
     private Label lblError;
@@ -52,25 +65,33 @@ public class AjouterCultureController implements Initializable {
     private CultureService cultureService;
     private ParcelleService parcelleService;
     private List<Parcelle> parcelles;
+    private ToggleGroup toggleGroupEtat;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cultureService = new CultureService();
         parcelleService = new ParcelleService();
 
-        // Remplir le ComboBox des états de croissance
-        cbEtatCroissance.setItems(FXCollections.observableArrayList(
-                "germination", "croissance", "floraison", "mature", "récolté"
-        ));
+        // Créer le groupe de toggle pour les RadioButtons
+        toggleGroupEtat = new ToggleGroup();
+        if (rbGermination != null) rbGermination.setToggleGroup(toggleGroupEtat);
+        if (rbCroissance != null) rbCroissance.setToggleGroup(toggleGroupEtat);
+        if (rbFloraison != null) rbFloraison.setToggleGroup(toggleGroupEtat);
+        if (rbMaturite != null) rbMaturite.setToggleGroup(toggleGroupEtat);
 
         // Charger les parcelles disponibles
         loadParcelles();
 
         // Effacer les messages quand l'utilisateur interagit
         tfTypeCulture.textProperty().addListener((obs, old, newVal) -> clearMessages());
-        dpDatePlantation.valueProperty().addListener((obs, old, newVal) -> clearMessages());
-        dpDateRecoltePrevue.valueProperty().addListener((obs, old, newVal) -> clearMessages());
-        cbEtatCroissance.valueProperty().addListener((obs, old, newVal) -> clearMessages());
+        dpDatePlantation.valueProperty().addListener((obs, old, newVal) -> {
+            clearMessages();
+            updateDureeEstimee();
+        });
+        dpDateRecoltePrevue.valueProperty().addListener((obs, old, newVal) -> {
+            clearMessages();
+            updateDureeEstimee();
+        });
         cbParcelle.valueProperty().addListener((obs, old, newVal) -> clearMessages());
     }
 
@@ -82,6 +103,40 @@ public class AjouterCultureController implements Initializable {
         }
     }
 
+    private void updateDureeEstimee() {
+        if (lblDureeEstimee == null) return;
+
+        LocalDate datePlantation = dpDatePlantation.getValue();
+        LocalDate dateRecolte = dpDateRecoltePrevue.getValue();
+
+        if (datePlantation != null && dateRecolte != null) {
+            long jours = ChronoUnit.DAYS.between(datePlantation, dateRecolte);
+            if (jours > 0) {
+                lblDureeEstimee.setText(jours + " jours");
+                lblDureeEstimee.setStyle("-fx-font-size: 13px; -fx-text-fill: #1565C0;");
+            } else {
+                lblDureeEstimee.setText("Date invalide ⚠️");
+                lblDureeEstimee.setStyle("-fx-font-size: 13px; -fx-text-fill: #C62828;");
+            }
+        } else {
+            lblDureeEstimee.setText("-- jours");
+        }
+    }
+
+    private String getSelectedEtatCroissance() {
+        if (toggleGroupEtat == null || toggleGroupEtat.getSelectedToggle() == null) {
+            return null;
+        }
+        RadioButton selected = (RadioButton) toggleGroupEtat.getSelectedToggle();
+        String text = selected.getText();
+        // Extraire le texte sans l'emoji
+        if (text.contains("Germination")) return "germination";
+        if (text.contains("Croissance")) return "croissance";
+        if (text.contains("Floraison")) return "floraison";
+        if (text.contains("Maturité")) return "maturité";
+        return text;
+    }
+
     @FXML
     void ajouterCulture(ActionEvent event) {
         clearMessages();
@@ -90,7 +145,7 @@ public class AjouterCultureController implements Initializable {
             String typeCulture = tfTypeCulture.getText();
             LocalDate datePlantation = dpDatePlantation.getValue();
             LocalDate dateRecoltePrevue = dpDateRecoltePrevue.getValue();
-            String etatCroissance = cbEtatCroissance.getValue();
+            String etatCroissance = getSelectedEtatCroissance();
             String parcelleSelection = cbParcelle.getValue();
 
             // Validation des champs
@@ -109,7 +164,7 @@ public class AjouterCultureController implements Initializable {
                 return;
             }
 
-            if (etatCroissance == null || etatCroissance.trim().isEmpty()) {
+            if (etatCroissance == null) {
                 showError("Veuillez sélectionner un état de croissance.");
                 return;
             }
@@ -144,8 +199,14 @@ public class AjouterCultureController implements Initializable {
 
     @FXML
     void annuler(ActionEvent event) {
+        navigateTo("/consulterculture.fxml", "Liste des Cultures");
+    }
+
+    @FXML
+    void resetForm(ActionEvent event) {
         clearFields();
         clearMessages();
+        tfTypeCulture.requestFocus();
     }
 
     // ==================== NAVIGATION ====================
@@ -183,8 +244,13 @@ public class AjouterCultureController implements Initializable {
         tfTypeCulture.clear();
         dpDatePlantation.setValue(null);
         dpDateRecoltePrevue.setValue(null);
-        cbEtatCroissance.setValue(null);
+        if (toggleGroupEtat != null) {
+            toggleGroupEtat.selectToggle(null);
+        }
         cbParcelle.setValue(null);
+        if (lblDureeEstimee != null) {
+            lblDureeEstimee.setText("-- jours");
+        }
     }
 
     private void clearMessages() {

@@ -3,73 +3,87 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.effect.DropShadow?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.pidev.controllers.AjouterParcelleController"
-            prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;">
+            prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: linear-gradient(to bottom right, #E8F5E9, #C8E6C9);">
 
     <!-- Barre de navigation -->
-    <HBox spacing="10" style="-fx-background-color: #2E7D32; -fx-padding: 10;" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <HBox spacing="10" style="-fx-background-color: linear-gradient(to right, #1B5E20, #2E7D32); -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <Button text="📋 Liste Parcelles" onAction="#navigateToConsulterParcelle"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
         <Button text="➕ Ajouter Parcelle"
-                style="-fx-background-color: #1B5E20; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #1B5E20; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 20; -fx-padding: 8 20;"/>
         <Button text="📋 Liste Cultures" onAction="#navigateToConsulterCulture"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
         <Button text="➕ Ajouter Culture" onAction="#navigateToAjouterCulture"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
     </HBox>
 
-    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="70" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+    <!-- Carte du formulaire -->
+    <VBox alignment="CENTER" spacing="25" AnchorPane.topAnchor="80" AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="150" AnchorPane.bottomAnchor="40"
+          style="-fx-background-color: #FFFFFF; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 5); -fx-padding: 40;">
 
-        <!-- Titre -->
-        <Label text="🌱 Ajouter une Parcelle" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;">
-            <padding>
-                <Insets bottom="20"/>
-            </padding>
-        </Label>
-        
+        <!-- Icône et Titre -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="🌱" style="-fx-font-size: 48px;"/>
+            <Label text="Nouvelle Parcelle" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;"/>
+            <Label text="Remplissez les informations ci-dessous" style="-fx-font-size: 13px; -fx-text-fill: #757575;"/>
+        </VBox>
+
         <!-- Formulaire -->
-        <GridPane hgap="15" vgap="18" alignment="CENTER">
+        <GridPane hgap="20" vgap="20" alignment="CENTER">
             <!-- Nom -->
-            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfNom" promptText="Nom de la parcelle" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+            <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                <Label text="📝 Nom de la parcelle" style="-fx-font-size: 12px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+                <TextField fx:id="tfNom" promptText="Ex: Parcelle Nord" prefWidth="350" prefHeight="40"
+                           style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 14px;"/>
+            </VBox>
 
             <!-- Superficie -->
-            <Label text="Superficie (m²) :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfSuperficie" promptText="Ex: 1500.5" prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"
-                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+            <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <Label text="📐 Superficie (m²)" style="-fx-font-size: 12px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+                <TextField fx:id="tfSuperficie" promptText="Ex: 1500.5" prefWidth="350" prefHeight="40"
+                           style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 14px;"/>
+            </VBox>
 
             <!-- Localisation -->
-            <Label text="Localisation :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfLocalisation" promptText="Adresse ou coordonnées" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"
-                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+            <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                <Label text="📍 Localisation" style="-fx-font-size: 12px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+                <TextField fx:id="tfLocalisation" promptText="Adresse ou coordonnées GPS" prefWidth="350" prefHeight="40"
+                           style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 14px;"/>
+            </VBox>
 
             <!-- État -->
-            <Label text="État :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <ComboBox fx:id="cbEtat" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"
-                      style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
+            <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <Label text="🏷️ État de la parcelle" style="-fx-font-size: 12px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="cbEtat" promptText="Sélectionner un état" prefWidth="350" prefHeight="40"
+                          style="-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 10; -fx-font-size: 14px;"/>
+            </VBox>
         </GridPane>
         
-        <!-- Label d'erreur -->
-        <Label fx:id="lblError" style="-fx-text-fill: #C62828; -fx-font-size: 12px; -fx-font-weight: bold;" wrapText="true" maxWidth="400"/>
-
-        <!-- Label de succès -->
-        <Label fx:id="lblSuccess" style="-fx-text-fill: #2E7D32; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+        <!-- Messages -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label fx:id="lblError" style="-fx-text-fill: #C62828; -fx-font-size: 13px; -fx-font-weight: bold;" wrapText="true" maxWidth="500"/>
+            <Label fx:id="lblSuccess" style="-fx-text-fill: #2E7D32; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+        </VBox>
 
         <!-- Boutons -->
         <HBox spacing="20" alignment="CENTER">
-            <padding>
-                <Insets top="15"/>
-            </padding>
-            <Button fx:id="btnAjouter" text="✓ Ajouter" onAction="#ajouterParcelle"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 35; -fx-cursor: hand; -fx-background-radius: 5;"/>
-            <Button fx:id="btnAnnuler" text="✗ Annuler" onAction="#annuler"
-                    style="-fx-background-color: #8D6E63; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 35; -fx-cursor: hand; -fx-background-radius: 5;"/>
+            <Button fx:id="btnAjouter" text="✓ Enregistrer la Parcelle" onAction="#ajouterParcelle" prefWidth="220" prefHeight="45"
+                    style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #388E3C); -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
+            <Button fx:id="btnReset" text="🔄 Réinitialiser" onAction="#resetForm" prefWidth="150" prefHeight="45"
+                    style="-fx-background-color: linear-gradient(to bottom, #FF9800, #F57C00); -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
+            <Button fx:id="btnAnnuler" text="✗ Annuler" onAction="#annuler" prefWidth="120" prefHeight="45"
+                    style="-fx-background-color: linear-gradient(to bottom, #9E9E9E, #757575); -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
         </HBox>
-        
+
+        <!-- Indication -->
+        <Label text="💡 Astuce : Tous les champs sont obligatoires" style="-fx-font-size: 11px; -fx-text-fill: #9E9E9E;"/>
+
     </VBox>
     
 </AnchorPane>

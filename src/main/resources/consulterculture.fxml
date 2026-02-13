@@ -107,6 +107,8 @@
 
         <!-- Boutons d'action -->
         <HBox spacing="15" alignment="CENTER">
+            <Button text="➕ Ajouter" onAction="#navigateToAjouterCulture"
+                    style="-fx-background-color: linear-gradient(to bottom, #2196F3, #1976D2); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
             <Button text="🔄 Rafraîchir" onAction="#rafraichirListe"
                     style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #388E3C); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
             <Button text="✏️ Modifier" onAction="#modifierCulture"
