@@ -9,7 +9,6 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.pidev.controllers.ConsulterCultureController"
-            prefHeight="800.0" prefWidth="1400.0"
             style="-fx-background-color: #faf5f0;">
 
     <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">

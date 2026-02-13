@@ -453,8 +453,19 @@ public class ConsulterParcelleController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Stage stage = (Stage) tableViewParcelles.getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            // Obtenir les dimensions de l'écran
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+
+            // Créer une nouvelle scène avec les dimensions de l'écran
+            Scene newScene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            stage.setScene(newScene);
             stage.setTitle("Smart Farm - " + title);
+
+            // Positionner et maximiser
+            stage.setX(screenBounds.getMinX());
+            stage.setY(screenBounds.getMinY());
+            stage.setMaximized(true);
         } catch (IOException e) {
             showMessage("❌ Erreur de navigation: " + e.getMessage(), "#C62828");
         }

@@ -2,8 +2,10 @@ package org.example.pidev.test;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class mainFX extends Application {
@@ -14,13 +16,23 @@ public class mainFX extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/consulterparcelle.fxml"));
         Parent root = loader.load();
 
-        // Configurer la scène
-        Scene scene = new Scene(root);
+        // Obtenir les dimensions de l'écran
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+        // Configurer la scène avec les dimensions de l'écran
+        Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 
         // Configurer le stage
         stage.setTitle("Smart Farm - Liste des Parcelles");
         stage.setScene(scene);
         stage.setResizable(true);
+
+        // Positionner la fenêtre en haut à gauche
+        stage.setX(screenBounds.getMinX());
+        stage.setY(screenBounds.getMinY());
+
+        // Maximiser la fenêtre
+        stage.setMaximized(true);
         stage.show();
     }
 
