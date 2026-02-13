@@ -3,15 +3,23 @@ package org.example.pidev.controllers;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.ParcelleService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AjouterParcelleController implements Initializable {
+
+    // ID de l'utilisateur connecté (par défaut = 1)
+    private static final int CURRENT_USER_ID = 1;
 
     @FXML
     private TextField tfNom;
@@ -24,9 +32,6 @@ public class AjouterParcelleController implements Initializable {
 
     @FXML
     private ComboBox<String> cbEtat;
-
-    @FXML
-    private TextField tfIdUser;
 
     @FXML
     private Label lblError;
@@ -54,7 +59,6 @@ public class AjouterParcelleController implements Initializable {
         tfNom.textProperty().addListener((obs, old, newVal) -> clearMessages());
         tfSuperficie.textProperty().addListener((obs, old, newVal) -> clearMessages());
         tfLocalisation.textProperty().addListener((obs, old, newVal) -> clearMessages());
-        tfIdUser.textProperty().addListener((obs, old, newVal) -> clearMessages());
         cbEtat.valueProperty().addListener((obs, old, newVal) -> clearMessages());
     }
 
@@ -68,7 +72,6 @@ public class AjouterParcelleController implements Initializable {
             String superficieStr = tfSuperficie.getText();
             String localisation = tfLocalisation.getText();
             String etat = cbEtat.getValue();
-            String idUserStr = tfIdUser.getText();
 
             // Validation des champs vides
             if (nom == null || nom.trim().isEmpty()) {
@@ -91,11 +94,6 @@ public class AjouterParcelleController implements Initializable {
                 return;
             }
 
-            if (idUserStr == null || idUserStr.trim().isEmpty()) {
-                showError("L'ID utilisateur est obligatoire.");
-                return;
-            }
-
             // Conversion et validation de la superficie
             double superficie;
             try {
@@ -105,17 +103,8 @@ public class AjouterParcelleController implements Initializable {
                 return;
             }
 
-            // Conversion et validation de l'ID utilisateur
-            int idUser;
-            try {
-                idUser = Integer.parseInt(idUserStr.trim());
-            } catch (NumberFormatException e) {
-                showError("L'ID utilisateur doit être un nombre entier.");
-                return;
-            }
-
-            // Créer l'objet Parcelle
-            Parcelle parcelle = new Parcelle(nom.trim(), superficie, localisation.trim(), etat, idUser);
+            // Créer l'objet Parcelle avec l'ID de l'utilisateur connecté
+            Parcelle parcelle = new Parcelle(nom.trim(), superficie, localisation.trim(), etat, CURRENT_USER_ID);
 
             // Ajouter via le service (qui fait aussi la validation)
             parcelleService.add(parcelle);
@@ -137,12 +126,42 @@ public class AjouterParcelleController implements Initializable {
         clearMessages();
     }
 
+    // ==================== NAVIGATION ====================
+
+    @FXML
+    void navigateToConsulterParcelle(ActionEvent event) {
+        navigateTo("/consulterparcelle.fxml", "Liste des Parcelles");
+    }
+
+    @FXML
+    void navigateToConsulterCulture(ActionEvent event) {
+        navigateTo("/consulterculture.fxml", "Liste des Cultures");
+    }
+
+    @FXML
+    void navigateToAjouterCulture(ActionEvent event) {
+        navigateTo("/ajouterculture.fxml", "Ajouter une Culture");
+    }
+
+    private void navigateTo(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) tfNom.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Smart Farm - " + title);
+        } catch (IOException e) {
+            showError("Erreur de navigation: " + e.getMessage());
+        }
+    }
+
+    // ==================== HELPERS ====================
+
     private void clearFields() {
         tfNom.clear();
         tfSuperficie.clear();
         tfLocalisation.clear();
         cbEtat.setValue(null);
-        tfIdUser.clear();
     }
 
     private void clearMessages() {

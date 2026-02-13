@@ -1,14 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.pidev.controllers.ModifierCultureController"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="550.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;">
 
+    <!-- Barre de navigation -->
+    <HBox spacing="10" style="-fx-background-color: #2E7D32; -fx-padding: 10;" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <Button text="📋 Liste Parcelles" onAction="#navigateToConsulterParcelle"
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        <Button text="➕ Ajouter Parcelle" onAction="#navigateToAjouterParcelle"
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        <Button text="📋 Liste Cultures" onAction="#navigateToConsulterCulture"
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        <Button text="➕ Ajouter Culture" onAction="#navigateToAjouterCulture"
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+    </HBox>
+
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="70" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+        
+        <!-- Titre -->
+        <Label text="✏️ Modifier la Culture" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #FF9800;">
+            <padding>
+                <Insets bottom="20"/>
+            </padding>
+        </Label>
+        
+        <!-- Formulaire -->
+        <GridPane hgap="15" vgap="18" alignment="CENTER">
+            <!-- ID (lecture seule) -->
+            <Label text="ID :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <TextField fx:id="tfId" editable="false" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                       style="-fx-background-color: #EEEEEE; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+
+            <!-- Type de culture -->
+            <Label text="Type de culture :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <TextField fx:id="tfTypeCulture" promptText="Ex: Blé, Maïs, Tomates..." prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+
+            <!-- Date de plantation -->
+            <Label text="Date plantation :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="dpDatePlantation" promptText="Sélectionner une date" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                        style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
+
+            <!-- Date de récolte prévue -->
+            <Label text="Date récolte prévue :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="dpDateRecoltePrevue" promptText="Sélectionner une date" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                        style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
+
+            <!-- État de croissance -->
+            <Label text="État croissance :" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbEtatCroissance" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                      style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
+
+            <!-- Parcelle -->
+            <Label text="Parcelle :" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbParcelle" promptText="Sélectionner une parcelle" prefWidth="300" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                      style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
+        </GridPane>
+        
+        <!-- Label d'erreur -->
+        <Label fx:id="lblError" style="-fx-text-fill: #C62828; -fx-font-size: 12px; -fx-font-weight: bold;" wrapText="true" maxWidth="400"/>
+
+        <!-- Label de succès -->
+        <Label fx:id="lblSuccess" style="-fx-text-fill: #2E7D32; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+
+        <!-- Boutons -->
+        <HBox spacing="20" alignment="CENTER">
+            <padding>
+                <Insets top="15"/>
+            </padding>
+            <Button fx:id="btnModifier" text="✓ Modifier" onAction="#modifierCulture"
+                    style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 35; -fx-cursor: hand; -fx-background-radius: 5;"/>
+            <Button fx:id="btnAnnuler" text="↩ Retour" onAction="#retourListe"
+                    style="-fx-background-color: #8D6E63; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 35; -fx-cursor: hand; -fx-background-radius: 5;"/>
+        </HBox>
+        
+    </VBox>
+    
 </AnchorPane>
