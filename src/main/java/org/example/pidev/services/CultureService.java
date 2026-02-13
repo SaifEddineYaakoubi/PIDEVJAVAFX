@@ -114,14 +114,9 @@ public class CultureService implements IService<Culture> {
     // ==========================================
 
     @Override
-    public boolean add(Culture culture) {
-        // Validation des données avant insertion
-        try {
-            valider(culture);
-        } catch (IllegalArgumentException e) {
-            System.out.println("❌ Erreur de validation: " + e.getMessage());
-            return false;
-        }
+    public boolean add(Culture culture) throws IllegalArgumentException {
+        // Validation des données avant insertion (lance une exception si invalide)
+        valider(culture);
 
         String query = "INSERT INTO culture (type_culture, date_plantation, date_recolte_prevue, etat_croissance, id_parcelle) VALUES (?, ?, ?, ?, ?)";
         try {
@@ -142,21 +137,16 @@ public class CultureService implements IService<Culture> {
             return true;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de l'ajout de la culture: " + e.getMessage());
-            return false;
+            throw new RuntimeException("Erreur base de données: " + e.getMessage());
         }
     }
 
     @Override
-    public void update(Culture culture) {
-        // Validation des données avant mise à jour
-        try {
-            valider(culture);
-            if (culture.getIdCulture() <= 0) {
-                throw new IllegalArgumentException("L'ID de la culture doit être un nombre positif.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("❌ Erreur de validation: " + e.getMessage());
-            return;
+    public void update(Culture culture) throws IllegalArgumentException {
+        // Validation des données avant mise à jour (lance une exception si invalide)
+        valider(culture);
+        if (culture.getIdCulture() <= 0) {
+            throw new IllegalArgumentException("L'ID de la culture doit être un nombre positif.");
         }
 
         String query = "UPDATE culture SET type_culture = ?, date_plantation = ?, date_recolte_prevue = ?, etat_croissance = ?, id_parcelle = ? WHERE id_culture = ?";
@@ -172,6 +162,7 @@ public class CultureService implements IService<Culture> {
             System.out.println("✅ Culture mise à jour avec succès");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la mise à jour de la culture: " + e.getMessage());
+            throw new RuntimeException("Erreur base de données: " + e.getMessage());
         }
     }
 

@@ -117,14 +117,9 @@ public class ParcelleService implements IService<Parcelle> {
     // ==========================================
 
     @Override
-    public boolean add(Parcelle parcelle) {
-        // Validation des données avant insertion
-        try {
-            valider(parcelle);
-        } catch (IllegalArgumentException e) {
-            System.out.println("❌ Erreur de validation: " + e.getMessage());
-            return false;
-        }
+    public boolean add(Parcelle parcelle) throws IllegalArgumentException {
+        // Validation des données avant insertion (lance une exception si invalide)
+        valider(parcelle);
 
         String query = "INSERT INTO parcelle (nom, superficie, localisation, etat, id_user) VALUES (?, ?, ?, ?, ?)";
         try {
@@ -145,21 +140,16 @@ public class ParcelleService implements IService<Parcelle> {
             return true;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de l'ajout de la parcelle: " + e.getMessage());
-            return false;
+            throw new RuntimeException("Erreur base de données: " + e.getMessage());
         }
     }
 
     @Override
-    public void update(Parcelle parcelle) {
-        // Validation des données avant mise à jour
-        try {
-            valider(parcelle);
-            if (parcelle.getIdParcelle() <= 0) {
-                throw new IllegalArgumentException("L'ID de la parcelle doit être un nombre positif.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("❌ Erreur de validation: " + e.getMessage());
-            return;
+    public void update(Parcelle parcelle) throws IllegalArgumentException {
+        // Validation des données avant mise à jour (lance une exception si invalide)
+        valider(parcelle);
+        if (parcelle.getIdParcelle() <= 0) {
+            throw new IllegalArgumentException("L'ID de la parcelle doit être un nombre positif.");
         }
 
         String query = "UPDATE parcelle SET nom = ?, superficie = ?, localisation = ?, etat = ?, id_user = ? WHERE id_parcelle = ?";
@@ -175,6 +165,7 @@ public class ParcelleService implements IService<Parcelle> {
             System.out.println("✅ Parcelle mise à jour avec succès");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la mise à jour de la parcelle: " + e.getMessage());
+            throw new RuntimeException("Erreur base de données: " + e.getMessage());
         }
     }
 

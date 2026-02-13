@@ -175,17 +175,16 @@ public class AjouterCultureController implements Initializable {
             // Créer l'objet Culture
             Culture culture = new Culture(typeCulture.trim(), datePlantation, dateRecoltePrevue, etatCroissance, idParcelle);
 
-            // Ajouter via le service
-            boolean success = cultureService.add(culture);
+            // Ajouter via le service (lance une exception si erreur de validation)
+            cultureService.add(culture);
 
-            if (success) {
-                showSuccess("✅ Culture ajoutée avec succès !");
-                clearFields();
-            } else {
-                showError("❌ Erreur lors de l'ajout de la culture.");
-            }
+            // Succès
+            showSuccess("✅ Culture ajoutée avec succès !");
+            clearFields();
 
         } catch (IllegalArgumentException e) {
+            showError(e.getMessage());
+        } catch (RuntimeException e) {
             showError(e.getMessage());
         } catch (Exception e) {
             showError("Erreur lors de l'ajout: " + e.getMessage());
