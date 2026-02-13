@@ -95,9 +95,7 @@
                 <TableColumn fx:id="colDateRecolte" text="📅 Récolte Prévue" prefWidth="130">
                     <cellValueFactory><PropertyValueFactory property="dateRecoltePrevue"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colJoursRestants" text="⏱️ Jours Restants" prefWidth="120">
-                    <cellValueFactory><PropertyValueFactory property="joursRestants"/></cellValueFactory>
-                </TableColumn>
+                <TableColumn fx:id="colJoursRestants" text="⏱️ Jours Restants" prefWidth="120"/>
                 <TableColumn fx:id="colEtat" text="🏷️ État" prefWidth="140">
                     <cellValueFactory><PropertyValueFactory property="etatCroissance"/></cellValueFactory>
                 </TableColumn>
