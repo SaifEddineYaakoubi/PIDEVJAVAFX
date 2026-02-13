@@ -99,6 +99,12 @@ public class ConsulterCultureController implements Initializable {
     @FXML
     private Label lblRecolteProche;
 
+    @FXML
+    private Button btnModifier;
+
+    @FXML
+    private Button btnSupprimer;
+
     private CultureService cultureService;
     private ParcelleService parcelleService;
     private ObservableList<Culture> culturesList;
@@ -202,6 +208,17 @@ public class ConsulterCultureController implements Initializable {
             if (event.getClickCount() == 2 && tableViewCultures.getSelectionModel().getSelectedItem() != null) {
                 modifierCulture(null);
             }
+        });
+
+        // Désactiver les boutons Modifier et Supprimer par défaut
+        if (btnModifier != null) btnModifier.setDisable(true);
+        if (btnSupprimer != null) btnSupprimer.setDisable(true);
+
+        // Activer/Désactiver les boutons selon la sélection
+        tableViewCultures.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            boolean hasSelection = newSelection != null;
+            if (btnModifier != null) btnModifier.setDisable(!hasSelection);
+            if (btnSupprimer != null) btnSupprimer.setDisable(!hasSelection);
         });
     }
 

@@ -81,6 +81,12 @@ public class ConsulterParcelleController implements Initializable {
     @FXML
     private Label lblExploitees;
 
+    @FXML
+    private Button btnModifier;
+
+    @FXML
+    private Button btnSupprimer;
+
     private ParcelleService parcelleService;
     private ObservableList<Parcelle> parcellesList;
     private FilteredList<Parcelle> filteredParcelles;
@@ -141,6 +147,17 @@ public class ConsulterParcelleController implements Initializable {
             if (event.getClickCount() == 2 && tableViewParcelles.getSelectionModel().getSelectedItem() != null) {
                 modifierParcelle(null);
             }
+        });
+
+        // Désactiver les boutons Modifier et Supprimer par défaut
+        if (btnModifier != null) btnModifier.setDisable(true);
+        if (btnSupprimer != null) btnSupprimer.setDisable(true);
+
+        // Activer/Désactiver les boutons selon la sélection
+        tableViewParcelles.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            boolean hasSelection = newSelection != null;
+            if (btnModifier != null) btnModifier.setDisable(!hasSelection);
+            if (btnSupprimer != null) btnSupprimer.setDisable(!hasSelection);
         });
     }
 

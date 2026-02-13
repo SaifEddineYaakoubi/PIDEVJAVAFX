@@ -107,12 +107,12 @@
                     style="-fx-background-color: linear-gradient(to bottom, #2196F3, #1976D2); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
             <Button text="🔄 Rafraîchir" onAction="#rafraichirListe"
                     style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #388E3C); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
-            <Button text="✏️ Modifier" onAction="#modifierCulture"
+            <Button fx:id="btnModifier" text="✏️ Modifier" onAction="#modifierCulture"
                     style="-fx-background-color: linear-gradient(to bottom, #FF9800, #F57C00); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
-            <Button text="🗑️ Supprimer" onAction="#supprimerCulture"
+            <Button fx:id="btnSupprimer" text="🗑️ Supprimer" onAction="#supprimerCulture"
                     style="-fx-background-color: linear-gradient(to bottom, #F44336, #D32F2F); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="📄 Exporter" onAction="#exporterListe"
+            <Button text="📄 Exporter PDF" onAction="#exporterListe"
                     style="-fx-background-color: linear-gradient(to bottom, #607D8B, #455A64); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
         </HBox>
 
