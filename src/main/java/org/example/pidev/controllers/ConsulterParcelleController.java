@@ -367,10 +367,36 @@ public class ConsulterParcelleController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            parcelleService.delete(selected.getIdParcelle());
-            parcellesList.remove(selected);
-            updateStatistics();
-            showMessage("✅ Parcelle supprimée avec succès !", "#2E7D32");
+            try {
+                boolean success = parcelleService.delete(selected.getIdParcelle());
+                if (success) {
+                    parcellesList.remove(selected);
+                    updateStatistics();
+                    showMessage("✅ Parcelle supprimée avec succès !", "#2E7D32");
+                } else {
+                    showMessage("❌ Erreur lors de la suppression de la parcelle.", "#C62828");
+                }
+            } catch (RuntimeException e) {
+                String errorMessage = e.getMessage();
+                if (errorMessage != null && errorMessage.contains("foreign key constraint")) {
+                    // Afficher une alerte d'erreur explicative
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Suppression impossible");
+                    errorAlert.setHeaderText("❌ Cette parcelle ne peut pas être supprimée");
+                    errorAlert.setContentText(
+                        "La parcelle \"" + selected.getNom() + "\" contient des cultures associées.\n\n" +
+                        "Pour supprimer cette parcelle, vous devez d'abord :\n" +
+                        "1. Aller dans la liste des cultures\n" +
+                        "2. Supprimer toutes les cultures de cette parcelle\n" +
+                        "3. Revenir supprimer la parcelle\n\n" +
+                        "💡 Astuce : Utilisez le filtre par parcelle dans la liste des cultures."
+                    );
+                    errorAlert.showAndWait();
+                    showMessage("⚠️ Suppression annulée - Cultures associées existantes", "#FF9800");
+                } else {
+                    showMessage("❌ Erreur: " + errorMessage, "#C62828");
+                }
+            }
         }
     }
 

@@ -179,15 +179,21 @@ public class ParcelleService implements IService<Parcelle> {
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
         String query = "DELETE FROM parcelle WHERE id_parcelle = ?";
         try {
             PreparedStatement pst = connection.prepareStatement(query);
             pst.setInt(1, id);
-            pst.executeUpdate();
-            System.out.println("✅ Parcelle supprimée avec succès");
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("✅ Parcelle supprimée avec succès");
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la suppression de la parcelle: " + e.getMessage());
+            // Lancer une exception pour permettre au contrôleur de gérer l'erreur
+            throw new RuntimeException(e.getMessage());
         }
     }
 

@@ -64,15 +64,20 @@ public class UtilisateurService implements IService<Utilisateur> {
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
         String query = "DELETE FROM utilisateur WHERE id_user = ?";
         try {
             PreparedStatement pst = connection.prepareStatement(query);
             pst.setInt(1, id);
-            pst.executeUpdate();
-            System.out.println("✅ Utilisateur supprimé avec succès");
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("✅ Utilisateur supprimé avec succès");
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la suppression de l'utilisateur: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 

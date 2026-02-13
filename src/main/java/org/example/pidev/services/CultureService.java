@@ -176,15 +176,20 @@ public class CultureService implements IService<Culture> {
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
         String query = "DELETE FROM culture WHERE id_culture = ?";
         try {
             PreparedStatement pst = connection.prepareStatement(query);
             pst.setInt(1, id);
-            pst.executeUpdate();
-            System.out.println("✅ Culture supprimée avec succès");
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("✅ Culture supprimée avec succès");
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la suppression de la culture: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 

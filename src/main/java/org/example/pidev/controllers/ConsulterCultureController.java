@@ -499,10 +499,23 @@ public class ConsulterCultureController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            cultureService.delete(selected.getIdCulture());
-            culturesList.remove(selected);
-            updateStatistics();
-            showMessage("✅ Culture supprimée avec succès !", "#2E7D32");
+            try {
+                boolean success = cultureService.delete(selected.getIdCulture());
+                if (success) {
+                    culturesList.remove(selected);
+                    updateStatistics();
+                    showMessage("✅ Culture supprimée avec succès !", "#2E7D32");
+                } else {
+                    showMessage("❌ Erreur lors de la suppression de la culture.", "#C62828");
+                }
+            } catch (RuntimeException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Erreur de suppression");
+                errorAlert.setHeaderText("❌ Erreur lors de la suppression");
+                errorAlert.setContentText("Une erreur s'est produite lors de la suppression de la culture.\n\n" + e.getMessage());
+                errorAlert.showAndWait();
+                showMessage("❌ Erreur de suppression", "#C62828");
+            }
         }
     }
 
