@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.AjouterParcelleController"
+            prefHeight="500.0" prefWidth="600.0" style="-fx-background-color: #f4f4f4;">
+
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+        
+        <!-- Titre -->
+        <Label text="Ajouter une Parcelle" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+            <padding>
+                <Insets bottom="20"/>
+            </padding>
+        </Label>
+        
+        <!-- Formulaire -->
+        <GridPane hgap="15" vgap="15" alignment="CENTER">
+            <!-- Nom -->
+            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px;"/>
+            <TextField fx:id="tfNom" promptText="Nom de la parcelle" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            
+            <!-- Superficie -->
+            <Label text="Superficie (m²) :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px;"/>
+            <TextField fx:id="tfSuperficie" promptText="Ex: 1500.5" prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            
+            <!-- Localisation -->
+            <Label text="Localisation :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px;"/>
+            <TextField fx:id="tfLocalisation" promptText="Adresse ou coordonnées" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            
+            <!-- État -->
+            <Label text="État :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px;"/>
+            <ComboBox fx:id="cbEtat" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            
+            <!-- ID Utilisateur -->
+            <Label text="ID Utilisateur :" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-size: 14px;"/>
+            <TextField fx:id="tfIdUser" promptText="ID de l'utilisateur" prefWidth="300" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        </GridPane>
+        
+        <!-- Label d'erreur -->
+        <Label fx:id="lblError" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12px;" wrapText="true" maxWidth="400"/>
+        
+        <!-- Label de succès -->
+        <Label fx:id="lblSuccess" text="" style="-fx-text-fill: #27ae60; -fx-font-size: 12px;"/>
+        
+        <!-- Boutons -->
+        <HBox spacing="20" alignment="CENTER">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            <Button fx:id="btnAjouter" text="Ajouter" onAction="#ajouterParcelle" 
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 30; -fx-cursor: hand;"/>
+            <Button fx:id="btnAnnuler" text="Annuler" onAction="#annuler" 
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 30; -fx-cursor: hand;"/>
+        </HBox>
+        
+    </VBox>
+    
+</AnchorPane>
