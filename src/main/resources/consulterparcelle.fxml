@@ -14,14 +14,10 @@
     <!-- Barre de navigation -->
     <HBox spacing="10" style="-fx-background-color: linear-gradient(to right, #1B5E20, #2E7D32); -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);"
           AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-        <Button text="📋 Liste Parcelles"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #1B5E20; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 20; -fx-padding: 8 20;"/>
-        <Button text="➕ Ajouter Parcelle" onAction="#navigateToAjouterParcelle"
-                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
-        <Button text="📋 Liste Cultures" onAction="#navigateToConsulterCulture"
-                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
-        <Button text="➕ Ajouter Culture" onAction="#navigateToAjouterCulture"
-                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
+        <Button text="🌱 Liste Parcelles"
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #1B5E20; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 20; -fx-padding: 10 25;"/>
+        <Button text="🌾 Liste Cultures" onAction="#navigateToConsulterCulture"
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 10 25;"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Label fx:id="lblDateTime" text="" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
     </HBox>

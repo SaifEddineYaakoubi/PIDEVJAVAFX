@@ -1,12 +1,8 @@
 package org.example.pidev.controllers;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.pidev.models.Culture;
@@ -14,7 +10,6 @@ import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.CultureService;
 import org.example.pidev.services.ParcelleService;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -198,8 +193,9 @@ public class AjouterCultureController implements Initializable {
     }
 
     @FXML
-    void annuler(ActionEvent event) {
-        navigateTo("/consulterculture.fxml", "Liste des Cultures");
+    void fermerFenetre(ActionEvent event) {
+        Stage stage = (Stage) tfTypeCulture.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -209,34 +205,6 @@ public class AjouterCultureController implements Initializable {
         tfTypeCulture.requestFocus();
     }
 
-    // ==================== NAVIGATION ====================
-
-    @FXML
-    void navigateToConsulterParcelle(ActionEvent event) {
-        navigateTo("/consulterparcelle.fxml", "Liste des Parcelles");
-    }
-
-    @FXML
-    void navigateToAjouterParcelle(ActionEvent event) {
-        navigateTo("/ajouterparcelle.fxml", "Ajouter une Parcelle");
-    }
-
-    @FXML
-    void navigateToConsulterCulture(ActionEvent event) {
-        navigateTo("/consulterculture.fxml", "Liste des Cultures");
-    }
-
-    private void navigateTo(String fxmlPath, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) tfTypeCulture.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Smart Farm - " + title);
-        } catch (IOException e) {
-            showError("Erreur de navigation: " + e.getMessage());
-        }
-    }
 
     // ==================== HELPERS ====================
 

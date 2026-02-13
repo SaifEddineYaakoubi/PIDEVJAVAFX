@@ -3,16 +3,12 @@ package org.example.pidev.controllers;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.ParcelleService;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -121,8 +117,9 @@ public class AjouterParcelleController implements Initializable {
     }
 
     @FXML
-    void annuler(ActionEvent event) {
-        navigateTo("/consulterparcelle.fxml", "Liste des Parcelles");
+    void fermerFenetre(ActionEvent event) {
+        Stage stage = (Stage) tfNom.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -132,34 +129,6 @@ public class AjouterParcelleController implements Initializable {
         tfNom.requestFocus();
     }
 
-    // ==================== NAVIGATION ====================
-
-    @FXML
-    void navigateToConsulterParcelle(ActionEvent event) {
-        navigateTo("/consulterparcelle.fxml", "Liste des Parcelles");
-    }
-
-    @FXML
-    void navigateToConsulterCulture(ActionEvent event) {
-        navigateTo("/consulterculture.fxml", "Liste des Cultures");
-    }
-
-    @FXML
-    void navigateToAjouterCulture(ActionEvent event) {
-        navigateTo("/ajouterculture.fxml", "Ajouter une Culture");
-    }
-
-    private void navigateTo(String fxmlPath, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) tfNom.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Smart Farm - " + title);
-        } catch (IOException e) {
-            showError("Erreur de navigation: " + e.getMessage());
-        }
-    }
 
     // ==================== HELPERS ====================
 

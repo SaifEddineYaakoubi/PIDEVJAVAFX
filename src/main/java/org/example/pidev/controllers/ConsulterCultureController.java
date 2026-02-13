@@ -398,13 +398,27 @@ public class ConsulterCultureController implements Initializable {
     }
 
     @FXML
-    void navigateToAjouterParcelle(ActionEvent event) {
-        navigateTo("/ajouterparcelle.fxml", "Ajouter une Parcelle");
-    }
-
-    @FXML
     void navigateToAjouterCulture(ActionEvent event) {
-        navigateTo("/ajouterculture.fxml", "Ajouter une Culture");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterculture.fxml"));
+            Parent root = loader.load();
+
+            // Ouvrir dans une nouvelle fenêtre popup
+            Stage popupStage = new Stage();
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(tableViewCultures.getScene().getWindow());
+            popupStage.setTitle("Smart Farm - Ajouter une Culture");
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+
+            // Attendre la fermeture et recharger les données
+            popupStage.showAndWait();
+            loadParcellesMap();
+            loadData();
+
+        } catch (IOException e) {
+            showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
+        }
     }
 
     private void navigateTo(String fxmlPath, String title) {

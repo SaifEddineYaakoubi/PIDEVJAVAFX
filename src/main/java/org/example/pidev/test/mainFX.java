@@ -10,15 +10,15 @@ public class mainFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Charger le fichier FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterparcelle.fxml"));
+        // Charger le fichier FXML - Page principale : Liste des Parcelles
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/consulterparcelle.fxml"));
         Parent root = loader.load();
 
         // Configurer la scène
         Scene scene = new Scene(root);
 
         // Configurer le stage
-        stage.setTitle("Smart Farm - Ajouter une Parcelle");
+        stage.setTitle("Smart Farm - Liste des Parcelles");
         stage.setScene(scene);
         stage.setResizable(true);
         stage.show();
