@@ -3,16 +3,12 @@ package org.example.pidev.controllers;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.ParcelleService;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -40,13 +36,20 @@ public class ModifierParcelleController implements Initializable {
     private Label lblSuccess;
 
     @FXML
+    private Label lblInfo;
+
+    @FXML
     private Button btnModifier;
 
     @FXML
     private Button btnAnnuler;
 
+    @FXML
+    private Button btnReset;
+
     private ParcelleService parcelleService;
     private Parcelle currentParcelle;
+    private Parcelle originalParcelle;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,10 +70,26 @@ public class ModifierParcelleController implements Initializable {
      */
     public void setParcelle(Parcelle parcelle) {
         this.currentParcelle = parcelle;
+        // Sauvegarder les valeurs originales pour le reset
+        this.originalParcelle = new Parcelle(
+            parcelle.getIdParcelle(),
+            parcelle.getNom(),
+            parcelle.getSuperficie(),
+            parcelle.getLocalisation(),
+            parcelle.getEtat(),
+            parcelle.getIdUser()
+        );
+
+        // Remplir les champs
         tfNom.setText(parcelle.getNom());
         tfSuperficie.setText(String.valueOf(parcelle.getSuperficie()));
         tfLocalisation.setText(parcelle.getLocalisation());
         cbEtat.setValue(parcelle.getEtat());
+
+        // Afficher l'info
+        if (lblInfo != null) {
+            lblInfo.setText("Modification de: " + parcelle.getNom());
+        }
     }
 
     @FXML
@@ -125,6 +144,11 @@ public class ModifierParcelleController implements Initializable {
 
             showSuccess("✅ Parcelle modifiée avec succès !");
 
+            // Fermer la fenêtre après un court délai
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
+            pause.setOnFinished(e -> fermerFenetre(null));
+            pause.play();
+
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         } catch (Exception e) {
@@ -133,42 +157,20 @@ public class ModifierParcelleController implements Initializable {
     }
 
     @FXML
-    void retourListe(ActionEvent event) {
-        navigateToConsulterParcelle(event);
-    }
-
-    // ==================== NAVIGATION ====================
-
-    @FXML
-    void navigateToConsulterParcelle(ActionEvent event) {
-        navigateTo("/consulterparcelle.fxml", "Liste des Parcelles");
-    }
-
-    @FXML
-    void navigateToAjouterParcelle(ActionEvent event) {
-        navigateTo("/ajouterparcelle.fxml", "Ajouter une Parcelle");
-    }
-
-    @FXML
-    void navigateToConsulterCulture(ActionEvent event) {
-        navigateTo("/consulterculture.fxml", "Liste des Cultures");
-    }
-
-    @FXML
-    void navigateToAjouterCulture(ActionEvent event) {
-        navigateTo("/ajouterculture.fxml", "Ajouter une Culture");
-    }
-
-    private void navigateTo(String fxmlPath, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) tfNom.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Smart Farm - " + title);
-        } catch (IOException e) {
-            showError("Erreur de navigation: " + e.getMessage());
+    void resetForm(ActionEvent event) {
+        if (originalParcelle != null) {
+            tfNom.setText(originalParcelle.getNom());
+            tfSuperficie.setText(String.valueOf(originalParcelle.getSuperficie()));
+            tfLocalisation.setText(originalParcelle.getLocalisation());
+            cbEtat.setValue(originalParcelle.getEtat());
         }
+        clearMessages();
+    }
+
+    @FXML
+    void fermerFenetre(ActionEvent event) {
+        Stage stage = (Stage) tfNom.getScene().getWindow();
+        stage.close();
     }
 
     // ==================== HELPERS ====================

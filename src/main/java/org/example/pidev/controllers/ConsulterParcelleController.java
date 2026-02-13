@@ -256,11 +256,20 @@ public class ConsulterParcelleController implements Initializable {
             ModifierParcelleController controller = loader.getController();
             controller.setParcelle(selected);
 
-            Stage stage = (Stage) tableViewParcelles.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Smart Farm - Modifier la Parcelle");
+            // Ouvrir dans une nouvelle fenêtre popup
+            Stage popupStage = new Stage();
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(tableViewParcelles.getScene().getWindow());
+            popupStage.setTitle("Smart Farm - Modifier la Parcelle");
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+
+            // Attendre la fermeture et recharger les données
+            popupStage.showAndWait();
+            loadData();
+
         } catch (IOException e) {
-            showMessage("❌ Erreur de navigation: " + e.getMessage(), "#C62828");
+            showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
         }
     }
 
