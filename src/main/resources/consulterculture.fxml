@@ -8,49 +8,100 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.pidev.controllers.ConsulterCultureController"
-            prefHeight="550.0" prefWidth="950.0" style="-fx-background-color: #FFFFFF;">
+            prefHeight="650.0" prefWidth="1100.0" style="-fx-background-color: linear-gradient(to bottom, #FFF8E1, #FFFFFF);">
 
     <!-- Barre de navigation -->
-    <HBox spacing="10" style="-fx-background-color: #2E7D32; -fx-padding: 10;" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <HBox spacing="10" style="-fx-background-color: linear-gradient(to right, #1B5E20, #2E7D32); -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <Button text="📋 Liste Parcelles" onAction="#navigateToConsulterParcelle"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
         <Button text="➕ Ajouter Parcelle" onAction="#navigateToAjouterParcelle"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
-        <Button text="📋 Liste Cultures"
-                style="-fx-background-color: #1B5E20; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
+        <Button text="🌾 Liste Cultures"
+                style="-fx-background-color: #FFFFFF; -fx-text-fill: #1B5E20; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 20; -fx-padding: 8 20;"/>
         <Button text="➕ Ajouter Culture" onAction="#navigateToAjouterCulture"
-                style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblDateTime" text="" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
     </HBox>
 
-    <VBox spacing="15" AnchorPane.topAnchor="60" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <VBox spacing="15" AnchorPane.topAnchor="65" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <!-- Cartes de statistiques -->
+        <HBox spacing="15" alignment="CENTER">
+            <!-- Compteur Total -->
+            <VBox alignment="CENTER" spacing="5" prefWidth="180" prefHeight="100"
+                  style="-fx-background-color: #FFFFFF; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-padding: 15;">
+                <Label text="🌾 Total Cultures" style="-fx-font-size: 12px; -fx-text-fill: #666666;"/>
+                <Label fx:id="lblTotalCultures" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #FF6F00;"/>
+            </VBox>
+            <!-- Germination -->
+            <VBox alignment="CENTER" spacing="5" prefWidth="150" prefHeight="100"
+                  style="-fx-background-color: #E8F5E9; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-padding: 15;">
+                <Label text="🌱 Germination" style="-fx-font-size: 11px; -fx-text-fill: #666666;"/>
+                <Label fx:id="lblGermination" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+            </VBox>
+            <!-- Croissance -->
+            <VBox alignment="CENTER" spacing="5" prefWidth="150" prefHeight="100"
+                  style="-fx-background-color: #E3F2FD; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-padding: 15;">
+                <Label text="🌿 Croissance" style="-fx-font-size: 11px; -fx-text-fill: #666666;"/>
+                <Label fx:id="lblCroissance" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2196F3;"/>
+            </VBox>
+            <!-- Floraison -->
+            <VBox alignment="CENTER" spacing="5" prefWidth="150" prefHeight="100"
+                  style="-fx-background-color: #FCE4EC; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-padding: 15;">
+                <Label text="🌸 Floraison" style="-fx-font-size: 11px; -fx-text-fill: #666666;"/>
+                <Label fx:id="lblFloraison" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #E91E63;"/>
+            </VBox>
+            <!-- Maturité -->
+            <VBox alignment="CENTER" spacing="5" prefWidth="150" prefHeight="100"
+                  style="-fx-background-color: #FFF3E0; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-padding: 15;">
+                <Label text="🌾 Maturité" style="-fx-font-size: 11px; -fx-text-fill: #666666;"/>
+                <Label fx:id="lblMaturite" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #FF9800;"/>
+            </VBox>
+            <!-- Récolte Proche -->
+            <VBox alignment="CENTER" spacing="5" prefWidth="150" prefHeight="100"
+                  style="-fx-background-color: #FFEBEE; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3); -fx-padding: 15;">
+                <Label text="⏰ Récolte Proche" style="-fx-font-size: 10px; -fx-text-fill: #666666;"/>
+                <Label fx:id="lblRecolteProche" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #F44336;"/>
+            </VBox>
+        </HBox>
 
         <!-- Titre et Recherche -->
         <HBox spacing="20" alignment="CENTER_LEFT">
-            <Label text="🌾 Liste des Cultures" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;"/>
+            <Label text="🌾 Liste des Cultures" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #FF6F00;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox spacing="10" alignment="CENTER_RIGHT">
+                <ComboBox fx:id="cbFiltreEtat" promptText="Filtrer par état" prefWidth="150"
+                          style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
+                <ComboBox fx:id="cbFiltreParcelle" promptText="Filtrer par parcelle" prefWidth="150"
+                          style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
                 <Label text="🔍" style="-fx-font-size: 16px;"/>
-                <TextField fx:id="tfRecherche" promptText="Rechercher par type ou état..." prefWidth="280"
-                           style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+                <TextField fx:id="tfRecherche" promptText="Rechercher..." prefWidth="200"
+                           style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 20; -fx-padding: 8 15;"/>
             </HBox>
         </HBox>
 
-        <!-- TableView -->
-        <TableView fx:id="tableViewCultures" VBox.vgrow="ALWAYS" style="-fx-border-color: #8D6E63; -fx-border-radius: 5;">
+        <!-- TableView avec style amélioré -->
+        <TableView fx:id="tableViewCultures" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 10; -fx-background-radius: 10;">
             <columns>
-                <TableColumn fx:id="colType" text="Type de Culture" prefWidth="180">
+                <TableColumn fx:id="colType" text="🌱 Type de Culture" prefWidth="180">
                     <cellValueFactory><PropertyValueFactory property="typeCulture"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colDatePlantation" text="Date Plantation" prefWidth="130">
+                <TableColumn fx:id="colDatePlantation" text="📅 Plantation" prefWidth="120">
                     <cellValueFactory><PropertyValueFactory property="datePlantation"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colDateRecolte" text="Date Récolte Prévue" prefWidth="150">
+                <TableColumn fx:id="colDateRecolte" text="📅 Récolte Prévue" prefWidth="130">
                     <cellValueFactory><PropertyValueFactory property="dateRecoltePrevue"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colEtat" text="État Croissance" prefWidth="140">
+                <TableColumn fx:id="colJoursRestants" text="⏱️ Jours Restants" prefWidth="120">
+                    <cellValueFactory><PropertyValueFactory property="joursRestants"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colEtat" text="🏷️ État" prefWidth="140">
                     <cellValueFactory><PropertyValueFactory property="etatCroissance"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colParcelle" text="Parcelle" prefWidth="150">
+                <TableColumn fx:id="colParcelle" text="📍 Parcelle" prefWidth="150">
                     <cellValueFactory><PropertyValueFactory property="nomParcelle"/></cellValueFactory>
                 </TableColumn>
             </columns>
@@ -59,15 +110,22 @@
         <!-- Boutons d'action -->
         <HBox spacing="15" alignment="CENTER">
             <Button text="🔄 Rafraîchir" onAction="#rafraichirListe"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5;"/>
+                    style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #388E3C); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
             <Button text="✏️ Modifier" onAction="#modifierCulture"
-                    style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5;"/>
+                    style="-fx-background-color: linear-gradient(to bottom, #FF9800, #F57C00); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
             <Button text="🗑️ Supprimer" onAction="#supprimerCulture"
-                    style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5;"/>
+                    style="-fx-background-color: linear-gradient(to bottom, #F44336, #D32F2F); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="📄 Exporter" onAction="#exporterListe"
+                    style="-fx-background-color: linear-gradient(to bottom, #607D8B, #455A64); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
         </HBox>
 
-        <!-- Label de message -->
-        <Label fx:id="lblMessage" style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+        <!-- Barre de statut -->
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #F5F5F5; -fx-padding: 10; -fx-background-radius: 10;">
+            <Label fx:id="lblMessage" style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblResultats" text="Affichage: 0 sur 0" style="-fx-font-size: 11px; -fx-text-fill: #666666;"/>
+        </HBox>
 
     </VBox>
 
