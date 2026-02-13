@@ -32,29 +32,24 @@
         
         <!-- Formulaire -->
         <GridPane hgap="15" vgap="18" alignment="CENTER">
-            <!-- ID (lecture seule) -->
-            <Label text="ID :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfId" editable="false" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                       style="-fx-background-color: #EEEEEE; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
-
             <!-- Nom -->
-            <Label text="Nom :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfNom" promptText="Nom de la parcelle" prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"
+            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <TextField fx:id="tfNom" promptText="Nom de la parcelle" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"
                        style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
 
             <!-- Superficie -->
-            <Label text="Superficie (m²) :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfSuperficie" promptText="Ex: 1500.5" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"
+            <Label text="Superficie (m²) :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <TextField fx:id="tfSuperficie" promptText="Ex: 1500.5" prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"
                        style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
 
             <!-- Localisation -->
-            <Label text="Localisation :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfLocalisation" promptText="Adresse ou coordonnées" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"
+            <Label text="Localisation :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <TextField fx:id="tfLocalisation" promptText="Adresse ou coordonnées" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"
                        style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
 
             <!-- État -->
-            <Label text="État :" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <ComboBox fx:id="cbEtat" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="4" GridPane.columnIndex="1"
+            <Label text="État :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbEtat" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"
                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
         </GridPane>
         

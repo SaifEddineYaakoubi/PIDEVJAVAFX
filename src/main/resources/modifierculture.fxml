@@ -32,34 +32,29 @@
         
         <!-- Formulaire -->
         <GridPane hgap="15" vgap="18" alignment="CENTER">
-            <!-- ID (lecture seule) -->
-            <Label text="ID :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfId" editable="false" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                       style="-fx-background-color: #EEEEEE; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
-
             <!-- Type de culture -->
-            <Label text="Type de culture :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <TextField fx:id="tfTypeCulture" promptText="Ex: Blé, Maïs, Tomates..." prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"
+            <Label text="Type de culture :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <TextField fx:id="tfTypeCulture" promptText="Ex: Blé, Maïs, Tomates..." prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"
                        style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
 
             <!-- Date de plantation -->
-            <Label text="Date plantation :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <DatePicker fx:id="dpDatePlantation" promptText="Sélectionner une date" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"
+            <Label text="Date plantation :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="dpDatePlantation" promptText="Sélectionner une date" prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"
                         style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
 
             <!-- Date de récolte prévue -->
-            <Label text="Date récolte prévue :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <DatePicker fx:id="dpDateRecoltePrevue" promptText="Sélectionner une date" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"
+            <Label text="Date récolte prévue :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="dpDateRecoltePrevue" promptText="Sélectionner une date" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"
                         style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
 
             <!-- État de croissance -->
-            <Label text="État croissance :" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <ComboBox fx:id="cbEtatCroissance" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="4" GridPane.columnIndex="1"
+            <Label text="État croissance :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbEtatCroissance" promptText="Sélectionner un état" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"
                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
 
             <!-- Parcelle -->
-            <Label text="Parcelle :" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
-            <ComboBox fx:id="cbParcelle" promptText="Sélectionner une parcelle" prefWidth="300" GridPane.rowIndex="5" GridPane.columnIndex="1"
+            <Label text="Parcelle :" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-size: 14px; -fx-text-fill: #5D4037; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbParcelle" promptText="Sélectionner une parcelle" prefWidth="300" GridPane.rowIndex="4" GridPane.columnIndex="1"
                       style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5;"/>
         </GridPane>
         

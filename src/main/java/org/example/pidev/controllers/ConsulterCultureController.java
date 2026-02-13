@@ -2,6 +2,7 @@ package org.example.pidev.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +13,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.example.pidev.models.Culture;
+import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.CultureService;
+import org.example.pidev.services.ParcelleService;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -24,9 +29,6 @@ public class ConsulterCultureController implements Initializable {
 
     @FXML
     private TableView<Culture> tableViewCultures;
-
-    @FXML
-    private TableColumn<Culture, Integer> colId;
 
     @FXML
     private TableColumn<Culture, String> colType;
@@ -41,38 +43,88 @@ public class ConsulterCultureController implements Initializable {
     private TableColumn<Culture, String> colEtat;
 
     @FXML
-    private TableColumn<Culture, Integer> colParcelle;
+    private TableColumn<Culture, String> colParcelle;
 
     @FXML
-    private TableColumn<Culture, Void> colActions;
+    private TextField tfRecherche;
 
     @FXML
     private Label lblMessage;
 
     private CultureService cultureService;
+    private ParcelleService parcelleService;
     private ObservableList<Culture> culturesList;
+    private FilteredList<Culture> filteredCultures;
+    private Map<Integer, String> parcellesMap;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cultureService = new CultureService();
+        parcelleService = new ParcelleService();
+
+        // Charger les parcelles dans une map pour récupérer les noms
+        loadParcellesMap();
 
         // Configurer les colonnes
-        colId.setCellValueFactory(new PropertyValueFactory<>("idCulture"));
         colType.setCellValueFactory(new PropertyValueFactory<>("typeCulture"));
         colDatePlantation.setCellValueFactory(new PropertyValueFactory<>("datePlantation"));
         colDateRecolte.setCellValueFactory(new PropertyValueFactory<>("dateRecoltePrevue"));
         colEtat.setCellValueFactory(new PropertyValueFactory<>("etatCroissance"));
-        colParcelle.setCellValueFactory(new PropertyValueFactory<>("idParcelle"));
+        colParcelle.setCellValueFactory(new PropertyValueFactory<>("nomParcelle"));
 
         // Charger les données
-        rafraichirListe(null);
+        loadData();
+
+        // Configurer la recherche en temps réel
+        tfRecherche.textProperty().addListener((obs, oldVal, newVal) -> {
+            filteredCultures.setPredicate(culture -> {
+                if (newVal == null || newVal.trim().isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newVal.toLowerCase().trim();
+
+                // Recherche dans type et état de croissance
+                if (culture.getTypeCulture().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                if (culture.getEtatCroissance().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                if (culture.getNomParcelle() != null && culture.getNomParcelle().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+            showMessage("Résultats: " + filteredCultures.size() + " culture(s)", "#2E7D32");
+        });
+    }
+
+    private void loadParcellesMap() {
+        parcellesMap = new HashMap<>();
+        for (Parcelle p : parcelleService.getAll()) {
+            parcellesMap.put(p.getIdParcelle(), p.getNom());
+        }
+    }
+
+    private void loadData() {
+        culturesList = FXCollections.observableArrayList(cultureService.getAll());
+
+        // Associer le nom de parcelle à chaque culture
+        for (Culture c : culturesList) {
+            String nomParcelle = parcellesMap.get(c.getIdParcelle());
+            c.setNomParcelle(nomParcelle != null ? nomParcelle : "Parcelle #" + c.getIdParcelle());
+        }
+
+        filteredCultures = new FilteredList<>(culturesList, c -> true);
+        tableViewCultures.setItems(filteredCultures);
+        showMessage("Liste chargée - " + culturesList.size() + " culture(s)", "#2E7D32");
     }
 
     @FXML
     void rafraichirListe(ActionEvent event) {
-        culturesList = FXCollections.observableArrayList(cultureService.getAll());
-        tableViewCultures.setItems(culturesList);
-        showMessage("Liste rafraîchie - " + culturesList.size() + " culture(s)", "#2E7D32");
+        tfRecherche.clear();
+        loadParcellesMap();
+        loadData();
     }
 
     @FXML

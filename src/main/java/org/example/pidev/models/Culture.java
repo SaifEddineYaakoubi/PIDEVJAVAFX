@@ -9,6 +9,7 @@ public class Culture {
     private LocalDate dateRecoltePrevue;
     private String etatCroissance;
     private int idParcelle;
+    private String nomParcelle; // Champ transient pour affichage
 
     public Culture() {
     }
@@ -76,6 +77,14 @@ public class Culture {
 
     public void setIdParcelle(int idParcelle) {
         this.idParcelle = idParcelle;
+    }
+
+    public String getNomParcelle() {
+        return nomParcelle;
+    }
+
+    public void setNomParcelle(String nomParcelle) {
+        this.nomParcelle = nomParcelle;
     }
 
     @Override

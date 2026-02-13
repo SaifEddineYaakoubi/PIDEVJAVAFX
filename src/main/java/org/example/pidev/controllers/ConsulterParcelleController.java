@@ -2,6 +2,7 @@ package org.example.pidev.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,9 +26,6 @@ public class ConsulterParcelleController implements Initializable {
     private TableView<Parcelle> tableViewParcelles;
 
     @FXML
-    private TableColumn<Parcelle, Integer> colId;
-
-    @FXML
     private TableColumn<Parcelle, String> colNom;
 
     @FXML
@@ -40,34 +38,63 @@ public class ConsulterParcelleController implements Initializable {
     private TableColumn<Parcelle, String> colEtat;
 
     @FXML
-    private TableColumn<Parcelle, Void> colActions;
+    private TextField tfRecherche;
 
     @FXML
     private Label lblMessage;
 
     private ParcelleService parcelleService;
     private ObservableList<Parcelle> parcellesList;
+    private FilteredList<Parcelle> filteredParcelles;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         parcelleService = new ParcelleService();
 
         // Configurer les colonnes
-        colId.setCellValueFactory(new PropertyValueFactory<>("idParcelle"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colSuperficie.setCellValueFactory(new PropertyValueFactory<>("superficie"));
         colLocalisation.setCellValueFactory(new PropertyValueFactory<>("localisation"));
         colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
 
         // Charger les données
-        rafraichirListe(null);
+        loadData();
+
+        // Configurer la recherche en temps réel
+        tfRecherche.textProperty().addListener((obs, oldVal, newVal) -> {
+            filteredParcelles.setPredicate(parcelle -> {
+                if (newVal == null || newVal.trim().isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newVal.toLowerCase().trim();
+
+                // Recherche dans nom, localisation et état
+                if (parcelle.getNom().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                if (parcelle.getLocalisation().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                if (parcelle.getEtat().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+            showMessage("Résultats: " + filteredParcelles.size() + " parcelle(s)", "#2E7D32");
+        });
+    }
+
+    private void loadData() {
+        parcellesList = FXCollections.observableArrayList(parcelleService.getAll());
+        filteredParcelles = new FilteredList<>(parcellesList, p -> true);
+        tableViewParcelles.setItems(filteredParcelles);
+        showMessage("Liste chargée - " + parcellesList.size() + " parcelle(s)", "#2E7D32");
     }
 
     @FXML
     void rafraichirListe(ActionEvent event) {
-        parcellesList = FXCollections.observableArrayList(parcelleService.getAll());
-        tableViewParcelles.setItems(parcellesList);
-        showMessage("Liste rafraîchie - " + parcellesList.size() + " parcelle(s)", "#2E7D32");
+        tfRecherche.clear();
+        loadData();
     }
 
     @FXML

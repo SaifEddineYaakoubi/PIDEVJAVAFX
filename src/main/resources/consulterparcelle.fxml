@@ -22,34 +22,34 @@
                 style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
     </HBox>
 
-    <VBox spacing="20" AnchorPane.topAnchor="60" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
-        
-        <!-- Titre -->
-        <Label text="📋 Liste des Parcelles" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;">
-            <padding>
-                <Insets top="10"/>
-            </padding>
-        </Label>
+    <VBox spacing="15" AnchorPane.topAnchor="60" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <!-- Titre et Recherche -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="📋 Liste des Parcelles" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label text="🔍" style="-fx-font-size: 16px;"/>
+                <TextField fx:id="tfRecherche" promptText="Rechercher par nom, localisation ou état..." prefWidth="300"
+                           style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+            </HBox>
+        </HBox>
 
         <!-- TableView -->
         <TableView fx:id="tableViewParcelles" VBox.vgrow="ALWAYS" style="-fx-border-color: #8D6E63; -fx-border-radius: 5;">
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="50">
-                    <cellValueFactory><PropertyValueFactory property="idParcelle"/></cellValueFactory>
-                </TableColumn>
-                <TableColumn fx:id="colNom" text="Nom" prefWidth="150">
+                <TableColumn fx:id="colNom" text="Nom" prefWidth="180">
                     <cellValueFactory><PropertyValueFactory property="nom"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colSuperficie" text="Superficie (m²)" prefWidth="120">
+                <TableColumn fx:id="colSuperficie" text="Superficie (m²)" prefWidth="130">
                     <cellValueFactory><PropertyValueFactory property="superficie"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colLocalisation" text="Localisation" prefWidth="200">
+                <TableColumn fx:id="colLocalisation" text="Localisation" prefWidth="250">
                     <cellValueFactory><PropertyValueFactory property="localisation"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colEtat" text="État" prefWidth="100">
+                <TableColumn fx:id="colEtat" text="État" prefWidth="120">
                     <cellValueFactory><PropertyValueFactory property="etat"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colActions" text="Actions" prefWidth="200"/>
             </columns>
         </TableView>
 

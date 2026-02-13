@@ -22,9 +22,6 @@ public class ModifierParcelleController implements Initializable {
     private static final int CURRENT_USER_ID = 1;
 
     @FXML
-    private TextField tfId;
-
-    @FXML
     private TextField tfNom;
 
     @FXML
@@ -70,7 +67,6 @@ public class ModifierParcelleController implements Initializable {
      */
     public void setParcelle(Parcelle parcelle) {
         this.currentParcelle = parcelle;
-        tfId.setText(String.valueOf(parcelle.getIdParcelle()));
         tfNom.setText(parcelle.getNom());
         tfSuperficie.setText(String.valueOf(parcelle.getSuperficie()));
         tfLocalisation.setText(parcelle.getLocalisation());

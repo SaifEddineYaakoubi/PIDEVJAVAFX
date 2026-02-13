@@ -23,9 +23,6 @@ import java.util.ResourceBundle;
 public class ModifierCultureController implements Initializable {
 
     @FXML
-    private TextField tfId;
-
-    @FXML
     private TextField tfTypeCulture;
 
     @FXML
@@ -91,7 +88,6 @@ public class ModifierCultureController implements Initializable {
      */
     public void setCulture(Culture culture) {
         this.currentCulture = culture;
-        tfId.setText(String.valueOf(culture.getIdCulture()));
         tfTypeCulture.setText(culture.getTypeCulture());
         dpDatePlantation.setValue(culture.getDatePlantation());
         dpDateRecoltePrevue.setValue(culture.getDateRecoltePrevue());

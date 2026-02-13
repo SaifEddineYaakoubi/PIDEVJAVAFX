@@ -22,37 +22,37 @@
                 style="-fx-background-color: #FFFFFF; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-cursor: hand;"/>
     </HBox>
 
-    <VBox spacing="20" AnchorPane.topAnchor="60" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <VBox spacing="15" AnchorPane.topAnchor="60" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
 
-        <!-- Titre -->
-        <Label text="🌾 Liste des Cultures" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;">
-            <padding>
-                <Insets top="10"/>
-            </padding>
-        </Label>
+        <!-- Titre et Recherche -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="🌾 Liste des Cultures" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label text="🔍" style="-fx-font-size: 16px;"/>
+                <TextField fx:id="tfRecherche" promptText="Rechercher par type ou état..." prefWidth="280"
+                           style="-fx-background-color: #FFFFFF; -fx-border-color: #8D6E63; -fx-border-radius: 5; -fx-padding: 8;"/>
+            </HBox>
+        </HBox>
 
         <!-- TableView -->
         <TableView fx:id="tableViewCultures" VBox.vgrow="ALWAYS" style="-fx-border-color: #8D6E63; -fx-border-radius: 5;">
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="50">
-                    <cellValueFactory><PropertyValueFactory property="idCulture"/></cellValueFactory>
-                </TableColumn>
-                <TableColumn fx:id="colType" text="Type" prefWidth="120">
+                <TableColumn fx:id="colType" text="Type de Culture" prefWidth="180">
                     <cellValueFactory><PropertyValueFactory property="typeCulture"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colDatePlantation" text="Date Plantation" prefWidth="120">
+                <TableColumn fx:id="colDatePlantation" text="Date Plantation" prefWidth="130">
                     <cellValueFactory><PropertyValueFactory property="datePlantation"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colDateRecolte" text="Date Récolte Prévue" prefWidth="140">
+                <TableColumn fx:id="colDateRecolte" text="Date Récolte Prévue" prefWidth="150">
                     <cellValueFactory><PropertyValueFactory property="dateRecoltePrevue"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colEtat" text="État Croissance" prefWidth="120">
+                <TableColumn fx:id="colEtat" text="État Croissance" prefWidth="140">
                     <cellValueFactory><PropertyValueFactory property="etatCroissance"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colParcelle" text="ID Parcelle" prefWidth="90">
-                    <cellValueFactory><PropertyValueFactory property="idParcelle"/></cellValueFactory>
+                <TableColumn fx:id="colParcelle" text="Parcelle" prefWidth="150">
+                    <cellValueFactory><PropertyValueFactory property="nomParcelle"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="colActions" text="Actions" prefWidth="200"/>
             </columns>
         </TableView>
 
