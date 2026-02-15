@@ -159,7 +159,7 @@ public class ModifierCultureController implements Initializable {
         if (text.contains("Germination")) return "germination";
         if (text.contains("Croissance")) return "croissance";
         if (text.contains("Floraison")) return "floraison";
-        if (text.contains("Maturité")) return "maturité";
+        if (text.contains("Maturité")) return "mature";  // Le service attend "mature" et non "maturité"
         return text;
     }
 

@@ -124,11 +124,11 @@ public class AjouterCultureController implements Initializable {
         }
         RadioButton selected = (RadioButton) toggleGroupEtat.getSelectedToggle();
         String text = selected.getText();
-        // Extraire le texte sans l'emoji
+        // Extraire le texte sans l'emoji - utiliser les valeurs attendues par CultureService
         if (text.contains("Germination")) return "germination";
         if (text.contains("Croissance")) return "croissance";
         if (text.contains("Floraison")) return "floraison";
-        if (text.contains("Maturité")) return "maturité";
+        if (text.contains("Maturité")) return "mature";  // Le service attend "mature" et non "maturité"
         return text;
     }
 
@@ -180,7 +180,14 @@ public class AjouterCultureController implements Initializable {
 
             // Succès
             showSuccess("✅ Culture ajoutée avec succès !");
-            clearFields();
+
+            // Fermer la fenêtre après un court délai
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
+            pause.setOnFinished(e -> {
+                Stage stage = (Stage) tfTypeCulture.getScene().getWindow();
+                stage.close();
+            });
+            pause.play();
 
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());

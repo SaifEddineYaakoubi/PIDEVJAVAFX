@@ -28,13 +28,9 @@ public class ModelsTest {
 
         Parcelle p = new Parcelle();
 
-        if (p != null) {
-            System.out.println("✅ TEST RÉUSSI : Constructeur vide fonctionne");
-            System.out.println("   → ID par défaut : " + p.getIdParcelle());
-            System.out.println("   → Nom par défaut : " + p.getNom());
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ");
-        }
+        System.out.println("✅ TEST RÉUSSI : Constructeur vide fonctionne");
+        System.out.println("   → ID par défaut : " + p.getIdParcelle());
+        System.out.println("   → Nom par défaut : " + p.getNom());
     }
 
     public void testParcelleConstructeurComplet() {
@@ -73,7 +69,7 @@ public class ModelsTest {
 
         if (success) {
             System.out.println("✅ TEST RÉUSSI : Tous les attributs sont corrects");
-            System.out.println("   → " + p.toString());
+            System.out.println("   → " + p);
         }
     }
 
@@ -148,12 +144,7 @@ public class ModelsTest {
         System.out.println("═══════════════════════════════════════════════════");
 
         Culture c = new Culture();
-
-        if (c != null) {
-            System.out.println("✅ TEST RÉUSSI : Constructeur vide fonctionne");
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ");
-        }
+        System.out.println("✅ TEST RÉUSSI : Constructeur vide fonctionne");
     }
 
     public void testCultureConstructeurComplet() {
@@ -195,7 +186,7 @@ public class ModelsTest {
 
         if (success) {
             System.out.println("✅ TEST RÉUSSI : Tous les attributs sont corrects");
-            System.out.println("   → " + c.toString());
+            System.out.println("   → " + c);
         }
     }
 

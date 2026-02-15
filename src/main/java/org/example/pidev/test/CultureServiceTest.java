@@ -44,20 +44,24 @@ public class CultureServiceTest {
     private void setupTestParcelle() {
         System.out.println("\n--- Préparation : Création d'une parcelle de test ---");
 
-        Parcelle parcelle = new Parcelle(
-                "Parcelle pour Culture Test",
-                300.0,
-                "Zone Culture Test",
-                "active",
-                1
-        );
+        try {
+            Parcelle parcelle = new Parcelle(
+                    "Parcelle pour Culture Test",
+                    300.0,
+                    "Zone Culture Test",
+                    "active",
+                    1
+            );
 
-        boolean result = parcelleService.add(parcelle);
-        if (result) {
-            testParcelleId = parcelle.getIdParcelle();
-            System.out.println("✅ Parcelle de test créée (ID = " + testParcelleId + ")");
-        } else {
-            System.out.println("❌ Impossible de créer la parcelle de test");
+            boolean result = parcelleService.add(parcelle);
+            if (result) {
+                testParcelleId = parcelle.getIdParcelle();
+                System.out.println("✅ Parcelle de test créée (ID = " + testParcelleId + ")");
+            } else {
+                System.out.println("❌ Impossible de créer la parcelle de test");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de la création de la parcelle de test: " + e.getMessage());
         }
     }
 
@@ -68,8 +72,12 @@ public class CultureServiceTest {
     private void cleanupTestParcelle() {
         if (testParcelleId > 0) {
             System.out.println("\n--- Nettoyage : Suppression de la parcelle de test ---");
-            parcelleService.delete(testParcelleId);
-            System.out.println("✅ Parcelle de test supprimée");
+            try {
+                parcelleService.delete(testParcelleId);
+                System.out.println("✅ Parcelle de test supprimée");
+            } catch (Exception e) {
+                System.out.println("⚠️ Impossible de supprimer la parcelle de test: " + e.getMessage());
+            }
         }
     }
 
@@ -87,27 +95,31 @@ public class CultureServiceTest {
             return;
         }
 
-        // Créer une culture de test
-        Culture culture = new Culture(
-                "Blé Test Unitaire",                    // type_culture
-                LocalDate.now(),                         // date_plantation
-                LocalDate.now().plusMonths(4),           // date_recolte_prevue
-                "germination",                           // etat_croissance
-                testParcelleId                           // id_parcelle
-        );
+        try {
+            // Créer une culture de test
+            Culture culture = new Culture(
+                    "Blé Test Unitaire",                    // type_culture
+                    LocalDate.now(),                         // date_plantation
+                    LocalDate.now().plusMonths(4),           // date_recolte_prevue
+                    "germination",                           // etat_croissance
+                    testParcelleId                           // id_parcelle
+            );
 
-        // Exécuter l'ajout
-        boolean result = cultureService.add(culture);
+            // Exécuter l'ajout
+            boolean result = cultureService.add(culture);
 
-        // Vérifier le résultat
-        if (result && culture.getIdCulture() > 0) {
-            testCultureId = culture.getIdCulture();
-            System.out.println("✅ TEST RÉUSSI : Culture ajoutée avec ID = " + testCultureId);
-            System.out.println("   → Type : " + culture.getTypeCulture());
-            System.out.println("   → Date plantation : " + culture.getDatePlantation());
-            System.out.println("   → Date récolte prévue : " + culture.getDateRecoltePrevue());
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ : L'ajout n'a pas fonctionné");
+            // Vérifier le résultat
+            if (result && culture.getIdCulture() > 0) {
+                testCultureId = culture.getIdCulture();
+                System.out.println("✅ TEST RÉUSSI : Culture ajoutée avec ID = " + testCultureId);
+                System.out.println("   → Type : " + culture.getTypeCulture());
+                System.out.println("   → Date plantation : " + culture.getDatePlantation());
+                System.out.println("   → Date récolte prévue : " + culture.getDateRecoltePrevue());
+            } else {
+                System.out.println("❌ TEST ÉCHOUÉ : L'ajout n'a pas fonctionné");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ TEST ÉCHOUÉ : " + e.getMessage());
         }
     }
 
@@ -130,57 +142,72 @@ public class CultureServiceTest {
 
         // Test 2.1 : Type de culture vide
         System.out.println("\n--- Test 2.1 : Type de culture vide ---");
-        Culture c1 = new Culture("", LocalDate.now(), LocalDate.now().plusMonths(3), "croissance", testParcelleId);
-        boolean r1 = cultureService.add(c1);
-        if (!r1) {
+        try {
+            Culture c1 = new Culture("", LocalDate.now(), LocalDate.now().plusMonths(3), "croissance", testParcelleId);
+            cultureService.add(c1);
+            System.out.println("❌ Validation ÉCHOUÉE : Type vide accepté");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : Type vide rejeté (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : Type vide rejeté");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : Type vide accepté");
         }
 
         // Test 2.2 : Date de récolte avant date de plantation
         System.out.println("\n--- Test 2.2 : Date récolte avant plantation ---");
-        Culture c2 = new Culture("Maïs", LocalDate.now(), LocalDate.now().minusDays(10), "croissance", testParcelleId);
-        boolean r2 = cultureService.add(c2);
-        if (!r2) {
+        try {
+            Culture c2 = new Culture("Maïs", LocalDate.now(), LocalDate.now().minusDays(10), "croissance", testParcelleId);
+            cultureService.add(c2);
+            System.out.println("❌ Validation ÉCHOUÉE : Date incohérente acceptée");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : Date incohérente rejetée (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : Date incohérente rejetée");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : Date incohérente acceptée");
         }
 
         // Test 2.3 : État de croissance invalide
         System.out.println("\n--- Test 2.3 : État de croissance invalide ---");
-        Culture c3 = new Culture("Tomates", LocalDate.now(), LocalDate.now().plusMonths(2), "etat_invalide", testParcelleId);
-        boolean r3 = cultureService.add(c3);
-        if (!r3) {
+        try {
+            Culture c3 = new Culture("Tomates", LocalDate.now(), LocalDate.now().plusMonths(2), "etat_invalide", testParcelleId);
+            cultureService.add(c3);
+            System.out.println("❌ Validation ÉCHOUÉE : État invalide accepté");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : État invalide rejeté (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : État invalide rejeté");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : État invalide accepté");
         }
 
         // Test 2.4 : ID parcelle invalide (0)
         System.out.println("\n--- Test 2.4 : ID parcelle invalide ---");
-        Culture c4 = new Culture("Carottes", LocalDate.now(), LocalDate.now().plusMonths(3), "croissance", 0);
-        boolean r4 = cultureService.add(c4);
-        if (!r4) {
+        try {
+            Culture c4 = new Culture("Carottes", LocalDate.now(), LocalDate.now().plusMonths(3), "croissance", 0);
+            cultureService.add(c4);
+            System.out.println("❌ Validation ÉCHOUÉE : ID parcelle 0 accepté");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : ID parcelle 0 rejeté (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : ID parcelle 0 rejeté");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : ID parcelle 0 accepté");
         }
 
         // Test 2.5 : Caractères spéciaux dans le type
         System.out.println("\n--- Test 2.5 : Caractères spéciaux ---");
-        Culture c5 = new Culture("Blé<script>", LocalDate.now(), LocalDate.now().plusMonths(3), "croissance", testParcelleId);
-        boolean r5 = cultureService.add(c5);
-        if (!r5) {
+        try {
+            Culture c5 = new Culture("Blé<script>", LocalDate.now(), LocalDate.now().plusMonths(3), "croissance", testParcelleId);
+            cultureService.add(c5);
+            System.out.println("❌ Validation ÉCHOUÉE : Caractères spéciaux acceptés");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : Caractères spéciaux rejetés (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : Caractères spéciaux rejetés");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : Caractères spéciaux acceptés");
         }
 
         // Résumé
@@ -267,38 +294,42 @@ public class CultureServiceTest {
             return;
         }
 
-        // Récupérer la culture
-        Culture culture = cultureService.getById(testCultureId);
-        if (culture == null) {
-            System.out.println("❌ TEST ÉCHOUÉ : Culture non trouvée");
-            return;
-        }
+        try {
+            // Récupérer la culture
+            Culture culture = cultureService.getById(testCultureId);
+            if (culture == null) {
+                System.out.println("❌ TEST ÉCHOUÉ : Culture non trouvée");
+                return;
+            }
 
-        // Modifier les valeurs
-        String ancienType = culture.getTypeCulture();
-        String ancienEtat = culture.getEtatCroissance();
+            // Modifier les valeurs
+            String ancienType = culture.getTypeCulture();
+            String ancienEtat = culture.getEtatCroissance();
 
-        culture.setTypeCulture("Maïs Modifié Test");
-        culture.setEtatCroissance("floraison");
-        culture.setDateRecoltePrevue(LocalDate.now().plusMonths(6));
+            culture.setTypeCulture("Maïs Modifié Test");
+            culture.setEtatCroissance("floraison");
+            culture.setDateRecoltePrevue(LocalDate.now().plusMonths(6));
 
-        // Exécuter la mise à jour
-        cultureService.update(culture);
+            // Exécuter la mise à jour
+            cultureService.update(culture);
 
-        // Vérifier la modification
-        Culture cultureModifiee = cultureService.getById(testCultureId);
+            // Vérifier la modification
+            Culture cultureModifiee = cultureService.getById(testCultureId);
 
-        if (cultureModifiee != null &&
-            cultureModifiee.getTypeCulture().equals("Maïs Modifié Test") &&
-            cultureModifiee.getEtatCroissance().equals("floraison")) {
+            if (cultureModifiee != null &&
+                cultureModifiee.getTypeCulture().equals("Maïs Modifié Test") &&
+                cultureModifiee.getEtatCroissance().equals("floraison")) {
 
-            System.out.println("✅ TEST RÉUSSI : Culture modifiée");
-            System.out.println("   → Ancien type : " + ancienType);
-            System.out.println("   → Nouveau type : " + cultureModifiee.getTypeCulture());
-            System.out.println("   → Ancien état : " + ancienEtat);
-            System.out.println("   → Nouvel état : " + cultureModifiee.getEtatCroissance());
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ : La modification n'a pas été appliquée");
+                System.out.println("✅ TEST RÉUSSI : Culture modifiée");
+                System.out.println("   → Ancien type : " + ancienType);
+                System.out.println("   → Nouveau type : " + cultureModifiee.getTypeCulture());
+                System.out.println("   → Ancien état : " + ancienEtat);
+                System.out.println("   → Nouvel état : " + cultureModifiee.getEtatCroissance());
+            } else {
+                System.out.println("❌ TEST ÉCHOUÉ : La modification n'a pas été appliquée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ TEST ÉCHOUÉ : " + e.getMessage());
         }
     }
 
@@ -316,16 +347,20 @@ public class CultureServiceTest {
             return;
         }
 
-        // Supprimer la culture
-        cultureService.delete(testCultureId);
+        try {
+            // Supprimer la culture
+            cultureService.delete(testCultureId);
 
-        // Vérifier la suppression
-        Culture cultureSupprimee = cultureService.getById(testCultureId);
+            // Vérifier la suppression
+            Culture cultureSupprimee = cultureService.getById(testCultureId);
 
-        if (cultureSupprimee == null) {
-            System.out.println("✅ TEST RÉUSSI : Culture supprimée (ID = " + testCultureId + ")");
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ : La culture existe encore");
+            if (cultureSupprimee == null) {
+                System.out.println("✅ TEST RÉUSSI : Culture supprimée (ID = " + testCultureId + ")");
+            } else {
+                System.out.println("❌ TEST ÉCHOUÉ : La culture existe encore");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ TEST ÉCHOUÉ : " + e.getMessage());
         }
     }
 

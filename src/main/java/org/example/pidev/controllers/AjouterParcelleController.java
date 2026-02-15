@@ -107,7 +107,14 @@ public class AjouterParcelleController implements Initializable {
 
             // Succès
             showSuccess("✅ Parcelle ajoutée avec succès !");
-            clearFields();
+
+            // Fermer la fenêtre après un court délai
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
+            pause.setOnFinished(e -> {
+                Stage stage = (Stage) tfNom.getScene().getWindow();
+                stage.close();
+            });
+            pause.play();
 
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());

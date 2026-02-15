@@ -179,7 +179,7 @@ public class ConsulterCultureController implements Initializable {
                         case "floraison":
                             setStyle("-fx-background-color: #F8BBD9; -fx-text-fill: #AD1457; -fx-font-weight: bold; -fx-alignment: CENTER;");
                             break;
-                        case "maturité":
+                        case "mature":
                             setStyle("-fx-background-color: #FFE0B2; -fx-text-fill: #E65100; -fx-font-weight: bold; -fx-alignment: CENTER;");
                             break;
                         default:
@@ -264,7 +264,7 @@ public class ConsulterCultureController implements Initializable {
         long germination = culturesList.stream().filter(c -> "germination".equalsIgnoreCase(c.getEtatCroissance())).count();
         long croissance = culturesList.stream().filter(c -> "croissance".equalsIgnoreCase(c.getEtatCroissance())).count();
         long floraison = culturesList.stream().filter(c -> "floraison".equalsIgnoreCase(c.getEtatCroissance())).count();
-        long maturite = culturesList.stream().filter(c -> "maturité".equalsIgnoreCase(c.getEtatCroissance())).count();
+        long maturite = culturesList.stream().filter(c -> "mature".equalsIgnoreCase(c.getEtatCroissance())).count();
 
         // Compter les cultures avec récolte proche (<=7 jours)
         long recolteProche = culturesList.stream()
@@ -366,7 +366,7 @@ public class ConsulterCultureController implements Initializable {
                 long germination = culturesList.stream().filter(c -> "germination".equalsIgnoreCase(c.getEtatCroissance())).count();
                 long croissance = culturesList.stream().filter(c -> "croissance".equalsIgnoreCase(c.getEtatCroissance())).count();
                 long floraison = culturesList.stream().filter(c -> "floraison".equalsIgnoreCase(c.getEtatCroissance())).count();
-                long maturite = culturesList.stream().filter(c -> "maturité".equalsIgnoreCase(c.getEtatCroissance())).count();
+                long maturite = culturesList.stream().filter(c -> "mature".equalsIgnoreCase(c.getEtatCroissance())).count();
 
                 Paragraph stats = new Paragraph(String.format("Total: %d cultures | Germination: %d | Croissance: %d | Floraison: %d | Maturité: %d",
                         filteredCultures.size(), germination, croissance, floraison, maturite), statsFont);

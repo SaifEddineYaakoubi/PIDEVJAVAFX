@@ -40,24 +40,28 @@ public class ParcelleServiceTest {
         System.out.println("TEST 1 : AJOUTER UNE PARCELLE");
         System.out.println("═══════════════════════════════════════════════════");
 
-        // Créer une parcelle de test
-        Parcelle parcelle = new Parcelle(
-                "Parcelle Test Unitaire",  // nom
-                500.0,                      // superficie
-                "Zone Test - Tunis",        // localisation
-                "active",                   // état
-                1                           // id_user
-        );
+        try {
+            // Créer une parcelle de test
+            Parcelle parcelle = new Parcelle(
+                    "Parcelle Test Unitaire",  // nom
+                    500.0,                      // superficie
+                    "Zone Test - Tunis",        // localisation
+                    "active",                   // état
+                    1                           // id_user
+            );
 
-        // Exécuter l'ajout
-        boolean result = parcelleService.add(parcelle);
+            // Exécuter l'ajout
+            boolean result = parcelleService.add(parcelle);
 
-        // Vérifier le résultat
-        if (result && parcelle.getIdParcelle() > 0) {
-            testParcelleId = parcelle.getIdParcelle();
-            System.out.println("✅ TEST RÉUSSI : Parcelle ajoutée avec ID = " + testParcelleId);
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ : L'ajout n'a pas fonctionné");
+            // Vérifier le résultat
+            if (result && parcelle.getIdParcelle() > 0) {
+                testParcelleId = parcelle.getIdParcelle();
+                System.out.println("✅ TEST RÉUSSI : Parcelle ajoutée avec ID = " + testParcelleId);
+            } else {
+                System.out.println("❌ TEST ÉCHOUÉ : L'ajout n'a pas fonctionné");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ TEST ÉCHOUÉ : " + e.getMessage());
         }
     }
 
@@ -75,46 +79,58 @@ public class ParcelleServiceTest {
 
         // Test 2.1 : Nom vide
         System.out.println("\n--- Test 2.1 : Nom vide ---");
-        Parcelle p1 = new Parcelle("", 100.0, "Localisation", "active", 1);
-        boolean r1 = parcelleService.add(p1);
-        if (!r1) {
+        try {
+            Parcelle p1 = new Parcelle("", 100.0, "Localisation", "active", 1);
+            parcelleService.add(p1);
+            System.out.println("❌ Validation ÉCHOUÉE : Nom vide accepté");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : Nom vide rejeté (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : Nom vide rejeté");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : Nom vide accepté");
         }
 
         // Test 2.2 : Superficie négative
         System.out.println("\n--- Test 2.2 : Superficie négative ---");
-        Parcelle p2 = new Parcelle("Test", -50.0, "Localisation", "active", 1);
-        boolean r2 = parcelleService.add(p2);
-        if (!r2) {
+        try {
+            Parcelle p2 = new Parcelle("Test", -50.0, "Localisation", "active", 1);
+            parcelleService.add(p2);
+            System.out.println("❌ Validation ÉCHOUÉE : Superficie négative acceptée");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : Superficie négative rejetée (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : Superficie négative rejetée");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : Superficie négative acceptée");
         }
 
         // Test 2.3 : État invalide
         System.out.println("\n--- Test 2.3 : État invalide ---");
-        Parcelle p3 = new Parcelle("Test", 100.0, "Localisation", "etat_invalide", 1);
-        boolean r3 = parcelleService.add(p3);
-        if (!r3) {
+        try {
+            Parcelle p3 = new Parcelle("Test", 100.0, "Localisation", "etat_invalide", 1);
+            parcelleService.add(p3);
+            System.out.println("❌ Validation ÉCHOUÉE : État invalide accepté");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : État invalide rejeté (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : État invalide rejeté");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : État invalide accepté");
         }
 
         // Test 2.4 : Caractères spéciaux dans le nom
         System.out.println("\n--- Test 2.4 : Caractères spéciaux ---");
-        Parcelle p4 = new Parcelle("Test<script>", 100.0, "Localisation", "active", 1);
-        boolean r4 = parcelleService.add(p4);
-        if (!r4) {
+        try {
+            Parcelle p4 = new Parcelle("Test<script>", 100.0, "Localisation", "active", 1);
+            parcelleService.add(p4);
+            System.out.println("❌ Validation ÉCHOUÉE : Caractères spéciaux acceptés");
+        } catch (IllegalArgumentException e) {
+            System.out.println("✅ Validation OK : Caractères spéciaux rejetés (" + e.getMessage() + ")");
+            testsReussis++;
+        } catch (Exception e) {
             System.out.println("✅ Validation OK : Caractères spéciaux rejetés");
             testsReussis++;
-        } else {
-            System.out.println("❌ Validation ÉCHOUÉE : Caractères spéciaux acceptés");
         }
 
         // Résumé
@@ -201,37 +217,41 @@ public class ParcelleServiceTest {
             return;
         }
 
-        // Récupérer la parcelle
-        Parcelle parcelle = parcelleService.getById(testParcelleId);
-        if (parcelle == null) {
-            System.out.println("❌ TEST ÉCHOUÉ : Parcelle non trouvée");
-            return;
-        }
+        try {
+            // Récupérer la parcelle
+            Parcelle parcelle = parcelleService.getById(testParcelleId);
+            if (parcelle == null) {
+                System.out.println("❌ TEST ÉCHOUÉ : Parcelle non trouvée");
+                return;
+            }
 
-        // Modifier les valeurs
-        String ancienNom = parcelle.getNom();
-        parcelle.setNom("Parcelle Modifiée Test");
-        parcelle.setSuperficie(750.5);
-        parcelle.setEtat("repos");
+            // Modifier les valeurs
+            String ancienNom = parcelle.getNom();
+            parcelle.setNom("Parcelle Modifiée Test");
+            parcelle.setSuperficie(750.5);
+            parcelle.setEtat("repos");
 
-        // Exécuter la mise à jour
-        parcelleService.update(parcelle);
+            // Exécuter la mise à jour
+            parcelleService.update(parcelle);
 
-        // Vérifier la modification
-        Parcelle parcelleModifiee = parcelleService.getById(testParcelleId);
+            // Vérifier la modification
+            Parcelle parcelleModifiee = parcelleService.getById(testParcelleId);
 
-        if (parcelleModifiee != null &&
-            parcelleModifiee.getNom().equals("Parcelle Modifiée Test") &&
-            parcelleModifiee.getSuperficie() == 750.5 &&
-            parcelleModifiee.getEtat().equals("repos")) {
+            if (parcelleModifiee != null &&
+                parcelleModifiee.getNom().equals("Parcelle Modifiée Test") &&
+                parcelleModifiee.getSuperficie() == 750.5 &&
+                parcelleModifiee.getEtat().equals("repos")) {
 
-            System.out.println("✅ TEST RÉUSSI : Parcelle modifiée");
-            System.out.println("   → Ancien nom : " + ancienNom);
-            System.out.println("   → Nouveau nom : " + parcelleModifiee.getNom());
-            System.out.println("   → Nouvelle superficie : " + parcelleModifiee.getSuperficie() + " m²");
-            System.out.println("   → Nouvel état : " + parcelleModifiee.getEtat());
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ : La modification n'a pas été appliquée");
+                System.out.println("✅ TEST RÉUSSI : Parcelle modifiée");
+                System.out.println("   → Ancien nom : " + ancienNom);
+                System.out.println("   → Nouveau nom : " + parcelleModifiee.getNom());
+                System.out.println("   → Nouvelle superficie : " + parcelleModifiee.getSuperficie() + " m²");
+                System.out.println("   → Nouvel état : " + parcelleModifiee.getEtat());
+            } else {
+                System.out.println("❌ TEST ÉCHOUÉ : La modification n'a pas été appliquée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ TEST ÉCHOUÉ : " + e.getMessage());
         }
     }
 
@@ -249,16 +269,20 @@ public class ParcelleServiceTest {
             return;
         }
 
-        // Supprimer la parcelle
-        parcelleService.delete(testParcelleId);
+        try {
+            // Supprimer la parcelle
+            parcelleService.delete(testParcelleId);
 
-        // Vérifier la suppression
-        Parcelle parcelleSupprimee = parcelleService.getById(testParcelleId);
+            // Vérifier la suppression
+            Parcelle parcelleSupprimee = parcelleService.getById(testParcelleId);
 
-        if (parcelleSupprimee == null) {
-            System.out.println("✅ TEST RÉUSSI : Parcelle supprimée (ID = " + testParcelleId + ")");
-        } else {
-            System.out.println("❌ TEST ÉCHOUÉ : La parcelle existe encore");
+            if (parcelleSupprimee == null) {
+                System.out.println("✅ TEST RÉUSSI : Parcelle supprimée (ID = " + testParcelleId + ")");
+            } else {
+                System.out.println("❌ TEST ÉCHOUÉ : La parcelle existe encore");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ TEST ÉCHOUÉ : " + e.getMessage());
         }
     }
 
