@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.effect.*?>
 
@@ -154,28 +153,9 @@
                             style="-fx-background-color: #fef3c7; -fx-text-fill: #78350f; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 12;"/>
                 </HBox>
 
-                <!-- Tableau -->
-                <TableView fx:id="tableViewCultures" VBox.vgrow="ALWAYS"
-                           style="-fx-background-color: transparent; -fx-border-color: #fde68a; -fx-border-radius: 12; -fx-background-radius: 12;">
-                    <columns>
-                        <TableColumn fx:id="colType" text="🌱 Type de Culture" prefWidth="180">
-                            <cellValueFactory><PropertyValueFactory property="typeCulture"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colDatePlantation" text="📅 Plantation" prefWidth="120">
-                            <cellValueFactory><PropertyValueFactory property="datePlantation"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colDateRecolte" text="📆 Récolte Prévue" prefWidth="130">
-                            <cellValueFactory><PropertyValueFactory property="dateRecoltePrevue"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colJoursRestants" text="⏱️ Jours" prefWidth="90"/>
-                        <TableColumn fx:id="colEtat" text="🏷️ État" prefWidth="130">
-                            <cellValueFactory><PropertyValueFactory property="etatCroissance"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colParcelle" text="📍 Parcelle" prefWidth="160">
-                            <cellValueFactory><PropertyValueFactory property="nomParcelle"/></cellValueFactory>
-                        </TableColumn>
-                    </columns>
-                </TableView>
+                <!-- Liste -->
+                <ListView fx:id="listViewCultures" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: transparent; -fx-border-color: #fde68a; -fx-border-radius: 12; -fx-background-radius: 12;"/>
 
                 <!-- Boutons d'action -->
                 <HBox spacing="12" alignment="CENTER_LEFT">

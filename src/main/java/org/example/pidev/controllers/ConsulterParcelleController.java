@@ -17,7 +17,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -36,19 +37,7 @@ import java.util.ResourceBundle;
 public class ConsulterParcelleController implements Initializable {
 
     @FXML
-    private TableView<Parcelle> tableViewParcelles;
-
-    @FXML
-    private TableColumn<Parcelle, String> colNom;
-
-    @FXML
-    private TableColumn<Parcelle, Double> colSuperficie;
-
-    @FXML
-    private TableColumn<Parcelle, String> colLocalisation;
-
-    @FXML
-    private TableColumn<Parcelle, String> colEtat;
+    private ListView<Parcelle> listViewParcelles;
 
     @FXML
     private TextField tfRecherche;
@@ -95,35 +84,74 @@ public class ConsulterParcelleController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         parcelleService = new ParcelleService();
 
-        // Configurer les colonnes
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colSuperficie.setCellValueFactory(new PropertyValueFactory<>("superficie"));
-        colLocalisation.setCellValueFactory(new PropertyValueFactory<>("localisation"));
-        colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
-
-        // Appliquer style aux cellules d'état
-        colEtat.setCellFactory(column -> new TableCell<Parcelle, String>() {
+        // Configurer le cell factory pour le ListView
+        listViewParcelles.setCellFactory(param -> new ListCell<Parcelle>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
+            protected void updateItem(Parcelle parcelle, boolean empty) {
+                super.updateItem(parcelle, empty);
+                if (empty || parcelle == null) {
                     setText(null);
+                    setGraphic(null);
                     setStyle("");
                 } else {
-                    setText(item);
-                    switch (item.toLowerCase()) {
+                    // Créer un conteneur pour afficher les informations de la parcelle
+                    HBox container = new HBox(20);
+                    container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    container.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10;");
+
+                    // Nom de la parcelle
+                    VBox nomBox = new VBox(3);
+                    Label lblNomTitle = new Label("📝 Nom");
+                    lblNomTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblNom = new Label(parcelle.getNom());
+                    lblNom.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a472a;");
+                    nomBox.getChildren().addAll(lblNomTitle, lblNom);
+                    nomBox.setPrefWidth(200);
+
+                    // Superficie
+                    VBox superficieBox = new VBox(3);
+                    Label lblSupTitle = new Label("📐 Superficie");
+                    lblSupTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblSup = new Label(String.format("%.2f m²", parcelle.getSuperficie()));
+                    lblSup.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #374151;");
+                    superficieBox.getChildren().addAll(lblSupTitle, lblSup);
+                    superficieBox.setPrefWidth(120);
+
+                    // Localisation
+                    VBox locBox = new VBox(3);
+                    Label lblLocTitle = new Label("📍 Localisation");
+                    lblLocTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblLoc = new Label(parcelle.getLocalisation());
+                    lblLoc.setStyle("-fx-font-size: 14px; -fx-text-fill: #374151;");
+                    locBox.getChildren().addAll(lblLocTitle, lblLoc);
+                    locBox.setPrefWidth(250);
+
+                    // État avec couleur
+                    VBox etatBox = new VBox(3);
+                    Label lblEtatTitle = new Label("🏷️ État");
+                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblEtat = new Label(parcelle.getEtat());
+                    String etatStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 15;";
+                    switch (parcelle.getEtat().toLowerCase()) {
                         case "active":
-                            setStyle("-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32;";
                             break;
                         case "repos":
-                            setStyle("-fx-background-color: #FFE0B2; -fx-text-fill: #E65100; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #FFE0B2; -fx-text-fill: #E65100;";
                             break;
                         case "exploitée":
-                            setStyle("-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0;";
                             break;
                         default:
-                            setStyle("-fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #E0E0E0; -fx-text-fill: #616161;";
                     }
+                    lblEtat.setStyle(etatStyle);
+                    etatBox.getChildren().addAll(lblEtatTitle, lblEtat);
+                    etatBox.setPrefWidth(120);
+
+                    container.getChildren().addAll(nomBox, superficieBox, locBox, etatBox);
+                    setGraphic(container);
+                    setStyle("-fx-padding: 5 0; -fx-background-color: transparent;");
                 }
             }
         });
@@ -143,8 +171,8 @@ public class ConsulterParcelleController implements Initializable {
         startClock();
 
         // Double-clic pour modifier
-        tableViewParcelles.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && tableViewParcelles.getSelectionModel().getSelectedItem() != null) {
+        listViewParcelles.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && listViewParcelles.getSelectionModel().getSelectedItem() != null) {
                 modifierParcelle(null);
             }
         });
@@ -154,7 +182,7 @@ public class ConsulterParcelleController implements Initializable {
         if (btnSupprimer != null) btnSupprimer.setDisable(true);
 
         // Activer/Désactiver les boutons selon la sélection
-        tableViewParcelles.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+        listViewParcelles.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             boolean hasSelection = newSelection != null;
             if (btnModifier != null) btnModifier.setDisable(!hasSelection);
             if (btnSupprimer != null) btnSupprimer.setDisable(!hasSelection);
@@ -173,7 +201,7 @@ public class ConsulterParcelleController implements Initializable {
     private void loadData() {
         parcellesList = FXCollections.observableArrayList(parcelleService.getAll());
         filteredParcelles = new FilteredList<>(parcellesList, p -> true);
-        tableViewParcelles.setItems(filteredParcelles);
+        listViewParcelles.setItems(filteredParcelles);
 
         // Mettre à jour les statistiques
         updateStatistics();
@@ -241,7 +269,7 @@ public class ConsulterParcelleController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier PDF", "*.pdf"));
         fileChooser.setInitialFileName("parcelles_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
 
-        File file = fileChooser.showSaveDialog(tableViewParcelles.getScene().getWindow());
+        File file = fileChooser.showSaveDialog(listViewParcelles.getScene().getWindow());
         if (file != null) {
             try {
                 Document document = new Document(PageSize.A4);
@@ -337,7 +365,7 @@ public class ConsulterParcelleController implements Initializable {
 
     @FXML
     void modifierParcelle(ActionEvent event) {
-        Parcelle selected = tableViewParcelles.getSelectionModel().getSelectedItem();
+        Parcelle selected = listViewParcelles.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showMessage("⚠️ Veuillez sélectionner une parcelle à modifier.", "#FF9800");
             return;
@@ -354,7 +382,7 @@ public class ConsulterParcelleController implements Initializable {
             // Ouvrir dans une nouvelle fenêtre popup
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(tableViewParcelles.getScene().getWindow());
+            popupStage.initOwner(listViewParcelles.getScene().getWindow());
             popupStage.setTitle("Smart Farm - Modifier la Parcelle");
             popupStage.setScene(new Scene(root));
             popupStage.setResizable(false);
@@ -370,7 +398,7 @@ public class ConsulterParcelleController implements Initializable {
 
     @FXML
     void supprimerParcelle(ActionEvent event) {
-        Parcelle selected = tableViewParcelles.getSelectionModel().getSelectedItem();
+        Parcelle selected = listViewParcelles.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showMessage("⚠️ Veuillez sélectionner une parcelle à supprimer.", "#FF9800");
             return;
@@ -428,7 +456,7 @@ public class ConsulterParcelleController implements Initializable {
             // Ouvrir dans une nouvelle fenêtre popup
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(tableViewParcelles.getScene().getWindow());
+            popupStage.initOwner(listViewParcelles.getScene().getWindow());
             popupStage.setTitle("Smart Farm - Ajouter une Parcelle");
             popupStage.setScene(new Scene(root));
             popupStage.setResizable(false);
@@ -452,7 +480,7 @@ public class ConsulterParcelleController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) tableViewParcelles.getScene().getWindow();
+            Stage stage = (Stage) listViewParcelles.getScene().getWindow();
 
             // Obtenir les dimensions de l'écran
             javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();

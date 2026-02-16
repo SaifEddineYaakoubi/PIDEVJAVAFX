@@ -17,7 +17,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -42,25 +43,7 @@ import java.util.ResourceBundle;
 public class ConsulterCultureController implements Initializable {
 
     @FXML
-    private TableView<Culture> tableViewCultures;
-
-    @FXML
-    private TableColumn<Culture, String> colType;
-
-    @FXML
-    private TableColumn<Culture, LocalDate> colDatePlantation;
-
-    @FXML
-    private TableColumn<Culture, LocalDate> colDateRecolte;
-
-    @FXML
-    private TableColumn<Culture, String> colJoursRestants;
-
-    @FXML
-    private TableColumn<Culture, String> colEtat;
-
-    @FXML
-    private TableColumn<Culture, String> colParcelle;
+    private ListView<Culture> listViewCultures;
 
     @FXML
     private TextField tfRecherche;
@@ -119,72 +102,119 @@ public class ConsulterCultureController implements Initializable {
         // Charger les parcelles dans une map pour récupérer les noms
         loadParcellesMap();
 
-        // Configurer les colonnes
-        colType.setCellValueFactory(new PropertyValueFactory<>("typeCulture"));
-        colDatePlantation.setCellValueFactory(new PropertyValueFactory<>("datePlantation"));
-        colDateRecolte.setCellValueFactory(new PropertyValueFactory<>("dateRecoltePrevue"));
-        colEtat.setCellValueFactory(new PropertyValueFactory<>("etatCroissance"));
-        colParcelle.setCellValueFactory(new PropertyValueFactory<>("nomParcelle"));
-
-        // Colonne jours restants personnalisée
-        colJoursRestants.setCellFactory(column -> new TableCell<Culture, String>() {
+        // Configurer le cell factory pour le ListView
+        listViewCultures.setCellFactory(param -> new ListCell<Culture>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
+            protected void updateItem(Culture culture, boolean empty) {
+                super.updateItem(culture, empty);
+                if (empty || culture == null) {
                     setText(null);
+                    setGraphic(null);
                     setStyle("");
                 } else {
-                    Culture culture = getTableView().getItems().get(getIndex());
+                    // Créer un conteneur pour afficher les informations de la culture
+                    HBox container = new HBox(15);
+                    container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    container.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10;");
+
+                    // Type de culture
+                    VBox typeBox = new VBox(3);
+                    Label lblTypeTitle = new Label("🌱 Type");
+                    lblTypeTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblType = new Label(culture.getTypeCulture());
+                    lblType.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #78350f;");
+                    typeBox.getChildren().addAll(lblTypeTitle, lblType);
+                    typeBox.setPrefWidth(150);
+
+                    // Date de plantation
+                    VBox plantBox = new VBox(3);
+                    Label lblPlantTitle = new Label("📅 Plantation");
+                    lblPlantTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    String datePlant = culture.getDatePlantation() != null ?
+                        culture.getDatePlantation().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "-";
+                    Label lblPlant = new Label(datePlant);
+                    lblPlant.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+                    plantBox.getChildren().addAll(lblPlantTitle, lblPlant);
+                    plantBox.setPrefWidth(100);
+
+                    // Date de récolte prévue
+                    VBox recolteBox = new VBox(3);
+                    Label lblRecolteTitle = new Label("📆 Récolte Prévue");
+                    lblRecolteTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    String dateRec = culture.getDateRecoltePrevue() != null ?
+                        culture.getDateRecoltePrevue().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "-";
+                    Label lblRecolte = new Label(dateRec);
+                    lblRecolte.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+                    recolteBox.getChildren().addAll(lblRecolteTitle, lblRecolte);
+                    recolteBox.setPrefWidth(110);
+
+                    // Jours restants
+                    VBox joursBox = new VBox(3);
+                    Label lblJoursTitle = new Label("⏱️ Jours");
+                    lblJoursTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblJours = new Label();
+                    String joursStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;";
                     if (culture.getDateRecoltePrevue() != null) {
                         long jours = ChronoUnit.DAYS.between(LocalDate.now(), culture.getDateRecoltePrevue());
                         if (jours < 0) {
-                            setText("Dépassée");
-                            setStyle("-fx-background-color: #FFCDD2; -fx-text-fill: #C62828; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            lblJours.setText("Dépassée");
+                            joursStyle += "-fx-background-color: #FFCDD2; -fx-text-fill: #C62828;";
                         } else if (jours <= 7) {
-                            setText(jours + " j ⚠️");
-                            setStyle("-fx-background-color: #FFE0B2; -fx-text-fill: #E65100; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            lblJours.setText(jours + " j ⚠️");
+                            joursStyle += "-fx-background-color: #FFE0B2; -fx-text-fill: #E65100;";
                         } else if (jours <= 30) {
-                            setText(jours + " j");
-                            setStyle("-fx-background-color: #FFF9C4; -fx-text-fill: #F9A825; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            lblJours.setText(jours + " j");
+                            joursStyle += "-fx-background-color: #FFF9C4; -fx-text-fill: #F9A825;";
                         } else {
-                            setText(jours + " j");
-                            setStyle("-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32; -fx-alignment: CENTER;");
+                            lblJours.setText(jours + " j");
+                            joursStyle += "-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32;";
                         }
                     } else {
-                        setText("N/A");
-                        setStyle("-fx-alignment: CENTER;");
+                        lblJours.setText("N/A");
+                        joursStyle += "-fx-background-color: #E0E0E0; -fx-text-fill: #616161;";
                     }
-                }
-            }
-        });
+                    lblJours.setStyle(joursStyle);
+                    joursBox.getChildren().addAll(lblJoursTitle, lblJours);
+                    joursBox.setPrefWidth(90);
 
-        // Style pour la colonne état
-        colEtat.setCellFactory(column -> new TableCell<Culture, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item);
-                    switch (item.toLowerCase()) {
+                    // État avec couleur
+                    VBox etatBox = new VBox(3);
+                    Label lblEtatTitle = new Label("🏷️ État");
+                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblEtat = new Label(culture.getEtatCroissance());
+                    String etatStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 15;";
+                    switch (culture.getEtatCroissance().toLowerCase()) {
                         case "germination":
-                            setStyle("-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32;";
                             break;
                         case "croissance":
-                            setStyle("-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0;";
                             break;
                         case "floraison":
-                            setStyle("-fx-background-color: #F8BBD9; -fx-text-fill: #AD1457; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #F8BBD9; -fx-text-fill: #AD1457;";
                             break;
                         case "mature":
-                            setStyle("-fx-background-color: #FFE0B2; -fx-text-fill: #E65100; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #FFE0B2; -fx-text-fill: #E65100;";
                             break;
                         default:
-                            setStyle("-fx-alignment: CENTER;");
+                            etatStyle += "-fx-background-color: #E0E0E0; -fx-text-fill: #616161;";
                     }
+                    lblEtat.setStyle(etatStyle);
+                    etatBox.getChildren().addAll(lblEtatTitle, lblEtat);
+                    etatBox.setPrefWidth(110);
+
+                    // Parcelle
+                    VBox parcelleBox = new VBox(3);
+                    Label lblParcelleTitle = new Label("📍 Parcelle");
+                    lblParcelleTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    Label lblParcelle = new Label(culture.getNomParcelle() != null ? culture.getNomParcelle() : "-");
+                    lblParcelle.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+                    parcelleBox.getChildren().addAll(lblParcelleTitle, lblParcelle);
+                    parcelleBox.setPrefWidth(130);
+
+                    container.getChildren().addAll(typeBox, plantBox, recolteBox, joursBox, etatBox, parcelleBox);
+                    setGraphic(container);
+                    setStyle("-fx-padding: 5 0; -fx-background-color: transparent;");
                 }
             }
         });
@@ -204,8 +234,8 @@ public class ConsulterCultureController implements Initializable {
         startClock();
 
         // Double-clic pour modifier
-        tableViewCultures.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && tableViewCultures.getSelectionModel().getSelectedItem() != null) {
+        listViewCultures.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && listViewCultures.getSelectionModel().getSelectedItem() != null) {
                 modifierCulture(null);
             }
         });
@@ -215,7 +245,7 @@ public class ConsulterCultureController implements Initializable {
         if (btnSupprimer != null) btnSupprimer.setDisable(true);
 
         // Activer/Désactiver les boutons selon la sélection
-        tableViewCultures.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+        listViewCultures.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             boolean hasSelection = newSelection != null;
             if (btnModifier != null) btnModifier.setDisable(!hasSelection);
             if (btnSupprimer != null) btnSupprimer.setDisable(!hasSelection);
@@ -253,7 +283,7 @@ public class ConsulterCultureController implements Initializable {
         }
 
         filteredCultures = new FilteredList<>(culturesList, c -> true);
-        tableViewCultures.setItems(filteredCultures);
+        listViewCultures.setItems(filteredCultures);
 
         // Mettre à jour les statistiques
         updateStatistics();
@@ -340,7 +370,7 @@ public class ConsulterCultureController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier PDF", "*.pdf"));
         fileChooser.setInitialFileName("cultures_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
 
-        File file = fileChooser.showSaveDialog(tableViewCultures.getScene().getWindow());
+        File file = fileChooser.showSaveDialog(listViewCultures.getScene().getWindow());
         if (file != null) {
             try {
                 Document document = new Document(PageSize.A4.rotate());
@@ -468,7 +498,7 @@ public class ConsulterCultureController implements Initializable {
 
     @FXML
     void modifierCulture(ActionEvent event) {
-        Culture selected = tableViewCultures.getSelectionModel().getSelectedItem();
+        Culture selected = listViewCultures.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showMessage("⚠️ Veuillez sélectionner une culture à modifier.", "#FF9800");
             return;
@@ -485,7 +515,7 @@ public class ConsulterCultureController implements Initializable {
             // Ouvrir dans une nouvelle fenêtre popup
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(tableViewCultures.getScene().getWindow());
+            popupStage.initOwner(listViewCultures.getScene().getWindow());
             popupStage.setTitle("Smart Farm - Modifier la Culture");
             popupStage.setScene(new Scene(root));
             popupStage.setResizable(false);
@@ -502,7 +532,7 @@ public class ConsulterCultureController implements Initializable {
 
     @FXML
     void supprimerCulture(ActionEvent event) {
-        Culture selected = tableViewCultures.getSelectionModel().getSelectedItem();
+        Culture selected = listViewCultures.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showMessage("⚠️ Veuillez sélectionner une culture à supprimer.", "#FF9800");
             return;
@@ -552,7 +582,7 @@ public class ConsulterCultureController implements Initializable {
             // Ouvrir dans une nouvelle fenêtre popup
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(tableViewCultures.getScene().getWindow());
+            popupStage.initOwner(listViewCultures.getScene().getWindow());
             popupStage.setTitle("Smart Farm - Ajouter une Culture");
             popupStage.setScene(new Scene(root));
             popupStage.setResizable(false);
@@ -571,7 +601,7 @@ public class ConsulterCultureController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) tableViewCultures.getScene().getWindow();
+            Stage stage = (Stage) listViewCultures.getScene().getWindow();
 
             // Obtenir les dimensions de l'écran
             javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();

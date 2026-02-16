@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
@@ -144,24 +143,9 @@
                             style="-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 12;"/>
                 </HBox>
 
-                <!-- Tableau -->
-                <TableView fx:id="tableViewParcelles" VBox.vgrow="ALWAYS"
-                           style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-background-radius: 12;">
-                    <columns>
-                        <TableColumn fx:id="colNom" text="📝 Nom de la Parcelle" prefWidth="250">
-                            <cellValueFactory><PropertyValueFactory property="nom"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colSuperficie" text="📐 Superficie (m²)" prefWidth="180">
-                            <cellValueFactory><PropertyValueFactory property="superficie"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colLocalisation" text="📍 Localisation" prefWidth="350">
-                            <cellValueFactory><PropertyValueFactory property="localisation"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colEtat" text="🏷️ État" prefWidth="150">
-                            <cellValueFactory><PropertyValueFactory property="etat"/></cellValueFactory>
-                        </TableColumn>
-                    </columns>
-                </TableView>
+                <!-- Liste -->
+                <ListView fx:id="listViewParcelles" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-background-radius: 12;"/>
 
                 <!-- Boutons d'action -->
                 <HBox spacing="12" alignment="CENTER_LEFT">
