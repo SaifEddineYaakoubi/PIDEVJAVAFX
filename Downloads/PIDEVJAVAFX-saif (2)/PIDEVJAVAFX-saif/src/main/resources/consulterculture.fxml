@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.effect.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.ConsulterCultureController"
+            style="-fx-background-color: #faf5f0;">
+
+    <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+        <!-- ============ SIDEBAR GAUCHE ============ -->
+        <VBox prefWidth="280" spacing="0" style="-fx-background-color: linear-gradient(to bottom, #78350f, #451a03); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+
+            <!-- Logo et Titre -->
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 30 20 25 20;">
+                <Label text="🌾" style="-fx-font-size: 45px;"/>
+                <Label text="SMART FARM" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Label text="Gestion Agricole" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
+            </VBox>
+
+            <!-- Séparateur -->
+            <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+
+            <!-- Menu Navigation -->
+            <VBox spacing="5" style="-fx-padding: 20 15;">
+                <Label text="NAVIGATION" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+
+                <Button text="   🌱  Parcelles" onAction="#navigateToConsulterParcelle" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 14px; -fx-background-radius: 10; -fx-cursor: hand;"/>
+
+                <Button text="   🌾  Cultures" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
+                        style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"/>
+            </VBox>
+
+            <!-- Séparateur -->
+            <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+
+            <!-- Statistiques dans la sidebar -->
+            <VBox spacing="12" style="-fx-padding: 20 15;" VBox.vgrow="ALWAYS">
+                <Label text="📊 STATISTIQUES" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+
+                <!-- Total Cultures -->
+                <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 18;">
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <StackPane prefWidth="45" prefHeight="45" style="-fx-background-color: linear-gradient(to bottom right, #f59e0b, #d97706); -fx-background-radius: 12;">
+                            <Label text="🌾" style="-fx-font-size: 20px;"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label text="Total Cultures" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
+                            <Label fx:id="lblTotalCultures" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Récolte Proche -->
+                <VBox spacing="8" style="-fx-background-color: rgba(239,68,68,0.2); -fx-background-radius: 15; -fx-padding: 18;">
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <StackPane prefWidth="45" prefHeight="45" style="-fx-background-color: linear-gradient(to bottom right, #ef4444, #dc2626); -fx-background-radius: 12;">
+                            <Label text="⏰" style="-fx-font-size: 20px;"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label text="Récolte proche (&lt;7j)" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
+                            <Label fx:id="lblRecolteProche" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #fca5a5;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- États de croissance -->
+                <VBox spacing="10" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 18;">
+                    <Label text="État de croissance" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: bold;"/>
+
+                    <!-- Germination -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="🌱" style="-fx-font-size: 14px;"/>
+                        <Label text="Germination" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblGermination" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4ade80;"/>
+                    </HBox>
+
+                    <!-- Croissance -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="🌿" style="-fx-font-size: 14px;"/>
+                        <Label text="Croissance" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblCroissance" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #60a5fa;"/>
+                    </HBox>
+
+                    <!-- Floraison -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="🌸" style="-fx-font-size: 14px;"/>
+                        <Label text="Floraison" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblFloraison" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #f472b6;"/>
+                    </HBox>
+
+                    <!-- Maturité -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="🌻" style="-fx-font-size: 14px;"/>
+                        <Label text="Maturité" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblMaturite" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Pied de sidebar -->
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 15; -fx-background-color: rgba(0,0,0,0.2);">
+                <Label fx:id="lblDateTime" text="" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 12px;"/>
+                <Label text="© 2026 Smart Farm" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 10px;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- ============ CONTENU PRINCIPAL (DROITE) ============ -->
+        <VBox spacing="25" HBox.hgrow="ALWAYS" style="-fx-padding: 30;">
+
+            <!-- En-tête -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox spacing="5">
+                    <Label text="🌾 Gestion des Cultures" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #78350f;"/>
+                    <Label text="Suivez la croissance et planifiez vos récoltes" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="➕ Nouvelle Culture" onAction="#navigateToAjouterCulture" prefHeight="45"
+                        style="-fx-background-color: linear-gradient(to right, #78350f, #92400e); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(120,53,15,0.4), 12, 0, 0, 4);"/>
+            </HBox>
+
+            <!-- Carte principale avec tableau -->
+            <VBox spacing="20" VBox.vgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 5);">
+
+                <!-- Barre de recherche et filtres -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <HBox alignment="CENTER_LEFT" prefHeight="45" style="-fx-background-color: #fef3c7; -fx-background-radius: 12; -fx-padding: 0 18;">
+                        <Label text="🔍" style="-fx-font-size: 16px; -fx-text-fill: #92400e;"/>
+                        <TextField fx:id="tfRecherche" promptText="Rechercher une culture..." prefWidth="250" prefHeight="45"
+                                   style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <ComboBox fx:id="cbFiltreEtat" promptText="🏷️ État" prefWidth="150" prefHeight="45"
+                              style="-fx-background-color: #fef3c7; -fx-border-color: transparent; -fx-border-radius: 12; -fx-background-radius: 12; -fx-font-size: 13px;"/>
+
+                    <ComboBox fx:id="cbFiltreParcelle" promptText="📍 Parcelle" prefWidth="160" prefHeight="45"
+                              style="-fx-background-color: #fef3c7; -fx-border-color: transparent; -fx-border-radius: 12; -fx-background-radius: 12; -fx-font-size: 13px;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button text="🔄 Rafraîchir" onAction="#rafraichirListe" prefHeight="45"
+                            style="-fx-background-color: #fef3c7; -fx-text-fill: #78350f; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 12;"/>
+                </HBox>
+
+                <!-- Tableau -->
+                <TableView fx:id="tableViewCultures" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: transparent; -fx-border-color: #fde68a; -fx-border-radius: 12; -fx-background-radius: 12;">
+                    <columns>
+                        <TableColumn fx:id="colType" text="🌱 Type de Culture" prefWidth="180">
+                            <cellValueFactory><PropertyValueFactory property="typeCulture"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colDatePlantation" text="📅 Plantation" prefWidth="120">
+                            <cellValueFactory><PropertyValueFactory property="datePlantation"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colDateRecolte" text="📆 Récolte Prévue" prefWidth="130">
+                            <cellValueFactory><PropertyValueFactory property="dateRecoltePrevue"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colJoursRestants" text="⏱️ Jours" prefWidth="90"/>
+                        <TableColumn fx:id="colEtat" text="🏷️ État" prefWidth="130">
+                            <cellValueFactory><PropertyValueFactory property="etatCroissance"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colParcelle" text="📍 Parcelle" prefWidth="160">
+                            <cellValueFactory><PropertyValueFactory property="nomParcelle"/></cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+
+                <!-- Boutons d'action -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Button fx:id="btnModifier" text="✏️ Modifier" onAction="#modifierCulture" prefHeight="45"
+                            style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 28; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.4), 10, 0, 0, 3);"/>
+
+                    <Button fx:id="btnSupprimer" text="🗑️ Supprimer" onAction="#supprimerCulture" prefHeight="45"
+                            style="-fx-background-color: linear-gradient(to right, #ef4444, #dc2626); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 28; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(239,68,68,0.4), 10, 0, 0, 3);"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label fx:id="lblResultats" text="Affichage: 0 sur 0" style="-fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
+
+                    <Button text="📄 Exporter PDF" onAction="#exporterListe" prefHeight="45"
+                            style="-fx-background-color: linear-gradient(to right, #8b5cf6, #7c3aed); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 28; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.4), 10, 0, 0, 3);"/>
+                </HBox>
+            </VBox>
+
+            <!-- Barre de statut -->
+            <HBox spacing="15" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 18 25; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);">
+                <Label text="🌿" style="-fx-font-size: 18px;"/>
+                <Label fx:id="lblMessage" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Double-cliquez sur une ligne pour modifier" style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+            </HBox>
+
+        </VBox>
+    </HBox>
+
+</AnchorPane>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.effect.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.AjouterParcelleController"
+            prefHeight="580.0" prefWidth="700.0"
+            style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);">
+
+    <!-- Carte du formulaire -->
+    <VBox alignment="CENTER" spacing="25"
+          AnchorPane.topAnchor="30" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="30"
+          style="-fx-background-color: white; -fx-background-radius: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 30, 0, 0, 10); -fx-padding: 40;">
+
+        <!-- En-tête avec icône -->
+        <VBox alignment="CENTER" spacing="8">
+            <StackPane prefWidth="80" prefHeight="80"
+                       style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2); -fx-background-radius: 40;">
+                <Label text="🌱" style="-fx-font-size: 40px;"/>
+            </StackPane>
+            <Label text="Nouvelle Parcelle" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2d3748;"/>
+            <Label text="Ajoutez une nouvelle parcelle à votre exploitation" style="-fx-font-size: 13px; -fx-text-fill: #718096;"/>
+        </VBox>
+
+        <!-- Formulaire -->
+        <GridPane hgap="20" vgap="18" alignment="CENTER">
+            <!-- Nom -->
+            <VBox spacing="6" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                <Label text="📝 Nom de la parcelle" style="-fx-font-size: 12px; -fx-text-fill: #4a5568; -fx-font-weight: bold;"/>
+                <TextField fx:id="tfNom" promptText="Ex: Parcelle Nord" prefWidth="280" prefHeight="45"
+                           style="-fx-background-color: #f7fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 10 15; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <!-- Superficie -->
+            <VBox spacing="6" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <Label text="📐 Superficie (m²)" style="-fx-font-size: 12px; -fx-text-fill: #4a5568; -fx-font-weight: bold;"/>
+                <TextField fx:id="tfSuperficie" promptText="Ex: 1500.5" prefWidth="280" prefHeight="45"
+                           style="-fx-background-color: #f7fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 10 15; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <!-- Localisation -->
+            <VBox spacing="6" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                <Label text="📍 Localisation" style="-fx-font-size: 12px; -fx-text-fill: #4a5568; -fx-font-weight: bold;"/>
+                <TextField fx:id="tfLocalisation" promptText="Adresse ou coordonnées GPS" prefWidth="280" prefHeight="45"
+                           style="-fx-background-color: #f7fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 10 15; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <!-- État -->
+            <VBox spacing="6" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <Label text="🏷️ État de la parcelle" style="-fx-font-size: 12px; -fx-text-fill: #4a5568; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="cbEtat" promptText="Sélectionner un état" prefWidth="280" prefHeight="45"
+                          style="-fx-background-color: #f7fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-font-size: 14px;"/>
+            </VBox>
+        </GridPane>
+        
+        <!-- Messages -->
+        <VBox alignment="CENTER" spacing="5" minHeight="40">
+            <Label fx:id="lblError" style="-fx-text-fill: #e53e3e; -fx-font-size: 13px; -fx-font-weight: bold;" wrapText="true" maxWidth="550"/>
+            <Label fx:id="lblSuccess" style="-fx-text-fill: #38a169; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+        </VBox>
+
+        <!-- Boutons -->
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="btnAjouter" text="✓ Enregistrer" onAction="#ajouterParcelle" prefWidth="180" prefHeight="50"
+                    style="-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.5), 15, 0, 0, 5);"/>
+            <Button fx:id="btnReset" text="🔄 Réinitialiser" onAction="#resetForm" prefWidth="160" prefHeight="50"
+                    style="-fx-background-color: linear-gradient(to right, #11998e, #38ef7d); -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(17,153,142,0.4), 12, 0, 0, 4);"/>
+            <Button fx:id="btnAnnuler" text="✗ Fermer" onAction="#fermerFenetre" prefWidth="130" prefHeight="50"
+                    style="-fx-background-color: linear-gradient(to right, #bdc3c7, #95a5a6); -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(149,165,166,0.4), 12, 0, 0, 4);"/>
+        </HBox>
+
+        <!-- Indication -->
+        <HBox spacing="8" alignment="CENTER" style="-fx-background-color: #ebf8ff; -fx-padding: 12 20; -fx-background-radius: 10;">
+            <Label text="💡" style="-fx-font-size: 16px;"/>
+            <Label text="Tous les champs sont obligatoires" style="-fx-font-size: 12px; -fx-text-fill: #2b6cb0;"/>
+        </HBox>
+
+    </VBox>
+    
+</AnchorPane>
