@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.DashboardController"
+            stylesheets="@smartfarm.css">
+
+    <!-- SIDEBAR -->
+    <left>
+        <!-- add fx:id so controller can change style classes -->
+        <VBox fx:id="sidebarBox" spacing="20" styleClass="sidebar">
+            <padding>
+                <Insets top="40" right="20" bottom="40" left="20"/>
+            </padding>
+
+            <Label text="🌱 SMART FARM" styleClass="sidebar-title"/>
+            <Separator/>
+
+            <Button fx:id="btnDashboard" text="📊 Dashboard" styleClass="sidebar-button sidebar-button-active"/>
+            <Button fx:id="btnRecoltes" text="🌾 Récoltes" styleClass="sidebar-button"/>
+            <Button fx:id="btnRendements" text="📈 Rendements" styleClass="sidebar-button"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="❌ Quitter" styleClass="sidebar-button"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER (contenu principal) -->
+    <center>
+        <fx:include source="DashboardDefault.fxml"/>
+    </center>
+
+</BorderPane>

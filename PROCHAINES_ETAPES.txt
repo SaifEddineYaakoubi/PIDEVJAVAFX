@@ -1,0 +1,197 @@
+════════════════════════════════════════════════════════════════════════════════
+                        PROCHAINES ÉTAPES - ACTION À FAIRE
+════════════════════════════════════════════════════════════════════════════════
+
+Vous avez une erreur MySQL à résoudre.
+Ce document vous guide dans les actions à prendre.
+
+════════════════════════════════════════════════════════════════════════════════
+
+⏰ TIMELINE RECOMMANDÉE
+════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ MAINTENANT (Immédiate)                                                  │
+│ └─ Lire ce document (5 min)                                            │
+│                                                                         │
+│ DANS 5 MIN (Exécuter la migration)                                    │
+│ └─ Allez dans phpMyAdmin                                              │
+│ └─ Exécutez la requête SQL (1 min)                                    │
+│                                                                         │
+│ DANS 10 MIN (Vérification)                                            │
+│ └─ Vérifiez que la table a été modifiée (2 min)                       │
+│                                                                         │
+│ DANS 15 MIN (Redémarrage)                                             │
+│ └─ Redémarrez l'application (2 min)                                   │
+│                                                                         │
+│ DANS 20 MIN (Test)                                                    │
+│ └─ Testez l'ajout d'une récolte (3 min)                               │
+│                                                                         │
+│ ✅ TOTAL: ~20 minutes                                                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+📋 LISTE DES ACTIONS
+════════════════════════════════════════════════════════════════════════════════
+
+ACTION 1: PRÉPAREZ-VOUS
+─────────────────────────────────────────────────────────────────────────
+□ Fermez l'application Java (complètement)
+□ Assurez-vous que MySQL est en cours d'exécution
+□ Ouvrez phpMyAdmin (http://localhost/phpmyadmin)
+
+ACTION 2: EXÉCUTEZ LA MIGRATION
+─────────────────────────────────────────────────────────────────────────
+□ Sélectionnez votre base de données (pidev ou autre)
+□ Cliquez sur l'onglet "SQL"
+□ Collez la commande SQL suivante:
+
+ALTER TABLE recolte
+ADD COLUMN type_culture VARCHAR(100) NOT NULL DEFAULT 'Non spécifié',
+ADD COLUMN localisation VARCHAR(100) NOT NULL DEFAULT 'Non spécifiée';
+
+□ Cliquez sur "Exécuter"
+□ Attendez le message de succès
+
+ACTION 3: VÉRIFIEZ LA MODIFICATION
+─────────────────────────────────────────────────────────────────────────
+□ Toujours dans phpMyAdmin
+□ Cliquez sur la table "recolte"
+□ Cliquez sur l'onglet "Structure"
+□ Vérifiez que vous voyez 6 colonnes:
+   □ id_recolte
+   □ quantite
+   □ date_recolte
+   □ qualite
+   □ type_culture (NOUVEAU)
+   □ localisation (NOUVEAU)
+
+ACTION 4: REDÉMARREZ L'APPLICATION
+─────────────────────────────────────────────────────────────────────────
+□ Fermez l'IDE (IntelliJ, Eclipse, VS Code, etc.)
+□ Attendez 5 secondes
+□ Rouvrez l'IDE
+□ Redémarrez votre application Java
+□ Attendez la connexion: "✅ Connexion à la base de données réussie !"
+
+ACTION 5: TESTEZ
+─────────────────────────────────────────────────────────────────────────
+□ Menu Principal: Sélectionnez option 3 (Gestion des Récoltes)
+□ Sous-menu: Sélectionnez option 1 (Ajouter une récolte)
+□ Remplissez les données:
+   □ ID culture: 1
+   □ Quantité: 6000
+   □ Date récolte: 12/02/2026
+   □ Qualité: Premium
+   □ Type culture: Blé
+   □ Localisation: Seliana
+□ Cliquez Ajouter
+□ Vérifiez le message: "✅ Récolte ajoutée avec succès ! ID: X"
+□ SUCCÈS! ✅
+
+════════════════════════════════════════════════════════════════════════════════
+
+🎯 OBJECTIFS À ATTEINDRE
+════════════════════════════════════════════════════════════════════════════════
+
+Objectif 1: ✅ Migration SQL Exécutée
+   Critères de succès:
+   □ Pas d'erreur lors de l'exécution
+   □ Message "La requête a été exécutée avec succès"
+
+Objectif 2: ✅ Table Modifiée Correctement
+   Critères de succès:
+   □ DESCRIBE recolte montre 6 colonnes
+   □ type_culture et localisation sont présentes
+   □ Les deux sont VARCHAR(100)
+   □ Les deux sont NOT NULL
+
+Objectif 3: ✅ Application Redémarrée
+   Critères de succès:
+   □ Pas d'erreur au démarrage
+   □ Message "Connexion réussie"
+   □ Menu principal s'affiche
+
+Objectif 4: ✅ Fonctionnalité Restaurée
+   Critères de succès:
+   □ Vous pouvez ajouter une récolte
+   □ Message de succès apparaît
+   □ Pas d'erreur "Unknown column"
+
+════════════════════════════════════════════════════════════════════════════════
+
+❓ QUESTIONS POSSIBLES
+════════════════════════════════════════════════════════════════════════════════
+
+Q: Vais-je perdre mes données?
+R: Non. Cette migration est non-destructive. Toutes les données existantes
+   sont conservées. Les nouvelles colonnes auront une valeur par défaut.
+
+Q: Combien de temps ça prendra?
+R: Moins de 1 seconde pour l'exécution SQL. Environ 20 minutes au total
+   (incluant redémarrage et test).
+
+Q: Et si j'ai une erreur "Access Denied"?
+R: Assurez-vous de vous connecter avec un utilisateur ayant les droits
+   ALTER TABLE. Généralement, utilisez "root".
+
+Q: Et si rien ne change?
+R: Vérifiez que:
+   - Vous avez exécuté la bonne requête
+   - Vous avez cliqué sur "Exécuter"
+   - Vous vous trouvez dans la bonne base de données
+
+Q: Puis-je annuler la migration?
+R: Oui, avec: ALTER TABLE recolte DROP COLUMN type_culture, DROP COLUMN localisation;
+   Mais ne faites cela que si vraiment nécessaire.
+
+════════════════════════════════════════════════════════════════════════════════
+
+📞 SUPPORT
+════════════════════════════════════════════════════════════════════════════════
+
+Si vous rencontrez des problèmes:
+
+1. Consultez les fichiers de documentation:
+   - GUIDE_COMPLET_CORRECTION.txt
+   - FIX_ERREUR_TYPE_CULTURE.txt
+   - RAPPORT_RESOLUTION.txt
+
+2. Vérifiez votre connexion MySQL:
+   Testez avec: mysql -u root -p
+
+3. Vérifiez les droits MySQL:
+   SHOW GRANTS FOR 'root'@'localhost';
+
+════════════════════════════════════════════════════════════════════════════════
+
+✅ RÉCAPITULATIF FINAL
+══════════════════════════════════════════════════════════��═════════════════════
+
+ERREUR RENCONTRÉE:
+   → Unknown column 'type_culture' in 'field list'
+
+CAUSE:
+   → Les colonnes type_culture et localisation n'existent pas dans la table
+
+SOLUTION:
+   → Exécuter une requête SQL pour ajouter les colonnes
+
+IMPACT:
+   → Minimum - Préserve toutes les données
+   → Pas de changement du code Java
+   → Application retrouve sa fonctionnalité complète
+
+TEMPS TOTAL:
+   → ~20 minutes
+
+PROCHAINE ACTION:
+   → Allez dans phpMyAdmin et exécutez la requête SQL
+
+════════════════════════════════════════════════════════════════════════════════
+
+Bonne correction! 🚀
+
+════════════════════════════════════════════════════════════════════════════════
+

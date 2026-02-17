@@ -1,0 +1,219 @@
+✅ LIAISON DASHBOARD ↔ RECOLTE.FXML - IMPLÉMENTATION COMPLÈTE
+═══════════════════════════════════════════════════════════════════
+
+📅 Date: 2026-02-13
+✨ Status: NAVIGATION IMPLÉMENTÉE ✅
+
+═══════════════════════════════════════════════════════════════════
+🎯 OBJECTIF ATTEINT
+═══════════════════════════════════════════════════════════════════
+
+Quand vous cliquez sur "🌾 Récoltes" dans la sidebar du Dashboard,
+l'interface change pour afficher la liste des récoltes depuis la
+base de données.
+
+═══════════════════════════════════════════════════════════════════
+📋 FICHIERS CRÉÉS/MODIFIÉS
+═══════════════════════════════════════════════════════════════════
+
+1. ✅ Recolte.fxml (CRÉÉ)
+   Localisation: src/main/resources/Recolte.fxml
+   Contenu: Interface pour afficher/gérer les récoltes
+   TableView avec colonnes: ID, Quantité, Date, Qualité, Type, Localisation
+
+2. ✅ RecolteController.java (CRÉÉ)
+   Localisation: src/main/java/org/example/pidev/controllers/RecolteController.java
+   Fonctionnalités:
+   - Charger les récoltes depuis la BDD
+   - Afficher dans une TableView
+   - Ajouter une récolte
+   - Modifier une récolte
+   - Supprimer une récolte
+   - Chercher/Filtrer des récoltes
+
+3. ✅ Rendement.fxml (CRÉÉ)
+   Localisation: src/main/resources/Rendement.fxml
+   Contenu: Interface pour afficher/gérer les rendements
+
+4. ✅ RendementController.java (CRÉÉ)
+   Localisation: src/main/java/org/example/pidev/controllers/RendementController.java
+   Fonctionnalités: Similar à RecolteController
+
+5. ✅ DashboardDefault.fxml (CRÉÉ)
+   Localisation: src/main/resources/DashboardDefault.fxml
+   Contenu: Contenu par défaut du Dashboard
+
+6. ✅ Dashboard.fxml (MODIFIÉ)
+   Changement: Ajout des IDs aux boutons (btnDashboard, btnRecoltes, btnRendements)
+   Changement: Ajout du fx:id="rootPane" au BorderPane principal
+
+7. ✅ DashboardController.java (MODIFIÉ)
+   Changement: Complètement réimplémenté
+   Nouvelles méthodes:
+   - loadRecolteView() : Charge Recolte.fxml
+   - loadRendementView() : Charge Rendement.fxml
+   - loadDashboardView() : Charge Dashboard-Content.fxml
+   - setupNavigationButtons() : Configure les clics des boutons
+
+══════════════════════���════════════════════════════════════════════
+🔄 FLUX DE NAVIGATION
+═══════════════════════════════════════════════════════════════════
+
+Dashboard.fxml (BorderPane principal)
+  └─ Sidebar (VBox)
+     ├─ btnDashboard (📊)
+     ├─ btnRecoltes (🌾) ← CLIQUE ICI
+     └─ btnRendements (📈)
+
+  └─ Center (Zone principale)
+     └─ Contient la vue actuelle
+
+Quand on clique sur "🌾 Récoltes":
+1. DashboardController.loadRecolteView() est appelé
+2. FXMLLoader charge Recolte.fxml
+3. RecolteController.initialize() charge les récoltes depuis RecolteService
+4. Les récoltes s'affichent dans la TableView
+
+═══════════════════════════════════════════════════════════════════
+💾 DONNÉES DE LA BASE DE DONNÉES
+═══════════════════════════════════════════════════════════════════
+
+Les données proviennent de:
+- Table: recolte
+- Service: RecolteService.getAll()
+- Colonnes affichées:
+  ✅ idRecolte (ID)
+  ✅ quantite (Quantité en kg)
+  ✅ dateRecolte (Date)
+  ✅ qualite (Qualité: A, B, Premium)
+  ✅ typeCulture (Type: Blé, Tomate, etc.)
+  ✅ localisation (Localisation: Sfax, Tunis, etc.)
+
+═══════════════════════════════════════════════════════════════════
+🎨 INTERFACE RECOLTE
+═══════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────┐
+│ 📋 Gestion des Récoltes  [➕ Ajouter] [🔄 Actualiser]  │
+├─────────────────────────────────────────────────────────┤
+│ [Rechercher...] [🔍 Chercher]                           │
+├─────────────────────────────────────────────────────────┤
+│ ID │ Quantité │ Date │ Qualité │ Type │ Localisation    │
+├─────┼──────────┼──────┼─────────┼──────┼─────────────────┤
+│ 1  │ 5000 kg  │ ...  │ Premium │ Blé  │ Sfax            │
+│ 2  │ 3200 kg  │ ...  │ A       │ Orge │ Tunis           │
+│    │ [✏️ Mod] │ [🗑️ Sup] (Actions) │                   │
+└─────────────────────────────────────────────────────────┘
+Total: X récoltes | Status: ✅ Prêt
+
+═══════════════════════════════════════════════════════════════════
+🎛️ FONCTIONNALITÉS RECOLTE
+═══════════════════════════════════════════════════════════════════
+
+✅ Affichage automatique:
+   Les récoltes se chargent automatiquement au démarrage
+
+✅ Bouton "➕ Ajouter Récolte":
+   Ouvre un dialogue pour ajouter une nouvelle récolte
+
+✅ Bouton "🔄 Actualiser":
+   Rafraîchit la liste depuis la base de données
+
+✅ Recherche/Filtre:
+   Cherche par ID, Type de culture, Localisation, ou Qualité
+
+✅ Actions sur chaque ligne:
+   - ✏️ Modifier: Ouvre un dialogue de modification
+   - 🗑️ Supprimer: Supprime après confirmation
+
+✅ Statut en temps réel:
+   Affiche le nombre total de récoltes et le statut
+
+═══════════════════════════════════════════════════════════════════
+🚀 COMMENT TESTER
+═══════════════════════════════════════════════════════════════════
+
+1. Compiler le projet:
+   cd C:\Users\admin\Desktop\PIDEVJAVAFX-maramdh
+   mvnw clean compile
+
+2. Lancer l'application:
+   mvnw javafx:run
+
+3. Dans le Dashboard:
+   - Cliquez sur "🌾 Récoltes" dans la sidebar
+   - Vous verrez la liste des récoltes depuis la BDD
+   - Testez les boutons: Ajouter, Actualiser, Chercher
+   - Testez Modifier et Supprimer sur une ligne
+
+═══════════════════════════════════════════════════════════════════
+📊 CLASSES ET DÉPENDANCES
+═══════════════════════════════════════════════════════════════════
+
+RecolteController.java utilise:
+- RecolteService (pour accéder à la BDD)
+- Recolte (modèle de données)
+- FXCollections, ObservableList (pour la TableView)
+- PropertyValueFactory (pour mapper les colonnes)
+- TableCell, HBox (pour les boutons Actions)
+
+RendementController.java utilise:
+- RendementService (pour accéder à la BDD)
+- Rendement (modèle de données)
+- Même approche que RecolteController
+
+═══════════════════════════════════════════════════════════════════
+⚙️ CONFIGURATION REQUISE
+═══════════════════════════════════════════════════════════════════
+
+✅ MySQL avec table 'recolte':
+   - id_recolte (INT, PK)
+   - quantite (DOUBLE)
+   - date_recolte (DATE)
+   - qualite (VARCHAR)
+   - type_culture (VARCHAR)
+   - localisation (VARCHAR)
+
+✅ Java 17
+✅ JavaFX 17.0.14
+✅ Maven 3.x
+
+═══════════════════════════════════════════════════════════════════
+🔗 ARCHITECTURE
+═══════════════════════════════════════════════════════════════════
+
+Dashboard.fxml
+  └─ DashboardController (gère la navigation)
+     ├─ btnRecoltes.setOnAction() → loadRecolteView()
+     │  └─ Charge Recolte.fxml
+     │     └─ RecolteController (gère les récoltes)
+     │        └─ RecolteService.getAll() → BDD
+     │
+     └─ btnRendements.setOnAction() → loadRendementView()
+        └─ Charge Rendement.fxml
+           └─ RendementController (gère les rendements)
+              └─ RendementService.getAll() → BDD
+
+═══════════════════════════════════════════════════════════════════
+✅ STATUT
+═══════════════════════════════════════════════════════════════════
+
+✅ Navigation Dashboard ↔ Recolte implémentée
+✅ Chargement des récoltes depuis la BDD
+✅ TableView avec colonnes correctes
+✅ Boutons Ajouter, Modifier, Supprimer, Chercher
+✅ Compilation réussie
+✅ Prêt pour le test
+
+═══════════════════════════════════════════════════════════════════
+📝 NOTES IMPORTANTES
+═══════════════════════════════════════════════════════════════════
+
+• Les données se chargent au démarrage de RecolteController
+• RecolteService doit être fonctionnelle et connectée à la BDD
+• Les boutons Modifier/Supprimer affichent des confirmations
+• La recherche fonctionne en temps réel
+• Le statut s'actualise après chaque action
+
+═══════════════════════════════════════════════════════════════════
+

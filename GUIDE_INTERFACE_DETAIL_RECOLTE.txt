@@ -1,0 +1,395 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              ✨ INTERFACE DÉTAIL RÉCOLTE - GUIDE D'UTILISATION                 ║
+║                      SmartFarm - 15 février 2026                              ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+🎯 RÉSUMÉ DE LA NOUVELLE FONCTIONNALITÉ
+═══════════════════════════════════════════════════════════════════════════════
+
+✨ NOUVELLE INTERFACE: RecolteDetail.fxml
+   Une interface complète et professionnelle pour afficher et gérer les
+   détails d'une récolte spécifique.
+
+🎨 CONTRÔLEUR: RecolteDetailController.java
+   Gère l'affichage, la modification, la suppression et la sauvegarde
+   des données de récolte.
+
+⚡ INTERACTION: Double-clic sur une récolte
+   Double-cliquez sur n'importe quelle ligne du tableau pour ouvrir
+   l'interface détail.
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 COMMENT ACCÉDER À L'INTERFACE DÉTAIL
+═══════════════════════════════════════════════════════════════════════════════
+
+MÉTHODE 1 - Double-clic sur une récolte (RECOMMANDÉ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ouvrez l'application (RUN_APP.bat → Option 4)
+  2. Allez dans "🌾 Récoltes"
+  3. Regardez la liste des récoltes
+  4. Double-cliquez sur une ligne pour ouvrir le détail
+     ↓
+     ✅ La fenêtre détail s'ouvre
+
+MÉTHODE 2 - Bouton "Modifier"
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Dans la liste des récoltes
+  2. Cliquez sur le bouton "✏️ Modifier" de la colonne Actions
+     ↓
+     ✅ La fenêtre détail s'ouvre
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 INTERFACE DÉTAIL - DESCRIPTION COMPLÈTE
+═══════════════════════════════════════════════════════════════════════════════
+
+HEADER (Haut)
+━━━━━━━━━━━━
+  [← Retour] | 📋 Détail de la Récolte | [Status: ✅ Prêt]
+
+FORMULAIRE (Centre)
+━━━━━━━━━━━━━━━━━━━
+  📌 ID Récolte: [000] (lecture seule)
+     → Identifiant unique de la récolte, ne peut pas être modifié
+
+  📌 Quantité (kg): [________]
+     → Quantité récoltée en kilogrammes
+     → Exemple: 5000, 6000.50
+
+  📌 Date de Récolte: [JJ/MM/AAAA]
+     → Date de la récolte
+     → Cliquez pour ouvrir un calendrier
+
+  📌 Qualité: [________]
+     → Grade de qualité (Premium, A, B, etc.)
+     → Exemple: Premium, A, B
+
+  📌 Type de Culture: [________]
+     → Type de plante/culture récoltée
+     → Exemple: Blé, Orge, Maïs, Riz
+
+  📌 Localisation: [________]
+     → Lieu/région de la récolte
+     → Exemple: Seliana, Sfax, Sousse
+
+
+STATISTIQUES (Centre)
+━━━━━━━━━━━━━━━━━━━━━
+  📊 Informations Supplémentaires
+
+  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐
+  │ Rendement Moyen:    │  │ Nombre de Rendements│  │ Quantité Totale:    │
+  │ 85%                 │  │ 1                   │  │ 5000.00 kg          │
+  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘
+
+
+NOTES (Centre)
+━━━━━━━━━━━━━━
+  📝 Notes
+  [Ajouter des notes sur cette récolte...]
+
+  Zone de texte pour ajouter des commentaires ou des observations
+  spécifiques sur la récolte.
+
+
+BOUTONS (Bas)
+━━━━━━━━━━━━━
+  [💾 Enregistrer]  → Sauvegarder les modifications
+  [🔄 Actualiser]   → Recharger les données depuis la base
+  [🗑️ Supprimer]    → Supprimer la récolte (avec confirmation)
+  [← Retour]        → Retourner à la liste des récoltes
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✨ FONCTIONNALITÉS PRINCIPALES
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣ AFFICHAGE DES DONNÉES
+   ✓ Tous les champs sont préremplis avec les données actuelles
+   ✓ Les informations se chargent automatiquement
+   ✓ Format lisible et professionnel
+
+   Exemple d'ouverture:
+     ID: 1
+     Quantité: 6000.00
+     Date: 12/02/2026
+     Qualité: Premium
+     Type: Blé
+     Localisation: Seliana
+
+
+2️⃣ MODIFICATION DES DONNÉES
+   ✓ Tous les champs sont modifiables (sauf l'ID)
+   ✓ Validation automatique des entrées
+   ✓ Messages d'erreur clairs
+
+   Étapes:
+     1. Modifiez un ou plusieurs champs
+     2. Cliquez sur "💾 Enregistrer"
+     3. Confirmation de succès
+     4. Données mises à jour en base de données
+
+
+3️⃣ SUPPRESSION DE RÉCOLTE
+   ✓ Confirmation requise avant suppression
+   ✓ Message de confirmation clair
+   ✓ Retour automatique à la liste
+
+   Étapes:
+     1. Cliquez sur "🗑️ Supprimer"
+     2. Confirmez la suppression (dialogue)
+     3. La récolte est supprimée
+     4. Retour à la liste des récoltes
+
+
+4️⃣ ACTUALISATION DES DONNÉES
+   ✓ Recharge les données depuis la base de données
+   ✓ Annule toute modification non enregistrée
+   ✓ Utile si d'autres utilisateurs ont modifié les données
+
+   Utilisation:
+     Si quelqu'un d'autre modifie les données → Cliquez "🔄 Actualiser"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 GUIDE ÉTAPE PAR ÉTAPE
+═══════════════════════════════════════════════════════════════════════════════
+
+SCÉNARIO 1: Consulter les détails d'une récolte
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ouvrez l'application
+  2. Allez dans "🌾 Récoltes"
+  3. Double-cliquez sur une récolte
+  4. L'interface détail s'ouvre avec toutes les informations
+  5. Lisez les données
+  6. Cliquez "← Retour" pour fermer
+
+
+SCÉNARIO 2: Modifier une récolte
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ouvrez l'interface détail (double-clic)
+  2. Modifiez les champs souhaités:
+     - Changez la Quantité: 6000 → 6500
+     - Changez la Qualité: Premium → A
+     - Etc.
+  3. Cliquez "💾 Enregistrer"
+  4. Message: "✅ Récolte modifiée avec succès!"
+  5. Les données sont mises à jour en base
+  6. Optionnel: Cliquez "← Retour"
+
+
+SCÉNARIO 3: Ajouter une note à une récolte
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ouvrez l'interface détail (double-clic)
+  2. Descendez jusqu'au champ "📝 Notes"
+  3. Cliquez dans la zone de texte
+  4. Tapez votre note:
+     "Récolte de bonne qualité, rendement excellent"
+  5. Optionnel: Cliquez "💾 Enregistrer"
+  6. Cliquez "← Retour"
+
+
+SCÉNARIO 4: Supprimer une récolte
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ouvrez l'interface détail (double-clic)
+  2. Cliquez "🗑️ Supprimer"
+  3. Dialogue de confirmation:
+     "Êtes-vous sûr de vouloir supprimer la récolte ID: 1?"
+  4. Cliquez "OK" pour confirmer
+     ou "Annuler" pour annuler
+  5. Si confirmé: Récolte supprimée et liste rechargée
+  6. Vous retournez à la liste des récoltes
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔍 VALIDATION ET MESSAGES D'ERREUR
+═══════════════════════════════════════════════════════════════════════════════
+
+VALIDATION AUTOMATIQUE
+━━━━━━━━━━━━━━━━━━━━━
+
+Quand vous cliquez "💾 Enregistrer", les champs sont vérifiés:
+
+  ✓ Quantité:
+    - Ne peut pas être vide
+    - Doit être un nombre (ex: 5000, 6000.50)
+    - Erreur: "La quantité doit être un nombre"
+
+  ✓ Date:
+    - Ne peut pas être vide
+    - Format: JJ/MM/AAAA
+    - Erreur: "La date est obligatoire"
+
+  ✓ Qualité:
+    - Ne peut pas être vide
+    - Erreur: "La qualité est obligatoire"
+
+  ✓ Type de Culture:
+    - Ne peut pas être vide
+    - Erreur: "Le type de culture est obligatoire"
+
+  ✓ Localisation:
+    - Ne peut pas être vide
+    - Erreur: "La localisation est obligatoire"
+
+
+MESSAGES DE SUCCÈS
+━━━━━━━━━━━━━━━━━
+
+✅ "Récolte modifiée avec succès!"
+   → Vos modifications ont été enregistrées en base
+
+✅ "Récolte supprimée!"
+   → La récolte a été supprimée avec succès
+
+
+MESSAGES D'ERREUR
+━━━━━━━━━━━━━━━━
+
+❌ "Les champs Quantité doivent être des nombres"
+   → Vous avez entré du texte au lieu d'un nombre
+
+❌ "La quantité est obligatoire"
+   → Le champ Quantité est vide
+
+❌ "Erreur lors de l'enregistrement: ..."
+   → Problème technique (voir la console pour plus de détails)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔄 FLUX DE TRAVAIL COMPLET
+═══════════════════════════════════════════════════════════════════════════════
+
+  ┌─────────────────────┐
+  │  Liste des Récoltes │
+  │  (Recolte.fxml)     │
+  └──────────┬──────────┘
+             │
+    Double-clic ou Modifier
+             │
+             ↓
+  ┌─────────────────────┐
+  │ Interface Détail    │
+  │(RecolteDetail.fxml) │
+  └──────────┬──────────┘
+             │
+    ┌────────┼────────┬──────────┐
+    │        │        │          │
+    ↓        ↓        ↓          ↓
+  Modifier Actualiser Supprimer Retour
+    │        │        │          │
+    │        │        │          └──→ Fermer
+    │        │        │
+    │        │        └──→ Confirmation
+    │        │              ↓
+    │        │          Supprimer
+    │        │          en base
+    │        │
+    │        └──→ Recharger
+    │            depuis BD
+    │
+    └──→ Valider
+         ↓
+      Enregistrer
+      en base
+         ↓
+      Recharger
+      la liste
+
+
+═══════════════════════════════════════════════════════════════════════════════
+💡 CONSEILS ET BONNES PRATIQUES
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ À FAIRE:
+  • Double-cliquez pour ouvrir rapidement l'interface détail
+  • Vérifiez les données avant d'enregistrer
+  • Utilisez les notes pour ajouter des informations importantes
+  • Cliquez "🔄 Actualiser" si vous pensez que d'autres ont modifié les données
+  • Confirmez les suppressions avec attention
+
+❌ À ÉVITER:
+  • Ne fermez pas la fenêtre sans enregistrer les modifications importantes
+  • Ne supprimez pas une récolte par accident (confirmez toujours)
+  • Ne laissez pas des champs vides si ce n'est pas volontaire
+  • N'entrez pas de texte dans le champ Quantité (doit être un nombre)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔧 MESSAGES DE DÉBOGAGE DANS LA CONSOLE
+═══════════════════════════════════════════════════════════════════════════════
+
+Quand vous utilisez l'interface détail, vous verrez dans la console:
+
+  📖 Ouverture du détail pour la récolte ID: 1
+  ✅ RecolteDetailController initialisé
+  🔄 Chargement de la récolte ID: 1
+  ✅ Récolte trouvée: Recolte{idRecolte=1, quantite=6000.0, ...}
+  📝 Affichage des données de la récolte
+  ✅ Données affichées
+  📊 Chargement des statistiques
+  ✅ Statistiques chargées
+
+  [Si vous modifiez et enregistrez:]
+  💾 Enregistrement des modifications
+  🔍 Validation des champs
+  ✅ Tous les champs sont valides
+  📝 Récolte modifiée: Recolte{idRecolte=1, quantite=6500.0, ...}
+  ✅ Récolte enregistrée avec succès
+
+  [Si vous fermez:]
+  ← Retour à la liste des récoltes
+  📋 Rechargement de la liste
+  ✅ Fenêtre détail fermée
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📚 FICHIERS CRÉÉS/MODIFIÉS
+═══════════════════════════════════════════════════════════════════════════════
+
+FICHIERS CRÉÉS:
+  ✨ RecolteDetail.fxml
+     → Interface FXML pour l'affichage détail
+
+  ✨ RecolteDetailController.java
+     → Contrôleur pour la gestion des actions
+
+FICHIERS MODIFIÉS:
+  ✏️  RecolteController.java
+     → Ajout du double-clic et de handleDetailRecolte()
+     → Modification de handleModifier() pour utiliser l'interface détail
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 PROCHAINES ÉTAPES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ✅ Tester l'interface détail
+2. ✅ Vérifier que double-clic fonctionne
+3. ✅ Tester l'enregistrement des modifications
+4. ✅ Tester la suppression avec confirmation
+5. Ajouter une vue Rendement liée (bonus)
+6. Ajouter un historique des modifications (bonus)
+7. Ajouter des graphiques (bonus)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ CHECKLIST DE TEST
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Compiler le projet (mvn clean compile)
+□ Lancer l'application (RUN_APP.bat → 4)
+□ Aller dans "🌾 Récoltes"
+□ Double-cliquer sur une récolte → Interface s'ouvre
+□ Vérifier que les données sont affichées correctement
+□ Modifier un champ (ex: Quantité)
+□ Cliquer "💾 Enregistrer" → Succès
+□ Cliquer "🔄 Actualiser" → Les données sont rechargées
+□ Cliquer "🗑️ Supprimer" → Dialogue de confirmation
+□ Annuler la suppression → Rester sur l'interface
+□ Cliquer "← Retour" → Retour à la liste
+□ Vérifier que la liste est mise à jour
+
+═══════════════════════════════════════════════════════════════════════════════
+

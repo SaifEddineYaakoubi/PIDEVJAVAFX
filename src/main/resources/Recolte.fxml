@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.RecolteController"
+            stylesheets="@smartfarm.css">
+
+    <!-- TOP - TOOLBAR -->
+    <top>
+        <HBox spacing="15" styleClass="toolbar">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label text="📋 Gestion des Récoltes" styleClass="section-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="➕ Ajouter Récolte" styleClass="button-primary" fx:id="btnAjouter"/>
+            <Button text="🔄 Actualiser" styleClass="button-secondary" fx:id="btnActualiser"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER - TABLE RÉCOLTES -->
+    <center>
+        <VBox spacing="15" styleClass="content-area">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <!-- SEARCH AREA -->
+            <HBox spacing="10">
+                <TextField fx:id="searchField" promptText="Rechercher une récolte..." HBox.hgrow="ALWAYS"/>
+                <Button text="🔍 Chercher" styleClass="button-secondary" fx:id="btnChercher"/>
+            </HBox>
+
+            <!-- TABLE VIEW -->
+            <TableView fx:id="tableRecoltes" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colQuantite" text="Quantité (kg)" prefWidth="120"/>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                    <TableColumn fx:id="colQualite" text="Qualité" prefWidth="100"/>
+                    <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+                    <TableColumn fx:id="colLocalisation" text="Localisation" prefWidth="130"/>
+                    <TableColumn fx:id="colAction" text="Actions" prefWidth="150"/>
+                </columns>
+            </TableView>
+
+            <!-- STATUS BAR -->
+            <HBox spacing="15" styleClass="status-bar">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label fx:id="lblTotal" text="Total: 0 récoltes"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblStatus" text="Prêt" styleClass="status-label"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
+

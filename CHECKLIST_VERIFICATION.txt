@@ -1,0 +1,247 @@
+════════════════════════════════════════════════════════════════════════════════
+                     ✅ CHECKLIST DE CORRECTION ET VÉRIFICATION
+════════════════════════════════════════════════════════════════════════════════
+
+PROBLÈME RENCONTRÉ
+═════════════════════════════════════════════════════════════════════════════════
+❌ Error: Unknown column 'type_culture' in 'field list'
+
+CAUSE
+═════════════════════════════════════════════════════════════════════════════════
+Les colonnes type_culture et localisation n'existent pas dans la table recolte
+de la base de données MySQL, même si elles sont définies dans le code Java.
+
+════════════════════════════════════════════════════════════════════════════════
+
+📋 CHECKLIST - CORRECTION
+════════════════════════════════════════════════════════════════════════════════
+
+ÉTAPE 1: Préparation
+─────────────────────────────────────────────────────────────────────────────
+☐ Assurez-vous que MySQL est en cours d'exécution
+  Vérifier: Essayez de vous connecter via phpMyAdmin
+
+☐ Identifiez le nom exact de votre base de données
+  Vérifier: Allez dans phpMyAdmin et notez le nom (ex: pidev)
+
+☐ Assurez-vous d'avoir une sauvegarde (optionnel mais recommandé)
+  Vérifier: Créez une exportation de la table recolte
+
+ÉTAPE 2: Exécution de la Migration
+─────────────────────────────────────────────────────────────────────────────
+☐ Ouvrez phpMyAdmin ou MySQL CLI
+
+☐ Exécutez la requête SQL:
+
+  ALTER TABLE recolte
+  ADD COLUMN type_culture VARCHAR(100) NOT NULL DEFAULT 'Non spécifié',
+  ADD COLUMN localisation VARCHAR(100) NOT NULL DEFAULT 'Non spécifiée';
+
+☐ Attendez le message de succès
+  Vérifier: "La requête a été exécutée avec succès" (phpMyAdmin)
+           ou pas d'erreur (MySQL CLI)
+
+ÉTAPE 3: Vérification
+─────────────────────────────────────────────────────────────────────────────
+☐ Vérifiez la structure de la table:
+
+  DESCRIBE recolte;
+
+  Vérifier: Vous voyez les colonnes:
+           - type_culture
+           - localisation
+
+☐ Comptez les colonnes: devrait y en avoir 6
+  ☑ id_recolte
+  ☑ quantite
+  ☑ date_recolte
+  ☑ qualite
+  ☑ type_culture (NOUVEAU)
+  ☑ localisation (NOUVEAU)
+
+☐ Vérifiez qu'aucune donnée n'a été perdue
+  Vérifier: SELECT COUNT(*) FROM recolte;
+           Devrait retourner le même nombre qu'avant
+
+ÉTAPE 4: Redémarrage de l'Application
+─────────────────────────────────────────────────────────────────────────────
+☐ Fermez l'application Java complètement
+
+☐ Fermez l'IDE (IntelliJ, Eclipse, etc.)
+
+☐ Attendez 5 secondes
+
+☐ Rouvrez l'IDE
+
+☐ Redémarrez l'application Java
+
+ÉTAPE 5: Test Fonctionnel
+─────────────────────────────────────────────────────────────────────────────
+☐ Lancez l'application
+
+☐ Connectez-vous à la base de données
+  Vérifier: ✅ Connexion à la base de données réussie !
+
+☐ Allez dans Menu → 3. Gestion des Récoltes
+
+☐ Sélectionnez Option 1: Ajouter une récolte
+
+☐ Remplissez les informations:
+  ☐ ID de culture: 1 (ou un ID existant)
+  ☐ Quantité: 6000
+  ☐ Date: 12/02/2026
+  ☐ Qualité: Premium
+  ☐ Type de culture: Blé (TEST)
+  ☐ Localisation: Test Village (TEST)
+
+☐ Cliquez sur Ajouter
+  Vérifier: ✅ Récolte ajoutée avec succès ! ID: X
+           (Pas de message d'erreur sur type_culture)
+
+════════════════════════════════════════════════════════════════════════════════
+
+🔍 CHECKLIST - VÉRIFICATIONS SUPPLÉMENTAIRES
+════════════════════════════════════════════════════════════════════════════════
+
+VÉRIFIER LES DONNÉES INSÉRÉES
+─────────────────────────────────────────────────────────────────────────────
+Dans MySQL:
+  SELECT * FROM recolte WHERE id_recolte = X;
+
+Vous devriez voir:
+  ☐ quantite: 6000
+  ☐ date_recolte: 2026-02-12
+  ☐ qualite: Premium
+  ☐ type_culture: Blé (ou votre entrée)
+  ☐ localisation: Test Village (ou votre entrée)
+
+VÉRIFIER QUE L'AFFICHAGE FONCTIONNE
+─────────────────────────────────────────────────────────────────────────────
+☐ Menu → 3. Gestion des Récoltes → Option 4: Afficher toutes les récoltes
+
+Vous devriez voir votre récolte dans le tableau avec:
+  ☐ ID correct
+  ☐ Quantité: 6000
+  ☐ Date: 12/02/2026
+  ☐ Qualité: Premium
+  ☐ Type culture: Blé
+  ☐ Localisation: Test Village
+
+VÉRIFIER LA MODIFICATION
+─────────────────────────────────────────────────────────────────────────────
+☐ Menu → 3. Gestion des Récoltes → Option 2: Modifier une récolte
+
+☐ Sélectionnez la récolte créée
+
+☐ Modifiez une valeur:
+  Type de culture: Blé Dur (par exemple)
+
+☐ Sauvegardez
+  Vérifier: ✅ Récolte mise à jour avec succès
+
+☐ Vérifiez que la modification est persistée en base
+
+════════════════════════════════════════════════════════════════════════════════
+
+🎯 CHECKLIST - TESTS DES FONCTIONNALITÉS
+════════════════════════════════════════════════════════════════════════════════
+
+RENDEMENT - Calcul Automatique
+─────────────────────────────────────────────────────────────────────────────
+☐ Menu → 4. Gestion des Rendements → Option 1: Ajouter un rendement (auto)
+
+☐ Sélectionnez la récolte créée
+
+☐ Entrez:
+  ☐ Quantité totale: 2550.0
+  ☐ Surface exploitée: 25.5
+
+☐ Cliquez sur Ajouter
+  Vérifier: ✅ Rendement ajouté avec calcul automatique
+
+☐ Productivité calculée = 2550.0 / 25.5 = 100.0 ✅
+
+RENDEMENT - Statistiques
+─────────────────────────────────────────────────────────────────────────────
+☐ Menu → 4. Gestion des Rendements → Option 5: Statistiques
+
+☐ Sélectionnez la récolte
+
+Vérifier: Vous voyez
+  ☐ Productivité moyenne: 100.00 kg/ha
+  ☐ Quantité totale: 2550.00 kg
+  ☐ Surface totale: 25.50 ha
+  ☐ Meilleur rendement: 100.00 kg/ha
+  ☐ Pire rendement: 100.00 kg/ha
+
+════════════════════════════════════════════════════════════════════════════════
+
+❌ CHECKLIST - TROUBLESHOOTING
+════════════════════════════════════════════════════════════════════════════════
+
+Si Vous Voyez Encore l'Erreur
+─────────────────────────────────────────────────────────────────────────────
+☐ Vérifiez que la requête SQL s'est exécutée sans erreur
+
+☐ Vérifiez que vous avez fermé et rouvert l'IDE
+
+☐ Vérifiez que MySQL n'a pas d'erreurs:
+  SHOW ERRORS;
+
+☐ Recréez la table si nécessaire:
+  DROP TABLE rendement;
+  DROP TABLE recolte;
+  (Puis réexécutez le script de création)
+
+Si la Modification Prend Longtemps
+─────────────────────────────────────────────────────────────────────────────
+☐ Vérifiez la taille de la table:
+  SELECT COUNT(*) FROM recolte;
+
+☐ Si grande table, la modification peut prendre quelques minutes
+
+☐ Attendez que MySQL finisse le traitement
+
+Si Vous Avez des Droits Insuffisants
+─────────────────────────────────────────────────────────────────────────────
+☐ Connectez-vous avec un utilisateur ayant les droits ALTER:
+  Généralement: root
+
+☐ Vérifiez avec:
+  SHOW GRANTS FOR 'votre_user'@'localhost';
+
+════════════════════════════════════════════════════════════════════════════════
+
+📝 RÉSUMÉ DU PROCESSUS COMPLÉTÉ
+════════════════════════════════════════════════════════════════════════════════
+
+AVANT:
+   Application Java → Modèles mis à jour (type_culture, localisation)
+   MySQL BD          → Table recolte ANCIENNE (pas ces colonnes)
+   RÉSULTAT: ❌ Erreur "Unknown column"
+
+APRÈS:
+   Application Java  → Modèles inchangés ✅
+   MySQL BD          → Table recolte MISE À JOUR (colonnes ajoutées) ✅
+   RÉSULTAT: ✅ Fonctionnement correct
+
+════════════════════════════════════════════════════════════════════════════════
+
+✅ SUCCÈS SI:
+═════════════════════════════════════════════════════════════════════════════════
+
+☑ La requête SQL s'est exécutée sans erreur
+☑ Les colonnes sont visibles dans DESCRIBE recolte
+☑ L'application redémarrée fonctionne sans erreur
+☑ Vous pouvez ajouter une récolte avec type_culture et localisation
+☑ Les données s'affichent correctement
+☑ Les statistiques de rendement fonctionnent
+
+════════════════════════════════════════════════════════════════════════════════
+
+Date de Vérification: _______________
+Nom: _______________________________
+Statut: ☐ Complété  ☐ En cours  ☐ En attente
+
+════════════════════════════════════════════════════════════════════════════════
+

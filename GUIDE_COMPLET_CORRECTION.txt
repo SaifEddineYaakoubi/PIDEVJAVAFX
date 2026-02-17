@@ -1,0 +1,225 @@
+════════════════════════════════════════════════════════════════════════════════
+                    GUIDE ÉTAPE PAR ÉTAPE - CORRECTION DE LA BD
+════════════════════════════════════════════════════════════════════════════════
+
+📍 VOUS ÊTES ICI:
+   ┌─────────────────────────────────────┐
+   │  ❌ Erreur: Unknown column          │
+   │  'type_culture' in 'field list'     │
+   └─────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+MÉTHODE 1: phpMyAdmin (Interface Web) - RECOMMANDÉE
+════════════════════════════════════════════════════════════════════════════════
+
+ÉTAPE 1: Accédez à phpMyAdmin
+   ┌───────────────────────────────────────────┐
+   │ Ouvrez votre navigateur                    │
+   │ Allez à: http://localhost/phpmyadmin      │
+   │ (ou selon votre configuration)             │
+   └───────────────────────────────────────────┘
+
+ÉTAPE 2: Sélectionnez votre base de données
+   ┌─────────────────────────────────┐
+   │ Dans le menu de gauche, cliquez │
+   │ sur votre base (ex: pidev)      │
+   └─────────────────────────────────┘
+
+ÉTAPE 3: Accédez à l'éditeur SQL
+   ┌──────────────────────────────────┐
+   │ 1. Cliquez sur l'onglet "SQL"    │
+   │ 2. (En haut de la page)          │
+   └──────────────────────────────────┘
+
+ÉTAPE 4: Collez la requête SQL
+   ┌───────────────────────────────────────────────────────────────────┐
+   │ ALTER TABLE recolte                                              │
+   │ ADD COLUMN type_culture VARCHAR(100) NOT NULL                   │
+   │     DEFAULT 'Non spécifié',                                     │
+   │ ADD COLUMN localisation VARCHAR(100) NOT NULL                   │
+   │     DEFAULT 'Non spécifiée';                                    │
+   └───────────────────────────────────────────────────────────────────┘
+
+ÉTAPE 5: Exécutez la requête
+   ┌──────────────────────────────────┐
+   │ Cliquez sur le bouton "Exécuter" │
+   │ (ou appuyez sur Ctrl+Entrée)     │
+   └──────────────────────────────────┘
+
+ÉTAPE 6: Vérifiez le succès
+   ┌────────────────────────────────────────┐
+   │ Si vous voyez:                         │
+   │ "La requête a été exécutée avec succès"│
+   │ → C'EST BON! ✅                        │
+   └────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+MÉTHODE 2: Ligne de Commande MySQL
+═════════���══════════════════════════════════════════════════════════════════════
+
+ÉTAPE 1: Ouvrez PowerShell ou Cmd
+   ┌────────────────���─────────────────────┐
+   │ Windows: Appuyez sur Win + R         │
+   │ Tapez: powershell                    │
+   │ Appuyez sur Entrée                   │
+   └──────────────────────────────────────┘
+
+ÉTAPE 2: Naviguez vers le dossier du projet
+   ┌──────────────────────────────────────────┐
+   │ $ cd C:\Users\admin\Desktop\PIDEVJAVAFX  │
+   │ -maramdh                                 │
+   └──────────────────────────────────────────┘
+
+ÉTAPE 3: Exécutez la migration
+   ┌────────────────────────────────────────────────────────────┐
+   │ Si vous avez un mot de passe:                             │
+   │ $ mysql -u root -p votre_base < migration_recolte.sql    │
+   │                                                             │
+   │ Si pas de mot de passe:                                  │
+   │ $ mysql -u root votre_base < migration_recolte.sql       │
+   │                                                             │
+   │ (Remplacez "votre_base" par le nom réel)                │
+   └────────────────────────────────────────────────────────────┘
+
+ÉTAPE 4: Attendez la confirmation
+   ┌──────────────────────────────────────┐
+   │ Si pas d'erreur → C'EST BON! ✅      │
+   │ Si erreur → Vérifiez le message      │
+   └──────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+MÉTHODE 3: Script Automatisé Windows
+════════════════════════════════════════════════════════════════════════════════
+
+ÉTAPE 1: Ouvrez le fichier fix_database.bat
+   ┌──────────────────────────────────────┐
+   │ Naviguez au dossier du projet       │
+   │ Trouvez: fix_database.bat            │
+   └──────────────────────────────────────┘
+
+ÉTAPE 2: Éditez les paramètres (optionnel)
+   ┌──────────────────────────────────────┐
+   │ Ouvrez avec un éditeur de texte     │
+   │ Changez si nécessaire:              │
+   │ - MYSQL_USER=root                   │
+   │ - MYSQL_PASSWORD=                   │
+   │ - DATABASE_NAME=pidev               │
+   └──────────────────────────────────────┘
+
+ÉTAPE 3: Exécutez le script
+   ┌──────────────────────────────────────┐
+   │ Double-cliquez sur fix_database.bat  │
+   └──────────────────────────────────────┘
+
+ÉTAPE 4: Attendez les messages
+   ┌────────────────────────────────────────────┐
+   │ Vous devriez voir:                        │
+   │ "✅ SUCCÈS! La migration s'est exécutée"  │
+   └────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+VÉRIFICATION - Confirmer que tout est correct
+════════════════════════════════════════════════════════════════════════════════
+
+DANS phpMyAdmin:
+   1. Allez dans votre base de données
+   2. Cliquez sur la table "recolte"
+   3. Cliquez sur l'onglet "Structure"
+   4. Vous devriez voir les 2 nouvelles colonnes:
+      ✅ type_culture
+      ✅ localisation
+
+AVEC MySQL CLI:
+   $ mysql -u root -p votre_base
+   > DESCRIBE recolte;
+
+   Vous devriez voir:
+   ┌──────────────┬──────────────┐
+   │ type_culture │ varchar(100) │
+   │ localisation │ varchar(100) │
+   └──────────────┴──────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+APRÈS LA CORRECTION
+════════════════════════════════════════════════════════════════════════════════
+
+✅ ÉTAPE 1: Redémarrez votre application Java
+   ┌────────────────────────────────────┐
+   │ Fermez complètement l'application  │
+   │ Redémarrez-la                      │
+   └────────────────────────────────────┘
+
+✅ ÉTAPE 2: Testez l'ajout d'une récolte
+   ┌──────────────────────────────────────┐
+   │ Menu → 3. Gestion des Récoltes       │
+   │ → 1. Ajouter une récolte             │
+   │ → Remplissez tous les champs         │
+   │ → Vous devriez voir: ✅ Récolte     │
+   │   ajoutée avec succès!               │
+   └──────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+❓ PROBLÈMES COURANTS ET SOLUTIONS
+════════════════════════════════════════════════════════════════════════════════
+
+PROBLÈME 1: "Access denied for user 'root'@'localhost'"
+SOLUTION:
+   - Vérifiez que le mot de passe est correct
+   - Utilisez l'option -p correctement
+   - Exemple: mysql -u root -p motdepasse votre_base
+
+PROBLÈME 2: "Unknown database 'votre_base'"
+SOLUTION:
+   - Vérifiez le nom exacte de votre base de données
+   - Utilisez: SHOW DATABASES; pour voir toutes les bases
+
+PROBLÈME 3: "Syntax error"
+SOLUTION:
+   - Vérifiez qu'il n'y a pas d'erreurs de typage
+   - Copiez-collez directement depuis le fichier SQL
+
+PROBLÈME 4: "Column 'type_culture' already exists"
+SOLUTION:
+   - Les colonnes existent déjà
+   - Vous pouvez utiliser directement l'application
+   - Aucune action nécessaire
+
+════════════════════════════════════════════════════════════════════════════════
+
+📞 BESOIN D'AIDE?
+════════════════════════════════════════════════════════════════════════════════
+
+Si vous continuez à avoir des problèmes:
+
+1. Vérifiez que MySQL est en train de fonctionner
+   Commande: mysql --version
+
+2. Testez la connexion
+   Commande: mysql -u root -p
+
+3. Consultez les logs de MySQL
+   Chemin type: C:\Program Files\MySQL\MySQL Server 8.0\data
+
+4. Vérifiez la documentation du projet
+   Fichier: FIX_ERREUR_TYPE_CULTURE.txt
+
+════════════════════════════════════════════════════════════════════════════════
+
+✨ RÉSUMÉ
+════════════════════════════════════════════════════════════════════════════════
+
+      ERROR                    →    SOLUTION            →    SUCCESS
+   ─────────────────────────────────────────────────────────────────
+   Unknown column        Ajouter les colonnes    Redémarrer l'app
+   'type_culture'        dans la BD MySQL         Tester l'ajout
+   ─────────────────────────────────────────────────────────────────
+         ❌                     ⚙️                      ✅
+
+════════════════════════════════════════════════════════════════════════════════
+

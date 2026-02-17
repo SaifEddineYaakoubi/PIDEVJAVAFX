@@ -1,0 +1,275 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    GUIDE D'UTILISATION - SmartFarm                            ║
+║                    Version 1.0 - Gestion Récoltes/Rendements                 ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 RÉSUMÉ DES CORRECTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ PROBLÈME RÉSOLU: "La liste de récolte ne s'affiche pas"
+
+CAUSE IDENTIFIÉE:
+  La colonne d'actions était déclarée avec un type incorrect (String au lieu
+  de Void), ce qui causait des problèmes de liaison de données dans la table.
+
+SOLUTION APPLIQUÉE:
+  ✓ Changement du type de TableColumn<Recolte, String>
+    vers TableColumn<Recolte, Void> pour la colonne d'actions
+  ✓ Amélioration du debugging pour faciliter les diagnostics futurs
+  ✓ Meilleure gestion des erreurs
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 DÉMARRAGE DE L'APPLICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION 1 - Utiliser le script (RECOMMANDÉ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Double-cliquez sur: RUN_APP.bat
+  2. Sélectionnez l'option 4 (Compiler et lancer)
+  3. Attendez que l'application démarre
+
+
+OPTION 2 - Utiliser la ligne de commande
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  cd C:\Users\admin\Desktop\PIDEVJAVAFX-maramdh
+  .\mvnw.cmd clean compile javafx:run
+
+
+OPTION 3 - Via IntelliJ IDEA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Ouvrez le projet dans IntelliJ
+  2. Trouvez la classe: LauncherGUI
+  3. Clic droit → Run 'LauncherGUI'
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📱 INTERFACE UTILISATEUR
+═══════════════════════════════════════════════════════════════════════════════
+
+ÉCRAN PRINCIPAL (Dashboard)
+  ┌─────────────────────────────────────────────────────────┐
+  │ 🌱 SMART FARM                                           │
+  │ ┌─────────────┐  ┌─────────────────────────────────┐   │
+  │ │ Dashboard   │  │  📊 Dashboard Overview          │   │
+  │ │ 🌾 Récoltes │  │  120 Récoltes Totales           │   │
+  │ │ 📈 Rendeme..│  │  85% Rendement Moyen            │   │
+  │ │             │  │  95 ha Surface Totale           │   │
+  │ └─────────────┘  │                                 │   │
+  │                  │  📋 Récoltes Récentes           │   │
+  │                  │  [Liste des récoltes]           │   │
+  │                  └─────────────────────────────────┘   │
+  └─────────────────────────────────────────────────────────┘
+
+
+ÉCRAN DES RÉCOLTES (🌾 Récoltes)
+  ┌─────────────────────────────────────────────────────────┐
+  │ 📋 Gestion des Récoltes  [➕ Ajouter] [🔄 Actualiser]  │
+  │                                                         │
+  │ Rechercher: [_________] [🔍 Chercher]                  │
+  │                                                         │
+  │ ┌──────────────────────────────────────────────────┐   │
+  │ │ ID │ Quantité │ Date │ Qualité │ Type │ Localis.│   │
+  │ ├──────────────────────────────────────────────────┤   │
+  │ │ 1  │ 6000.00  │ 12/02/2026 │ Premium │ Blé │ Sel...│   │
+  │ │ 2  │ 4500.50  │ 10/02/2026 │ A │ Orge │ Mar...│   │
+  │ └──────────────────────────────────────────────────┘   │
+  │                                                         │
+  │ Total: 2 récoltes        ✅ Données chargées          │
+  └─────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✨ FONCTIONNALITÉS
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣  AJOUTER UNE RÉCOLTE
+   ╔═════════════════════════════════════════╗
+   ║ Ajouter une récolte                      ║
+   ╠═════════════════════════════════════════╣
+   ║ Quantité (kg): [_______________]        ║
+   ║ Date: [2026-02-15]                      ║
+   ║ Qualité: [_______________]              ║
+   ║ Type: [_______________]                 ║
+   ║ Localisation: [_______________]         ║
+   ║                       [OK] [ANNULER]    ║
+   ╚═════════════════════════════════════════╝
+
+   EXEMPLE:
+     Quantité: 6000
+     Date: 12/02/2026
+     Qualité: Premium
+     Type: Blé
+     Localisation: Seliana
+
+
+2️⃣  MODIFIER UNE RÉCOLTE
+   Cliquez sur le bouton [✏️ Modifier] dans la colonne Actions
+   Modifiez les valeurs dans le dialogue
+   Cliquez sur [OK]
+
+
+3️⃣  SUPPRIMER UNE RÉCOLTE
+   Cliquez sur le bouton [🗑️ Supprimer] dans la colonne Actions
+   Confirmez la suppression
+
+
+4️⃣  RECHERCHER UNE RÉCOLTE
+   Saisissez un critère de recherche (ID, Type, Localisation, Qualité)
+   Cliquez sur [🔍 Chercher]
+
+
+5️⃣  ACTUALISER LA LISTE
+   Cliquez sur [🔄 Actualiser] pour recharger les données
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔧 CONFIGURATION REQUISE
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ JAVA
+   Java 17 (Temurin JDK)
+   Chemin: C:\Users\admin\.jdks\temurin-17.0.18
+
+✅ BASE DE DONNÉES
+   MySQL 5.7+
+   Base: smart_farm (ou pidev)
+   Tables: recolte, rendement
+   Utilisateur: root
+   Mot de passe: (aucun)
+
+✅ DÉPENDANCES
+   JavaFX 17.0.14
+   MySQL Connector 8.0.33
+   Maven 3.x (fourni via mvnw.cmd)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔍 DÉPANNAGE
+═══��═══════════════════════════════════════════════════════════════════════════
+
+❌ "Erreur: Table 'recolte' not found"
+   SOLUTION:
+   1. Exécutez le script migration_recolte.sql
+   2. Assurez-vous que la base 'smart_farm' existe
+   3. Vérifiez les paramètres de connexion dans DBConnection.java
+
+❌ "La liste ne s'affiche pas"
+   SOLUTION:
+   1. Vérifiez la console pour les messages de DEBUG (🔄 Chargement...)
+   2. Assurez-vous que des données existent en base
+   3. Exécutez: SELECT * FROM recolte; (dans MySQL)
+   4. Si aucune donnée, ajoutez-en via l'interface
+
+❌ "Erreur de connexion à la base de données"
+   SOLUTION:
+   1. Vérifiez que MySQL est en cours d'exécution
+   2. Vérifiez l'utilisateur et le mot de passe
+   3. Modifiez les paramètres dans:
+      src/main/java/org/example/pidev/utils/DBConnection.java
+
+❌ "Application JavaFX ne démarre pas"
+   SOLUTION:
+   1. Assurez-vous que Java 17 est installé
+   2. Essayez: .\mvnw.cmd clean compile
+   3. Puis: .\mvnw.cmd javafx:run
+   4. Vérifiez les erreurs dans la console
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 CONSOLE DE DÉBOGAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+Quand vous lancez l'application, vous verrez des messages comme:
+
+  ✅ RecolteController initialisé
+  🔧 Configuration des colonnes de la table...
+    ✅ Colonne ID configurée
+    ✅ Colonne Quantité configurée
+    ... etc
+  🔄 Chargement des récoltes en cours...
+  ✅ Nombre de récoltes récupérées: 2
+     - Recolte{idRecolte=1, quantite=6000.0, dateRecolte=2026-02-12, ...}
+     - Recolte{idRecolte=2, quantite=4500.5, dateRecolte=2026-02-10, ...}
+  ✅ ObservableList créée avec 2 éléments
+  ✅ Table trouvée, affectation des données...
+  ✅ Données affectées à la table
+  ✅ 2 récoltes chargées
+
+Ces messages confirment que tout fonctionne correctement.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📁 STRUCTURE DU PROJET
+═══════════════════════════════════════════════════════════════════════════════
+
+PIDEVJAVAFX-maramdh/
+├── src/main/
+│   ├── java/
+│   │   └── org/example/pidev/
+│   │       ├── controllers/
+│   │       │   ├── RecolteController.java ✅ (MODIFIÉ)
+│   │       │   ├── DashboardController.java
+│   │       │   ├── RendementController.java
+│   │       │   └── AddRecolteController.java
+│   │       ├── models/
+│   │       │   ├── Recolte.java
+│   │       │   ├── Rendement.java
+│   │       │   └── ...
+│   │       ├── services/
+│   │       │   ├── RecolteService.java
+│   │       │   ├── RendementService.java
+│   │       │   └── ...
+│   │       ├── utils/
+│   │       │   └── DBConnection.java
+│   │       └── test/
+│   │           ├── LauncherGUI.java
+│   │           ├── Launcher.java
+│   │           └── TestRecoltesLoad.java ✅ (CRÉÉ)
+│   └── resources/
+│       ├── Dashboard.fxml
+│       ├── DashboardDefault.fxml
+│       ├── Recolte.fxml
+│       ├── Rendement.fxml
+│       ├── AddRecolte.fxml
+│       └── smartfarm.css
+├── pom.xml
+├── RUN_APP.bat ✅ (CRÉÉ)
+├── CORRECTIONS_APPLIQUEES.txt ✅ (CRÉÉ)
+├── migration_recolte.sql
+└── README.md
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ CHECKLIST DE VÉRIFICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Projet compile sans erreurs (mvn clean compile)
+□ Base de données MySQL est en cours d'exécution
+□ Table 'recolte' existe et contient les bonnes colonnes
+□ Application démarre (RUN_APP.bat → Option 4)
+□ Le Dashboard s'affiche
+□ Cliquer sur "🌾 Récoltes" charge la liste
+□ Les récoltes s'affichent correctement dans la table
+□ Ajouter une récolte fonctionne
+□ La nouvelle récolte apparaît dans la liste
+□ Modifier une récolte fonctionne
+□ Supprimer une récolte fonctionne
+□ La recherche fonctionne
+□ L'actualisation recharge bien les données
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📞 SUPPORT
+═══════════════════════════════════════════════════════════════════════════════
+
+Si vous rencontrez des problèmes:
+1. Vérifiez les messages de DEBUG dans la console
+2. Consultez le fichier CORRECTIONS_APPLIQUEES.txt
+3. Assurez-vous que tous les fichiers de configuration sont corrects
+4. Exécutez le script migration_recolte.sql pour préparer la BD
+
+
+═══════════════════════════════════════════════════════════════════════════════
+

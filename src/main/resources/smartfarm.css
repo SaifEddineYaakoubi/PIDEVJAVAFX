@@ -1,0 +1,266 @@
+/* =====================================================
+   SMART FARM - PROFESSIONAL UI DESIGN
+   Palette:
+   Green Primary: #2E7D32
+   Green Light: #4CAF50
+   Brown: #6D4C41
+   Red Delete: #C62828
+   ===================================================== */
+
+/* ================= GLOBAL ================= */
+
+.root {
+    -fx-font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #edf7ed, #f7fbf8);
+    -fx-font-size: 13px;
+    -fx-text-fill: #2e2e2e;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #2E7D32, #1B5E20);
+    -fx-padding: 30 20;
+    -fx-pref-width: 250px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 25, 0, 4, 0);
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-padding: 10 0 25 0;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 12 15;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+}
+
+.sidebar-button-active {
+    -fx-background-color: rgba(255,255,255,0.25);
+    -fx-font-weight: 700;
+}
+
+/* ================= CONTENT AREA ================= */
+
+.content-area {
+    -fx-background-color: transparent;
+    -fx-padding: 30;
+}
+
+.section-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2E7D32;
+}
+
+/* ================= CARDS ================= */
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0, 0, 5);
+}
+
+.card-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #522819;
+}
+
+.card-value {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2E7D32;
+}
+
+/* ================= FORMS ================= */
+
+.text-field-modern,
+.combo-box-modern,
+.date-picker-modern {
+    -fx-background-color: white;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 6, 0, 0, 2);
+}
+
+.text-field-modern:focused,
+.combo-box-modern:focused,
+.date-picker-modern:focused {
+    -fx-border-color: #4CAF50;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.15), 10, 0, 0, 3);
+}
+
+.form-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555;
+}
+
+/* ================= BUTTONS ================= */
+
+/* Primary Button (Add / Save) */
+.button-primary {
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #2E7D32);
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.3), 8, 0, 0, 3);
+}
+
+.button-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #66BB6A, #388E3C);
+}
+
+/* Secondary Button */
+.button-secondary {
+    -fx-background-color: #f2f2f2;
+    -fx-text-fill: #555;
+    -fx-padding: 10 18;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Edit Button (Brown) */
+.button-edit {
+    -fx-background-color: linear-gradient(to bottom, #511c04, #592c1f);
+    -fx-text-fill: white;
+    -fx-padding: 8 16;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.button-edit:hover {
+    -fx-background-color: linear-gradient(to bottom, #9D7E73, #783f2e);
+}
+
+/* Delete Button (Red) */
+.button-delete {
+    -fx-background-color: linear-gradient(to bottom, #E53935, #C62828);
+    -fx-text-fill: white;
+    -fx-padding: 8 16;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.button-delete:hover {
+    -fx-background-color: linear-gradient(to bottom, #F44336, #D32F2F);
+}
+
+/* ================= TABLES ================= */
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: rgba(0,0,0,0.05);
+    -fx-border-radius: 10;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f5f5f5;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2E7D32;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: rgba(0,0,0,0.02);
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: rgba(76,175,80,0.1);
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: rgba(76,175,80,0.05);
+}
+
+/* ================= TOOLBAR ================= */
+
+.toolbar {
+    -fx-background-color: transparent;
+    -fx-padding: 15 25;
+}
+
+.toolbar Label {
+    -fx-text-fill: #2E7D32;
+    -fx-font-weight: 700;
+    -fx-font-size: 16px;
+}
+
+/* ================= STATUS BAR ================= */
+
+.status-bar {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: rgba(0,0,0,0.05);
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 8 20;
+}
+
+.status-label {
+    -fx-text-fill: #2E7D32;
+    -fx-font-weight: 700;
+}
+
+/* ================= TOTALS CONTAINERS ================= */
+
+.total-container {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);
+    -fx-border-width: 2;
+}
+
+.total-container-recolte {
+    -fx-border-color: #4CAF50;
+}
+
+.total-container-rendement {
+    -fx-border-color: #511c04;
+}
+
+.total-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+.total-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2E7D32;
+}
+
+.total-icon {
+    -fx-font-size: 18px;
+}
+
+/* ================= SIDEBAR MODES ================= */
+
+.sidebar-recolte {
+    -fx-background-color: linear-gradient(to bottom, #2E7D32, #1B5E20);
+}
+
+.sidebar-rendement {
+    -fx-background-color: linear-gradient(to bottom, #522819, #592c1f);
+}

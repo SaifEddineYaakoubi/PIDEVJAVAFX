@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="30" styleClass="content-area" xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.pidev.controllers.DashboardDefaultController" stylesheets="@smartfarm.css">
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="📊 Statistiques Globales" styleClass="section-title" style="-fx-text-fill: #2E7D32; -fx-font-size: 24px; -fx-font-weight: 800;"/>
+
+    <!-- STAT CARDS - TOTAL RECOLTES, TOTAL RENDEMENTS, SURFACE TOTALE -->
+    <HBox spacing="25">
+        <!-- TOTAL RECOLTES CARD -->
+        <VBox fx:id="cardTotalRecoltes" styleClass="card" style="-fx-min-width: 280; -fx-padding: 25; -fx-background-color: white; -fx-border-color: #4CAF50; -fx-border-width: 2; -fx-background-radius: 15;">
+            <HBox spacing="15" style="-fx-alignment: CENTER_LEFT;">
+                <Label text="🌾" style="-fx-font-size: 32px;"/>
+                <VBox spacing="5">
+                    <Label text="Total Récoltes" style="-fx-text-fill: #666; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblTotalRecoltes" text="0" style="-fx-text-fill: #2E7D32; -fx-font-size: 36px; -fx-font-weight: 800;"/>
+                </VBox>
+            </HBox>
+            <Label text="récoltes enregistrées" style="-fx-text-fill: #999; -fx-font-size: 12px; -fx-padding: 10 0 0 0;"/>
+        </VBox>
+
+        <!-- TOTAL RENDEMENTS CARD -->
+        <VBox fx:id="cardTotalRendements" styleClass="card" style="-fx-min-width: 280; -fx-padding: 25; -fx-background-color: white; -fx-border-color: #8D6E63; -fx-border-width: 2; -fx-background-radius: 15;">
+            <HBox spacing="15" style="-fx-alignment: CENTER_LEFT;">
+                <Label text="📊" style="-fx-font-size: 32px;"/>
+                <VBox spacing="5">
+                    <Label text="Total Rendements" style="-fx-text-fill: #666; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblTotalRendements" text="0" style="-fx-text-fill: #8D6E63; -fx-font-size: 36px; -fx-font-weight: 800;"/>
+                </VBox>
+            </HBox>
+            <Label text="rendements enregistrés" style="-fx-text-fill: #999; -fx-font-size: 12px; -fx-padding: 10 0 0 0;"/>
+        </VBox>
+
+        <!-- SURFACE TOTALE CARD -->
+        <VBox styleClass="card" style="-fx-min-width: 280; -fx-padding: 25; -fx-background-color: white; -fx-border-color: #FF9800; -fx-border-width: 2; -fx-background-radius: 15;">
+            <HBox spacing="15" style="-fx-alignment: CENTER_LEFT;">
+                <Label text="🌍" style="-fx-font-size: 32px;"/>
+                <VBox spacing="5">
+                    <Label text="Surface Totale" style="-fx-text-fill: #666; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblSurfaceTotale" text="0" style="-fx-text-fill: #FF9800; -fx-font-size: 36px; -fx-font-weight: 800;"/>
+                </VBox>
+            </HBox>
+            <Label text="hectares exploités" style="-fx-text-fill: #999; -fx-font-size: 12px; -fx-padding: 10 0 0 0;"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <Separator style="-fx-padding: 10 0;"/>
+
+    <!-- TABLE -->
+
+
+</VBox>

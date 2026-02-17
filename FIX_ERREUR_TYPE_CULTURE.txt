@@ -1,0 +1,159 @@
+════════════════════════════════════════════════════════════════════════════════
+⚠️ ERREUR DÉTECTÉE: "Unknown column 'type_culture' in 'field list'"
+════════════════════════════════════════════════════════════════════════════════
+
+✅ CAUSE IDENTIFIÉE:
+   La table `recolte` dans la base de données n'a pas les colonnes:
+   - type_culture
+   - localisation
+
+   Ces colonnes ont été ajoutées au modèle Java mais pas à la base de données.
+
+════════════════════════════════════════════════════════════════════════════════
+
+🔧 SOLUTION - 3 OPTIONS
+════════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════════
+OPTION 1: MODIFICATION SIMPLE (Recommandée - préserve les données)
+══════════════════════════════════════════════════════════════════════════════════
+
+Exécutez cette requête SQL dans votre client MySQL:
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  ALTER TABLE recolte                                                        │
+│  ADD COLUMN type_culture VARCHAR(100) NOT NULL DEFAULT 'Non spécifié',     │
+│  ADD COLUMN localisation VARCHAR(100) NOT NULL DEFAULT 'Non spécifiée';    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Étapes:
+1. Ouvrez phpMyAdmin
+2. Sélectionnez votre base de données
+3. Allez dans l'onglet "SQL"
+4. Copiez-collez la requête ci-dessus
+5. Cliquez sur "Exécuter"
+
+══════════════════════════════════════════════════════════════════════════════════
+OPTION 2: RECRÉER LA TABLE (Supprime les données existantes)
+══════════════════════════════════════════════════════════════════════════════════
+
+Exécutez ces requêtes SQL dans l'ordre:
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  -- Supprimer la table existante                                           │
+│  DROP TABLE IF EXISTS rendement;                                           │
+│  DROP TABLE IF EXISTS recolte;                                             │
+│                                                                              │
+│  -- Recréer la table recolte avec les bonnes colonnes                     │
+│  CREATE TABLE recolte (                                                    │
+│      id_recolte INT PRIMARY KEY AUTO_INCREMENT,                           │
+│      quantite DOUBLE NOT NULL,                                             │
+│      date_recolte DATE NOT NULL,                                           │
+│      qualite VARCHAR(100) NOT NULL,                                        │
+│      type_culture VARCHAR(100) NOT NULL,                                   │
+│      localisation VARCHAR(100) NOT NULL                                    │
+│  );                                                                         │
+│                                                                              │
+│  -- Recréer la table rendement avec la FK                                 │
+│  CREATE TABLE rendement (                                                  │
+│      id_rendement INT PRIMARY KEY AUTO_INCREMENT,                          │
+│      surface_exploitee DOUBLE NOT NULL,                                    │
+│      quantite_totale DOUBLE NOT NULL,                                      │
+│      productivite DOUBLE NOT NULL,                                         │
+│      id_recolte INT NOT NULL,                                              │
+│      FOREIGN KEY (id_recolte) REFERENCES recolte(id_recolte)               │
+│          ON DELETE CASCADE                                                 │
+│  );                                                                         │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+⚠️ ATTENTION: Cette option supprime toutes les données existantes!
+
+══════════════════════════════════════════════════════════════════════════════════
+OPTION 3: UTILISER LE FICHIER MIGRATION SQL
+══════════════════════════════════════════════════════════════════════════════════
+
+Un fichier migration_recolte.sql a été créé dans le projet.
+
+Depuis la ligne de commande:
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  mysql -u root -p votre_base_de_donnees < migration_recolte.sql           │
+│                                                                              │
+│  Ou depuis PowerShell:                                                      │
+│  mysql -u root --password=votre_motdepasse votre_base < migration_recolte  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+📝 VÉRIFICATION APRÈS LA MODIFICATION
+════════════════════════════════════════════════════════════════════════════════
+
+Après l'exécution, vérifiez que les colonnes existent:
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  DESCRIBE recolte;                                                          │
+│  -- Ou en MySQL 8.0+:                                                      │
+│  DESC recolte;                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Vous devriez voir ces colonnes:
+┌─────────────────┬──────────────┬──────┐
+│ Field           │ Type         │ Null │
+├─────────────────┼──────────────┼──────┤
+│ id_recolte      │ int(11)      │ NO   │
+│ quantite        │ double       │ NO   │
+│ date_recolte    │ date         │ NO   │
+│ qualite         │ varchar(100) │ NO   │
+│ type_culture    │ varchar(100) │ NO   │ ← NOUVELLE
+│ localisation    │ varchar(100) │ NO   │ ← NOUVELLE
+└─────────────────┴──────────────┴──────┘
+
+════════════════════════════════════════════════════════════════════════════════
+
+✅ APRÈS LA MIGRATION
+════════════════════════════════════════════════════════════════════════════════
+
+1. ✅ Redémarrez l'application Java
+2. ✅ Essayez d'ajouter une récolte à nouveau
+3. ✅ Cela devrait fonctionner maintenant!
+
+════════════════════════════════════════════════════════════════════════════════
+
+📌 NOTES IMPORTANTES
+════════════════════════════════════════════════════════════════════════════════
+
+1. Les colonnes type_culture et localisation sont définies comme NOT NULL
+   → Vous DEVEZ fournir une valeur (ne peut pas être vide)
+
+2. Les valeurs par défaut sont:
+   - type_culture: 'Non spécifié'
+   - localisation: 'Non spécifiée'
+
+3. Si vous avez déjà des données dans recolte:
+   → Utilisez l'OPTION 1 (ALTER TABLE)
+   → Les données existantes seront conservées
+
+4. Si vous n'avez pas de données importantes:
+   → Vous pouvez utiliser l'OPTION 2 (DROP et recréer)
+
+════════════════════════════════════════════════════════════════════════════════
+
+❓ BESOIN D'AIDE?
+════════════════════════════════════════════════════════════════════════════════
+
+Si vous rencontrez des erreurs:
+
+1. Vérifiez que vous êtes connecté à la bonne base de données
+2. Vérifiez vos permissions (vous devez avoir les droits ALTER TABLE)
+3. Assurez-vous que MySQL est en train de fonctionner
+4. Consultez l'onglet "Opérations" de phpMyAdmin pour vérifier
+
+════════════════════════════════════════════════════════════════════════════════
+

@@ -1,0 +1,198 @@
+🌾 SMART FARM - GUIDE DE DÉMARRAGE RAPIDE
+═══════════════════════════════════════════════════════════════════
+
+✅ L'APPLICATION EST PRÊTE À LANCER!
+
+═══════════════════════════════════════════════════════════════════
+🚀 3 FAÇONS DE LANCER L'APPLICATION
+═══════════════════════════════════════════════════════════════════
+
+OPTION 1️⃣ - SCRIPT WINDOWS (Recommandé - Plus facile)
+────────────────────────────────────────────────────
+1. Double-cliquez sur: run.bat
+2. Sélectionnez: Option 1 (Lancer Dashboard GUI)
+3. L'application démarre!
+
+OPTION 2️⃣ - COMMANDE MAVEN
+──────────────────────────
+cd C:\Users\admin\Desktop\PIDEVJAVAFX-maramdh
+mvnw javafx:run
+
+OPTION 3️⃣ - IDE INTELLIJ
+────────────────────────
+1. Ouvrez le projet dans IntelliJ IDEA
+2. Clic droit sur LauncherGUI.java
+3. Cliquez sur: Run 'LauncherGUI.main()'
+
+═══════════════════════════════════════════════════════════════════
+🎮 GUIDE D'UTILISATION - PAS À PAS
+═══════════════════════════════════════════════════════════════════
+
+ÉTAPE 1️⃣ - Démarrage de l'application
+──────────────────────────────────────
+✅ L'application s'ouvre avec le Dashboard
+✅ Vous voyez:
+   - Sidebar gauche (menu de navigation)
+   - Zone principale (contenu du dashboard)
+   - Cards avec statistiques (Récoltes totales, Rendement moyen)
+
+ÉTAPE 2️⃣ - Navigation vers les Récoltes
+────────────────────────────────────────
+1. Dans la SIDEBAR gauche, cherchez le bouton "🌾 Récoltes"
+2. CLIQUEZ sur ce bouton
+3. La zone principale change et affiche:
+   ✅ Titre: "📋 Gestion des Récoltes"
+   ✅ Boutons: [➕ Ajouter] [🔄 Actualiser]
+   ✅ Barre de recherche
+   ✅ TableView avec les récoltes depuis la BDD
+
+ÉTAPE 3️⃣ - Voir la liste des Récoltes
+──────────────────────────────────────
+✅ Les récoltes s'affichent automatiquement
+✅ Colonnes visibles:
+   - ID
+   - Quantité (kg)
+   - Date
+   - Qualité
+   - Type de culture
+   - Localisation
+   - Actions (Modifier/Supprimer)
+
+ÉTAPE 4️⃣ - Tester les Fonctionnalités
+──────────────────────────────────────
+
+🔍 CHERCHER une récolte:
+   1. Tapez dans "Rechercher..."
+   2. Cliquez sur [🔍 Chercher]
+   3. La table se filtre selon votre recherche
+
+➕ AJOUTER une récolte:
+   1. Cliquez sur [➕ Ajouter Récolte]
+   2. Remplissez le formulaire:
+      - Quantité (kg)
+      - Date (sélecteur de date)
+      - Qualité (ex: A, B, Premium)
+      - Type (ex: Blé, Orge)
+      - Localisation (ex: Sfax, Tunis)
+   3. Cliquez OK
+   4. La nouvelle récolte apparaît dans la table
+
+✏️ MODIFIER une récolte:
+   1. Trouvez la ligne dans la table
+   2. Cliquez sur [✏️ Modifier]
+   3. Modifiez les champs
+   4. Cliquez OK
+   5. Les modifications s'appliquent
+
+🗑️ SUPPRIMER une récolte:
+   1. Trouvez la ligne dans la table
+   2. Cliquez sur [🗑️ Supprimer]
+   3. Confirmez la suppression
+   4. La récolte est supprimée
+
+🔄 ACTUALISER la liste:
+   1. Cliquez sur [🔄 Actualiser]
+   2. La liste se rafraîchit depuis la BDD
+
+═════════════════��══════════════════════════════════════════════════════
+
+📊 DONNÉES AFFICHÉES - EXEMPLE
+
+┌─────┬───────────┬─────────────┬─────────┬──────────┬──────────────┐
+│ ID  │ Quantité  │ Date        │ Qualité │ Type     │ Localisation │
+├─────┼───────────┼─────────────┼─────────┼──────────┼──────────────┤
+│ 1   │ 5000 kg   │ 12/02/2026  │ Premium │ Blé      │ Sfax         │
+│ 2   │ 3200 kg   │ 10/01/2026  │ A       │ Orge     │ Tunis        │
+│ 3   │ 8500 kg   │ 05/03/2026  │ B       │ Maïs     │ Ariana       │
+└─────┴───────────┴─────────────┴─────────┴──────────┴──────────────┘
+
+════════════════════════════════════════════════════════════════════════
+
+⚙️ PRÉREQUIS AVANT DE LANCER
+═════════════════════════════════════════════════════════════════════
+
+✅ MySQL doit être en cours d'exécution
+✅ Base de données "smart_farm" créée
+✅ Table "recolte" créée avec les colonnes:
+   - id_recolte (INT, PK)
+   - quantite (DOUBLE)
+   - date_recolte (DATE)
+   - qualite (VARCHAR)
+   - type_culture (VARCHAR)
+   - localisation (VARCHAR)
+
+Créer la table si elle n'existe pas:
+──────────────────────────────────
+CREATE TABLE recolte (
+    id_recolte INT PRIMARY KEY AUTO_INCREMENT,
+    quantite DOUBLE NOT NULL,
+    date_recolte DATE NOT NULL,
+    qualite VARCHAR(100),
+    type_culture VARCHAR(100),
+    localisation VARCHAR(100)
+);
+
+════════════════════════════════════════════════════════════════════════
+
+🔧 TROUBLESHOOTING
+═════════════════════════════════════════════════════════════════════
+
+❌ PROBLÈME: "Database connection failed"
+✅ SOLUTION:
+   1. Vérifiez que MySQL est lancé
+   2. Vérifiez les identifiants dans DBConnection.java
+   3. Vérifiez que la table recolte existe
+
+❌ PROBLÈME: La table des récoltes est vide
+✅ SOLUTION:
+   1. Insérez des données dans la table recolte
+   2. Utilisez PhpMyAdmin ou MySQL
+   3. Exemple:
+      INSERT INTO recolte (quantite, date_recolte, qualite, type_culture, localisation)
+      VALUES (5000, '2026-02-12', 'Premium', 'Blé', 'Sfax');
+
+❌ PROBLÈME: Les boutons ne réagissent pas
+✅ SOLUTION:
+   1. Vérifiez que RecolteController est bien compilé
+   2. Vérifiez que Recolte.fxml est dans resources/
+   3. Recompiler: mvnw clean compile
+
+❌ PROBLÈME: Erreur "FXML file not found"
+✅ SOLUTION:
+   1. Vérifiez que Recolte.fxml existe
+   2. Chemin: src/main/resources/Recolte.fxml
+   3. Vérifiez l'orthographe exacte
+
+════════════════════════════════════════════════════════════════════════
+
+📝 NOTES IMPORTANTES
+═════════════════════════════════════════════════════════════════════
+
+• Les données se chargent automatiquement au démarrage
+• La connexion BD se fait via RecolteService
+• Le tableau se met à jour après chaque action (Ajouter/Modifier/Supprimer)
+• La recherche est sensible à la casse (peut être amélioré)
+• Les emojis fonctionnent correctement dans les boutons
+
+════════════════════════════════════════════════════════════════════════
+
+✨ PROCHAINES ÉTAPES (Optionnelles)
+═════════════════════════════════════════════════════════════════════
+
+1. Implémenter la même interface pour les Rendements
+2. Ajouter des graphiques pour visualiser les données
+3. Ajouter un système de rapports PDF
+4. Implémenter des alertes d'anomalies
+5. Ajouter des statistiques avancées
+
+════════════════════════════════════════════════════════════════════════
+
+🎉 VOUS ÊTES PRÊT!
+═════════════════════════════════════════════════════════════════════
+
+L'application SMART FARM est complète et prête à être utilisée.
+
+Lancez-la maintenant et testez la navigation Dashboard → Récoltes!
+
+═══════════════════════════════════════════════════════════════════════
+

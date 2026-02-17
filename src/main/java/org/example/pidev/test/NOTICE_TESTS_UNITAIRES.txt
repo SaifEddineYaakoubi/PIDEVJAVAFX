@@ -1,0 +1,31 @@
+📌 NOTICE IMPORTANTE
+
+Les anciens fichiers de test unitaires (RecolteServiceTest.java et RendementServiceTest.java)
+dans ce répertoire ont été remplacés par une implémentation JUnit 5 appropriée.
+
+✅ NOUVEAUX EMPLACEMENTS:
+   src/test/java/org/example/pidev/services/RecolteServiceTest.java
+   src/test/java/org/example/pidev/services/RendementServiceTest.java
+
+📖 DOCUMENTATION:
+   GUIDE_TESTS_UNITAIRES.md - Guide complet
+   TESTS_UNITAIRES_RAPPORT.md - Rapport détaillé
+   RESUME_FINAL_TESTS.md - Résumé exécutif
+
+🚀 EXÉCUTION:
+   mvn test
+
+❌ NE PAS UTILISER:
+   Les fichiers dans src/main/java/org/example/pidev/test/
+   qui sont des composants d'application, pas des tests JUnit
+
+✨ BÉNÉFICES:
+   ✅ Tests JUnit 5 standard
+   ✅ Séparation claire entre code et tests
+   ✅ Meilleure intégration Maven
+   ✅ Rapports de test automatiques
+   ✅ Compatible CI/CD
+
+---
+Créé le: 16 Février 2026
+
