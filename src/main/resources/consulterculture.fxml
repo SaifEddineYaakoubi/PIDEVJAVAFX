@@ -8,7 +8,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.pidev.controllers.ConsulterCultureController"
+            fx:controller="org.example.pidev.controllers.culture.ConsulterCultureController"
             style="-fx-background-color: #faf5f0;">
 
     <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">

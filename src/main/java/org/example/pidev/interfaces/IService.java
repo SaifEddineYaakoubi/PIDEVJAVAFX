@@ -8,7 +8,6 @@ public interface IService<T> {
 
     void update(T t);
 
-    boolean delete(int id);
 
     T getById(int id);
 

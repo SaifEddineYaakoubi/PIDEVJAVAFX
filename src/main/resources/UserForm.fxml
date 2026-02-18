@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.*?>
+<?import java.lang.String?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.pidev.controllers.utilisateur.UserFormController"
+            prefHeight="550.0" prefWidth="600.0"
+            style="-fx-background-color: linear-gradient(to bottom right, #1a472a, #2d5a3f);">
+
+    <VBox alignment="CENTER" spacing="25" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="40"
+          AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="30" styleClass="form-card" stylesheets="@styles/smartfarm.css">
+
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="👤" style="-fx-font-size: 40px;"/>
+            <Label fx:id="formTitle" text="Détails de l'utilisateur" styleClass="form-title"/>
+            <Separator maxWidth="200"/>
+        </VBox>
+
+        <GridPane hgap="20" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+
+            <VBox spacing="5" GridPane.rowIndex="0">
+                <Label text="Nom Complet" styleClass="form-label"/>
+                <TextField fx:id="nomField" promptText="Ex: Jean Dupont" styleClass="text-field-modern"/>
+            </VBox>
+
+            <VBox spacing="5" GridPane.rowIndex="1">
+                <Label text="Adresse Email" styleClass="form-label"/>
+                <TextField fx:id="emailField" promptText="email@exemple.com" styleClass="text-field-modern"/>
+            </VBox>
+
+            <VBox spacing="5" GridPane.rowIndex="2">
+                <Label text="Mot de passe" styleClass="form-label"/>
+                <PasswordField fx:id="passwordField" styleClass="text-field-modern"/>
+            </VBox>
+
+            <VBox spacing="5" GridPane.rowIndex="3">
+                <Label text="Rôle de l'utilisateur" styleClass="form-label"/>
+                <ComboBox fx:id="roleCombo" maxWidth="Infinity" styleClass="combo-box-modern">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="ADMIN"/>
+                            <String fx:value="AGRICULTEUR"/>
+                            <String fx:value="RESPONSABLE_STOCK"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+        </GridPane>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="saveButton" text="✓ Enregistrer" onAction="#handleSave" styleClass="btn-success" prefWidth="150"/>
+            <Button text="✗ Annuler" onAction="#handleCancel" styleClass="btn-secondary" prefWidth="120"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

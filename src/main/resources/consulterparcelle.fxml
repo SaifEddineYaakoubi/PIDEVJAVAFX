@@ -9,7 +9,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.pidev.controllers.ConsulterParcelleController"
+            fx:controller="org.example.pidev.controllers.parcelles.ConsulterParcelleController"
             style="-fx-background-color: #f0f2f5;">
 
     <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
@@ -30,6 +30,9 @@
             <!-- Menu Navigation -->
             <VBox spacing="5" style="-fx-padding: 20 15;">
                 <Label text="NAVIGATION" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+
+                <Button text="   👤  Profil" onAction="#openProfile" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 14px; -fx-background-radius: 10; -fx-cursor: hand;"/>
 
                 <Button text="   🌱  Parcelles" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
                         style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"/>

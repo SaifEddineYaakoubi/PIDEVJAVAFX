@@ -169,7 +169,6 @@ public class ParcelleService implements IService<Parcelle> {
         }
     }
 
-    @Override
     public boolean delete(int id) {
         String query = "DELETE FROM parcelle WHERE id_parcelle = ?";
         try {

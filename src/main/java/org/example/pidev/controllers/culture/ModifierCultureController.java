@@ -1,12 +1,8 @@
-package org.example.pidev.controllers;
+package org.example.pidev.controllers.culture;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.pidev.models.Culture;
@@ -14,7 +10,6 @@ import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.CultureService;
 import org.example.pidev.services.ParcelleService;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

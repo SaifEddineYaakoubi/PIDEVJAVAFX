@@ -114,9 +114,14 @@ public class CultureService implements IService<Culture> {
     // ==========================================
 
     @Override
-    public boolean add(Culture culture) throws IllegalArgumentException {
-        // Validation des données avant insertion (lance une exception si invalide)
-        valider(culture);
+    public boolean add(Culture culture) {
+        // Validation des données avant insertion (retourne false si invalide)
+        try {
+            valider(culture);
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Validation échouée: " + e.getMessage());
+            return false;
+        }
 
         String query = "INSERT INTO culture (type_culture, date_plantation, date_recolte_prevue, etat_croissance, id_parcelle) VALUES (?, ?, ?, ?, ?)";
         try {
@@ -137,7 +142,8 @@ public class CultureService implements IService<Culture> {
             return true;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de l'ajout de la culture: " + e.getMessage());
-            throw new RuntimeException("Erreur base de données: " + e.getMessage());
+            // Ne pas propager l'exception : retourner false pour indiquer l'échec
+            return false;
         }
     }
 
@@ -166,7 +172,7 @@ public class CultureService implements IService<Culture> {
         }
     }
 
-    @Override
+
     public boolean delete(int id) {
         String query = "DELETE FROM culture WHERE id_culture = ?";
         try {

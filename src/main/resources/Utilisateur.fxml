@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.*?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.pidev.controllers.utilisateur.UtilisateurController"
+            prefHeight="700.0" prefWidth="1100.0" styleClass="root" stylesheets="@styles/smartfarm.css">
+
+    <left>
+        <VBox prefWidth="280" spacing="10" styleClass="navbar">
+            <padding><Insets top="30" right="20" bottom="30" left="20"/></padding>
+
+            <Label text="🌿 SMART FARM" styleClass="navbar-brand"/>
+            <Label text="Gestion Intelligente" styleClass="form-subtitle" style="-fx-text-fill: rgba(255,255,255,0.6);"/>
+
+            <!-- Profil button ajouté -->
+            <Button text="👤 Profil" onAction="#openProfile" styleClass="nav-button" maxWidth="Infinity" alignment="BASELINE_LEFT"/>
+
+            <Region prefHeight="30"/>
+
+
+            <Button text="👥 Utilisateurs" styleClass="nav-button-active" maxWidth="Infinity" alignment="BASELINE_LEFT"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="🚪 Déconnexion" onAction="#handleLogout" styleClass="btn-danger" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="25" style="-fx-padding: 30;">
+            <HBox alignment="CENTER_LEFT">
+                <VBox>
+                    <Label text="Gestion des Utilisateurs" styleClass="section-title"/>
+                    <Label fx:id="currentUserLabel" styleClass="form-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="➕ Nouveau" onAction="#showAddModal" styleClass="btn-success"/>
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER_LEFT" styleClass="status-bar">
+                <TextField fx:id="searchField" promptText="🔍 Rechercher par nom ou email..."
+                           HBox.hgrow="ALWAYS" styleClass="text-field-modern" onKeyReleased="#handleSearch"/>
+
+                <ComboBox fx:id="roleFilter" promptText="Filtrer par rôle" styleClass="combo-box-modern" onAction="#handleFilterChange">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Tous"/>
+                            <String fx:value="ADMIN"/>
+                            <String fx:value="AGRICULTEUR"/>
+                            <String fx:value="RESPONSABLE_STOCK"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+
+            <!-- Utilisation d'un ListView à la place du TableView -->
+            <ListView fx:id="usersList" VBox.vgrow="ALWAYS" editable="false"/>
+
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <Button text="✏️ Modifier" onAction="#showEditModal" styleClass="btn-primary"/>
+                <Button text="🗑 Supprimer" onAction="#handleDeleteUser" styleClass="btn-secondary"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

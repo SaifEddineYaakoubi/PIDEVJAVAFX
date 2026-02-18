@@ -1,4 +1,4 @@
-package org.example.pidev.controllers;
+package org.example.pidev.controllers.culture;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

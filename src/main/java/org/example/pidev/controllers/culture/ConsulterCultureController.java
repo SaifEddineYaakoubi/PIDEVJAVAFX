@@ -1,4 +1,4 @@
-package org.example.pidev.controllers;
+package org.example.pidev.controllers.culture;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -19,8 +19,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.pidev.controllers.utilisateur.ProfileController;
 import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.CultureService;
@@ -451,12 +453,6 @@ public class ConsulterCultureController implements Initializable {
                 }
 
                 document.add(table);
-
-                // Pied de page
-                Paragraph footer = new Paragraph("\n© Smart Farm - Gestion Agricole Intelligente", dateFont);
-                footer.setAlignment(Element.ALIGN_CENTER);
-                document.add(footer);
-
                 document.close();
                 showMessage("✅ PDF exporté: " + file.getName(), "#2E7D32");
 
@@ -595,5 +591,30 @@ public class ConsulterCultureController implements Initializable {
     private void showMessage(String message, String color) {
         lblMessage.setText(message);
         lblMessage.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 12px; -fx-font-weight: bold;");
+    }
+
+    // Ouvre le modal Profil pour l'utilisateur connecté
+    @FXML
+    private void openProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            Parent root = loader.load();
+
+            ProfileController controller = loader.getController();
+            controller.setUser(org.example.pidev.utils.Session.getCurrentUser());
+
+            Stage stage = new Stage();
+            stage.setTitle("Mon Profil");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(tableViewCultures.getScene().getWindow());
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.showAndWait();
+
+            // Après fermeture, recharger si besoin
+            loadData();
+        } catch (IOException e) {
+            showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
+        }
     }
 }

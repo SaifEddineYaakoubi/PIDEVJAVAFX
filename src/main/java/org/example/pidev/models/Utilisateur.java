@@ -8,14 +8,14 @@ public class Utilisateur {
     private String prenom;
     private String email;
     private String motDePasse;
-    private String role;
+    private Role role;
     private boolean statut;
     private LocalDate dateCreation;
 
     public Utilisateur() {
     }
 
-    public Utilisateur(int idUser, String nom, String prenom, String email, String motDePasse, String role, boolean statut, LocalDate dateCreation) {
+    public Utilisateur(int idUser, String nom, String prenom, String email, String motDePasse, Role role, boolean statut, LocalDate dateCreation) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -26,7 +26,7 @@ public class Utilisateur {
         this.dateCreation = dateCreation;
     }
 
-    public Utilisateur(String nom, String prenom, String email, String motDePasse, String role, boolean statut, LocalDate dateCreation) {
+    public Utilisateur(String nom, String prenom, String email, String motDePasse, Role role, boolean statut, LocalDate dateCreation) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
@@ -76,12 +76,16 @@ public class Utilisateur {
         this.motDePasse = motDePasse;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getRoleString() {
+        return role != null ? role.name() : "";
     }
 
     public boolean isStatut() {

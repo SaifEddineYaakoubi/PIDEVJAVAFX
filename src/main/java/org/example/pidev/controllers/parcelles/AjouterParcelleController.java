@@ -1,4 +1,4 @@
-package org.example.pidev.controllers;
+package org.example.pidev.controllers.parcelles;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -8,14 +8,12 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.ParcelleService;
+import org.example.pidev.utils.Session;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ModifierParcelleController implements Initializable {
-
-    // ID de l'utilisateur connecté (par défaut = 1)
-    private static final int CURRENT_USER_ID = 1;
+public class AjouterParcelleController implements Initializable {
 
     @FXML
     private TextField tfNom;
@@ -36,23 +34,16 @@ public class ModifierParcelleController implements Initializable {
     private Label lblSuccess;
 
     @FXML
-    private Label lblInfo;
-
-    @FXML
-    private Button btnModifier;
+    private Button btnAjouter;
 
     @FXML
     private Button btnAnnuler;
 
-    @FXML
-    private Button btnReset;
-
     private ParcelleService parcelleService;
-    private Parcelle currentParcelle;
-    private Parcelle originalParcelle;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialiser le service
         parcelleService = new ParcelleService();
 
         // Remplir le ComboBox avec les états possibles
@@ -65,38 +56,12 @@ public class ModifierParcelleController implements Initializable {
         cbEtat.valueProperty().addListener((obs, old, newVal) -> clearMessages());
     }
 
-    /**
-     * Méthode appelée pour pré-remplir le formulaire avec les données de la parcelle
-     */
-    public void setParcelle(Parcelle parcelle) {
-        this.currentParcelle = parcelle;
-        // Sauvegarder les valeurs originales pour le reset
-        this.originalParcelle = new Parcelle(
-            parcelle.getIdParcelle(),
-            parcelle.getNom(),
-            parcelle.getSuperficie(),
-            parcelle.getLocalisation(),
-            parcelle.getEtat(),
-            parcelle.getIdUser()
-        );
-
-        // Remplir les champs
-        tfNom.setText(parcelle.getNom());
-        tfSuperficie.setText(String.valueOf(parcelle.getSuperficie()));
-        tfLocalisation.setText(parcelle.getLocalisation());
-        cbEtat.setValue(parcelle.getEtat());
-
-        // Afficher l'info
-        if (lblInfo != null) {
-            lblInfo.setText("Modification de: " + parcelle.getNom());
-        }
-    }
-
     @FXML
-    void modifierParcelle(ActionEvent event) {
+    void ajouterParcelle(ActionEvent event) {
         clearMessages();
 
         try {
+            // Récupérer les valeurs
             String nom = tfNom.getText();
             String superficieStr = tfSuperficie.getText();
             String localisation = tfLocalisation.getText();
@@ -132,39 +97,31 @@ public class ModifierParcelleController implements Initializable {
                 return;
             }
 
-            // Mettre à jour l'objet Parcelle
-            currentParcelle.setNom(nom.trim());
-            currentParcelle.setSuperficie(superficie);
-            currentParcelle.setLocalisation(localisation.trim());
-            currentParcelle.setEtat(etat);
-            currentParcelle.setIdUser(CURRENT_USER_ID);
+            // Récupérer l'ID de l'utilisateur connecté via Session
+            int currentUserId = 1; // fallback
+            try {
+                if (Session.getCurrentUser() != null) {
+                    currentUserId = Session.getCurrentUser().getIdUser();
+                }
+            } catch (Exception ex) {
+                System.err.println("Impossible de récupérer l'utilisateur courant depuis la session: " + ex.getMessage());
+            }
 
-            // Modifier via le service
-            parcelleService.update(currentParcelle);
+            // Créer l'objet Parcelle avec l'ID de l'utilisateur connecté
+            Parcelle parcelle = new Parcelle(nom.trim(), superficie, localisation.trim(), etat, currentUserId);
 
-            showSuccess("✅ Parcelle modifiée avec succès !");
+            // Ajouter via le service (qui fait aussi la validation)
+            parcelleService.add(parcelle);
 
-            // Fermer la fenêtre après un court délai
-            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
-            pause.setOnFinished(e -> fermerFenetre(null));
-            pause.play();
+            // Succès
+            showSuccess("✅ Parcelle ajoutée avec succès !");
+            clearFields();
 
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         } catch (Exception e) {
-            showError("Erreur lors de la modification: " + e.getMessage());
+            showError("Erreur lors de l'ajout: " + e.getMessage());
         }
-    }
-
-    @FXML
-    void resetForm(ActionEvent event) {
-        if (originalParcelle != null) {
-            tfNom.setText(originalParcelle.getNom());
-            tfSuperficie.setText(String.valueOf(originalParcelle.getSuperficie()));
-            tfLocalisation.setText(originalParcelle.getLocalisation());
-            cbEtat.setValue(originalParcelle.getEtat());
-        }
-        clearMessages();
     }
 
     @FXML
@@ -173,7 +130,22 @@ public class ModifierParcelleController implements Initializable {
         stage.close();
     }
 
+    @FXML
+    void resetForm(ActionEvent event) {
+        clearFields();
+        clearMessages();
+        tfNom.requestFocus();
+    }
+
+
     // ==================== HELPERS ====================
+
+    private void clearFields() {
+        tfNom.clear();
+        tfSuperficie.clear();
+        tfLocalisation.clear();
+        cbEtat.setValue(null);
+    }
 
     private void clearMessages() {
         lblError.setText("");

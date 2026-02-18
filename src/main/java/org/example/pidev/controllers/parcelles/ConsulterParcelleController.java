@@ -1,4 +1,4 @@
-package org.example.pidev.controllers;
+package org.example.pidev.controllers.parcelles;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -19,8 +19,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.pidev.controllers.utilisateur.ProfileController;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.ParcelleService;
 
@@ -414,6 +416,34 @@ public class ConsulterParcelleController implements Initializable {
                     showMessage("❌ Erreur: " + errorMessage, "#C62828");
                 }
             }
+        }
+    }
+
+    // Ouvre le modal Profil pour l'utilisateur connecté
+    @FXML
+    private void openProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            Parent root = loader.load();
+
+            ProfileController controller = loader.getController();
+            controller.setUser(org.example.pidev.utils.Session.getCurrentUser());
+
+            Stage stage = new Stage();
+            stage.setTitle("Mon Profil");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(tableViewParcelles.getScene().getWindow());
+            Scene scene = new Scene(root);
+            var css = getClass().getResource("/styles/smartfarm.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+            // Après fermeture, recharger les données si nécessaire
+            loadData();
+        } catch (IOException e) {
+            showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
         }
     }
 

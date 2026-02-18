@@ -2,38 +2,45 @@ package org.example.pidev.test;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class mainFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Charger le fichier FXML - Page principale : Liste des Parcelles
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/consulterparcelle.fxml"));
+
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("🚀 Smart Farm Application Starting...");
+        System.out.println("=".repeat(50) + "\n");
+
+        // 🔹 Charger la page LOGIN au démarrage
+        System.out.println("📂 Loading LoginView.fxml...");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
         Parent root = loader.load();
+        System.out.println("✅ LoginView.fxml loaded successfully");
 
-        // Obtenir les dimensions de l'écran
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        Scene scene = new Scene(root, 600, 500);
 
-        // Configurer la scène avec les dimensions de l'écran
-        Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+        // 🔹 Charger ton CSS global ici (recommandé)
+        System.out.println("🎨 Loading CSS...");
+        var cssResourceUrl = getClass().getResource("/styles/smartfarm.css");
+        if (cssResourceUrl != null) {
+            scene.getStylesheets().add(cssResourceUrl.toExternalForm());
+            System.out.println("✅ CSS loaded successfully");
+        } else {
+            System.out.println("⚠️ CSS not found at /styles/smartfarm.css");
+        }
 
-        // Configurer le stage
-        stage.setTitle("Smart Farm - Liste des Parcelles");
+        stage.setTitle("Smart Farm - Login");
         stage.setScene(scene);
-        stage.setResizable(true);
-
-        // Positionner la fenêtre en haut à gauche
-        stage.setX(screenBounds.getMinX());
-        stage.setY(screenBounds.getMinY());
-
-        // Maximiser la fenêtre
-        stage.setMaximized(true);
+        stage.setResizable(false);
+        stage.centerOnScreen();
         stage.show();
+
+        System.out.println("✅ Login window displayed");
+        System.out.println("\n" + "=".repeat(50) + "\n");
     }
 
     public static void main(String[] args) {

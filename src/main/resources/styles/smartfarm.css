@@ -1,5 +1,6 @@
 /* ============================================
    SMART FARM - MODERN DESIGN STYLESHEET
+   MODIFICATION: AFFICHAGE DES DONNÉES EN NOIR
    ============================================ */
 
 /* ============ ROOT & GLOBAL ============ */
@@ -83,6 +84,7 @@
 .stat-value {
     -fx-font-size: 36px;
     -fx-font-weight: bold;
+    -fx-text-fill: #333333;
 }
 
 .stat-label {
@@ -91,7 +93,7 @@
     -fx-font-weight: normal;
 }
 
-/* ============ TABLE VIEW ============ */
+/* ============ TABLE VIEW - MODIFIÉ POUR TEXTE NOIR ============ */
 .table-view {
     -fx-background-color: white;
     -fx-background-radius: 15;
@@ -114,10 +116,20 @@
     -fx-text-fill: #495057;
 }
 
+/* STYLE POUR LES CELLULES - TEXTE EN NOIR */
+.table-view .table-cell {
+    -fx-text-fill: #000000;  /* Texte en noir */
+    -fx-font-size: 13px;
+    -fx-padding: 8 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-weight: normal;
+    -fx-opacity: 1.0;
+}
+
 .table-view .table-row-cell {
     -fx-background-color: white;
     -fx-border-color: transparent transparent #f0f0f0 transparent;
-    -fx-padding: 8 0;
+    -fx-table-cell-border-color: transparent;
 }
 
 .table-view .table-row-cell:odd {
@@ -128,12 +140,29 @@
     -fx-background-color: linear-gradient(to right, #e3f2fd, #bbdefb);
 }
 
+.table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: #000000;  /* Garder le texte noir même quand sélectionné */
+    -fx-font-weight: bold;
+}
+
 .table-view .table-row-cell:hover {
     -fx-background-color: #f5f5f5;
 }
 
-.table-view .table-row-cell:selected:hover {
-    -fx-background-color: linear-gradient(to right, #bbdefb, #90caf9);
+.table-view .table-row-cell:hover .table-cell {
+    -fx-text-fill: #000000;  /* Texte noir au survol */
+}
+
+/* STYLE SPÉCIFIQUE POUR LE TEXTE DANS LES LIGNES */
+.table-row-cell .text {
+    -fx-fill: #000000;  /* Forcer la couleur du texte en noir */
+    -fx-font-size: 13px;
+}
+
+/* STYLE POUR LE PLACEHOLDER QUAND LA TABLE EST VIDE */
+.table-view .placeholder .label {
+    -fx-text-fill: #999999;
+    -fx-font-size: 14px;
 }
 
 /* ============ BUTTONS ============ */
@@ -233,6 +262,8 @@
     -fx-background-radius: 12;
     -fx-padding: 12 18;
     -fx-font-size: 14px;
+    -fx-text-fill: #333333;  /* Texte en gris foncé */
+    -fx-prompt-text-fill: #999999;
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);
 }
 
@@ -253,6 +284,10 @@
     -fx-font-size: 14px;
 }
 
+.combo-box-modern .list-cell {
+    -fx-text-fill: #333333;  /* Texte en gris foncé */
+}
+
 .combo-box-modern:focused {
     -fx-border-color: #2196F3;
     -fx-border-width: 2;
@@ -267,6 +302,10 @@
     -fx-font-size: 14px;
 }
 
+.date-picker-modern .text-field {
+    -fx-text-fill: #333333;  /* Texte en gris foncé */
+}
+
 /* ============ FORM CARD ============ */
 .form-card {
     -fx-background-color: white;
@@ -278,6 +317,7 @@
 .form-title {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
 }
 
 .form-subtitle {
@@ -364,3 +404,44 @@
     -fx-background-radius: 6;
 }
 
+/* ============ MODAL ROOT ============ */
+.modal-root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: transparent; /* le fond blanc est défini dans le FXML pour pouvoir avoir les coins arrondis */
+}
+
+.modal-root .label {
+    -fx-text-fill: #111111; /* texte sombre */
+}
+
+.modal-root .button {
+    -fx-font-weight: bold;
+}
+
+/* ============ LIST VIEW ITEM STYLES ============ */
+.list-item-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.list-item-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+}
+
+.list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 12;
+    -fx-padding: 8;
+}
+
+.list-cell {
+    -fx-padding: 10 12;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: linear-gradient(to right, #e3f2fd, #bbdefb);
+}

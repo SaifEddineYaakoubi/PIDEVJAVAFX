@@ -15,11 +15,14 @@ module org.example.pidev {
     requires itextpdf;
 
     opens org.example.pidev.models to javafx.fxml;
-    opens org.example.pidev.controllers to javafx.fxml;
     exports org.example.pidev.test;
     exports org.example.pidev.models;
     exports org.example.pidev.services;
     exports org.example.pidev.interfaces;
     exports org.example.pidev.utils;
     opens org.example.pidev.test to javafx.fxml;
+    opens org.example.pidev.controllers.utilisateur to javafx.fxml;
+    opens org.example.pidev.controllers.parcelles to javafx.fxml;
+    opens org.example.pidev.controllers.culture to javafx.fxml;
+    exports org.example.pidev.services.utilisateur;
 }
