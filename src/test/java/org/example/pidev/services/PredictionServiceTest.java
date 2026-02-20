@@ -82,8 +82,8 @@ class PredictionServiceTest {
     @DisplayName("Tendance pour type inexistant retourne message d'insuffisance")
     void testGetTrendTypeInexistant() {
         String trend = predictionService.getTrend("TypeInexistant789");
-        assertTrue(trend.contains("insuffisantes") || trend.contains("Erreur"),
-                "Doit mentionner données insuffisantes ou erreur");
+        assertTrue(trend.contains("Insuffisant") || trend.contains("Erreur"),
+                "Doit mentionner insuffisant ou erreur");
     }
 
     @Test
@@ -138,10 +138,10 @@ class PredictionServiceTest {
     // =====================
 
     @Test
-    @DisplayName("PredictionData peut être créée et modifiée")
+    @DisplayName("PredictionData peut être créée avec tous les paramètres")
     void testPredictionDataCreation() {
         PredictionService.PredictionData data = new PredictionService.PredictionData(
-            "Tomate", 500.0, 25.5, "📈 Augmentation", 10, "🍅", "✓ Conditions normales"
+            "Tomate", 500.0, 25.5, "📈 Augmentation", 10, "🍅", "✓ Conditions normales", "API"
         );
 
         assertEquals("Tomate", data.getTypeCulture());
@@ -149,18 +149,20 @@ class PredictionServiceTest {
         assertEquals(25.5, data.getPredictedYield());
         assertEquals("📈 Augmentation", data.getTrend());
         assertEquals(10, data.getHistoryCount());
+        assertEquals("API", data.getSource());
     }
 
     @Test
     @DisplayName("PredictionData toString génère une représentation valide")
     void testPredictionDataToString() {
         PredictionService.PredictionData data = new PredictionService.PredictionData(
-            "Blé", 1000.0, 45.0, "→ Stable", 8, "🌾", "✓ Conditions normales"
+            "Blé", 1000.0, 45.0, "→ Stable", 8, "🌾", "✓ Conditions normales", "LOCAL"
         );
 
         String str = data.toString();
         assertTrue(str.contains("Blé"), "toString doit contenir le type de culture");
         assertTrue(str.contains("1000"), "toString doit contenir la quantité");
+        assertTrue(str.contains("LOCAL"), "toString doit contenir la source");
     }
 
     // =====================
