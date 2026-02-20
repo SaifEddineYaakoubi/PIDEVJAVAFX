@@ -364,3 +364,187 @@
     -fx-background-radius: 6;
 }
 
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+.dark-mode {
+    -fx-background-color: #1a1a2e;
+}
+
+.dark-mode .list-view {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+}
+
+.dark-mode .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+}
+
+.dark-mode .list-view .list-cell:selected {
+    -fx-background-color: rgba(15, 52, 96, 0.6);
+}
+
+.dark-mode .list-view .list-cell:hover {
+    -fx-background-color: rgba(15, 52, 96, 0.3);
+}
+
+.dark-mode .text-field {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #0f3460;
+    -fx-prompt-text-fill: #6b7280;
+}
+
+.dark-mode .combo-box {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+}
+
+.dark-mode .combo-box .list-cell {
+    -fx-text-fill: #e0e0e0;
+    -fx-background-color: #16213e;
+}
+
+.dark-mode .scroll-pane {
+    -fx-background-color: #1a1a2e;
+}
+
+.dark-mode .scroll-pane > .viewport {
+    -fx-background-color: #1a1a2e;
+}
+
+/* ============ ALERT CARDS ============ */
+.alert-card {
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);
+}
+
+.alert-card-danger {
+    -fx-background-color: rgba(239,68,68,0.15);
+    -fx-border-color: rgba(239,68,68,0.3);
+    -fx-border-radius: 12;
+}
+
+.alert-card-warning {
+    -fx-background-color: rgba(245,158,11,0.15);
+    -fx-border-color: rgba(245,158,11,0.3);
+    -fx-border-radius: 12;
+}
+
+.alert-card-info {
+    -fx-background-color: rgba(59,130,246,0.15);
+    -fx-border-color: rgba(59,130,246,0.3);
+    -fx-border-radius: 12;
+}
+
+/* ============ SORT BUTTONS ============ */
+.sort-button {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #374151;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 14;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+}
+
+.sort-button:hover {
+    -fx-background-color: #e5e7eb;
+    -fx-border-color: #d1d5db;
+}
+
+.sort-button-active {
+    -fx-background-color: linear-gradient(to right, #1a472a, #2d5a3f);
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 14;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+/* ============ DARK MODE TOGGLE ============ */
+.dark-mode-toggle {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-font-size: 12px;
+    -fx-padding: 10 18;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255,255,255,0.1);
+    -fx-border-radius: 10;
+}
+
+.dark-mode-toggle:selected {
+    -fx-background-color: rgba(251,191,36,0.2);
+    -fx-text-fill: #fbbf24;
+    -fx-border-color: rgba(251,191,36,0.3);
+}
+
+/* ============ HISTORY LIST ============ */
+.history-list {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255,255,255,0.1);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.history-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.6);
+    -fx-font-size: 10px;
+    -fx-padding: 4 8;
+}
+
+.history-list .list-cell:selected {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+/* ============ SIDEBAR SCROLLPANE FIX ============ */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6;
+}
+
+.scroll-pane > .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 3;
+}
+
+.scroll-pane > .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical .increment-button,
+.scroll-pane > .scroll-bar:vertical .decrement-button {
+    -fx-pref-height: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .scroll-bar:horizontal {
+    -fx-pref-height: 0;
+    -fx-padding: 0;
+}
+
+/* ============ DRAG INDICATOR ============ */
+.drag-over {
+    -fx-border-color: #667eea;
+    -fx-border-width: 2;
+    -fx-border-style: dashed;
+    -fx-border-radius: 8;
+    -fx-opacity: 0.8;
+}

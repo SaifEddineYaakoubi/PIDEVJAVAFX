@@ -22,6 +22,12 @@ public class mainFX extends Application {
         // Configurer la scène avec les dimensions de l'écran
         Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 
+        // Charger le CSS
+        String css = getClass().getResource("/styles/smartfarm.css").toExternalForm();
+        if (css != null) {
+            scene.getStylesheets().add(css);
+        }
+
         // Configurer le stage
         stage.setTitle("Smart Farm - Liste des Parcelles");
         stage.setScene(scene);

@@ -13,6 +13,8 @@ import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.CultureService;
 import org.example.pidev.services.ParcelleService;
+import org.example.pidev.utils.ActionHistoryService;
+import org.example.pidev.utils.AnimationUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -252,6 +254,8 @@ public class ModifierCultureController implements Initializable {
             cultureService.update(currentCulture);
 
             showSuccess("✅ Culture modifiée avec succès !");
+            AnimationUtils.showSuccessAnimation(lblSuccess);
+            ActionHistoryService.getInstance().logUpdate("Culture", currentCulture.getTypeCulture());
 
             // Fermer la fenêtre après un court délai
             javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
@@ -300,6 +304,7 @@ public class ModifierCultureController implements Initializable {
     private void showError(String message) {
         lblError.setText(message);
         lblSuccess.setText("");
+        AnimationUtils.showErrorAnimation(lblError);
     }
 
     private void showSuccess(String message) {

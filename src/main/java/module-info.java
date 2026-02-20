@@ -13,6 +13,8 @@ module org.example.pidev {
 
     requires java.sql;
     requires itextpdf;
+    requires java.net.http;
+    requires org.json;
 
     opens org.example.pidev.models to javafx.fxml;
     opens org.example.pidev.controllers to javafx.fxml;
