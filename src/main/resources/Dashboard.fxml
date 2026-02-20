@@ -22,6 +22,7 @@
             <Button fx:id="btnDashboard" text="📊 Dashboard" styleClass="sidebar-button sidebar-button-active"/>
             <Button fx:id="btnRecoltes" text="🌾 Récoltes" styleClass="sidebar-button"/>
             <Button fx:id="btnRendements" text="📈 Rendements" styleClass="sidebar-button"/>
+            <Button fx:id="btnPredictions" text="🤖 Prédictions" styleClass="sidebar-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 

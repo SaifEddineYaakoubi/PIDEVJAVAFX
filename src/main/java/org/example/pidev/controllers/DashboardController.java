@@ -32,6 +32,9 @@ public class DashboardController {
     private Button btnRendements;
 
     @FXML
+    private Button btnPredictions;
+
+    @FXML
     private Label lblTotalRecoltes;
 
     @FXML
@@ -137,6 +140,16 @@ public class DashboardController {
         } else {
             System.err.println("⚠️ btnRendements n'est pas injecté (fx:id manquant?)");
         }
+
+        if (btnPredictions != null) {
+            btnPredictions.setOnAction(event -> {
+                loadPredictionsView();
+                applySidebarMode("default");
+                setActiveButton(btnPredictions);
+            });
+        } else {
+            System.err.println("⚠️ btnPredictions n'est pas injecté (fx:id manquant?)");
+        }
     }
 
     /**
@@ -233,6 +246,25 @@ public class DashboardController {
         } catch (Exception e) {
             System.err.println("❌ Erreur lors du chargement de Rendement.fxml: " + e.getMessage());
             showErrorMessage("Erreur lors du chargement des rendements: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Charge la vue Prédictions
+     */
+    private void loadPredictionsView() {
+        try {
+            System.out.println("🤖 Chargement des Prédictions");
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Predictions.fxml"));
+            Parent view = loader.load();
+            if (rootPane != null) rootPane.setCenter(view);
+
+            setActiveButton(btnPredictions);
+
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors du chargement de Predictions.fxml: " + e.getMessage());
+            showErrorMessage("Erreur lors du chargement des prédictions: " + e.getMessage());
         }
     }
 
