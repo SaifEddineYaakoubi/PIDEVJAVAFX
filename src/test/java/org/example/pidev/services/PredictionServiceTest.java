@@ -140,12 +140,9 @@ class PredictionServiceTest {
     @Test
     @DisplayName("PredictionData peut être créée et modifiée")
     void testPredictionDataCreation() {
-        PredictionService.PredictionData data = new PredictionService.PredictionData();
-        data.setTypeCulture("Tomate");
-        data.setPredictedQuantity(500.0);
-        data.setPredictedYield(25.5);
-        data.setTrend("📈 Augmentation");
-        data.setHistoryCount(10);
+        PredictionService.PredictionData data = new PredictionService.PredictionData(
+            "Tomate", 500.0, 25.5, "📈 Augmentation", 10, "🍅", "✓ Conditions normales"
+        );
 
         assertEquals("Tomate", data.getTypeCulture());
         assertEquals(500.0, data.getPredictedQuantity());
@@ -157,9 +154,9 @@ class PredictionServiceTest {
     @Test
     @DisplayName("PredictionData toString génère une représentation valide")
     void testPredictionDataToString() {
-        PredictionService.PredictionData data = new PredictionService.PredictionData();
-        data.setTypeCulture("Blé");
-        data.setPredictedQuantity(1000.0);
+        PredictionService.PredictionData data = new PredictionService.PredictionData(
+            "Blé", 1000.0, 45.0, "→ Stable", 8, "🌾", "✓ Conditions normales"
+        );
 
         String str = data.toString();
         assertTrue(str.contains("Blé"), "toString doit contenir le type de culture");
