@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class PredictionService {
 
     // ⚠️ API CONFIGURATION - Similaire au WeatherService
-    private static final String API_BASE_URL = "http://localhost:8080/api/predictions";
-    private static final String API_KEY = "YOUR_API_KEY_HERE";  // À remplacer
+    private static final String API_BASE_URL = "https://serpapi.com/manage-api-key";
+    private static final String API_KEY = "113a795152dd2519d16bb1e18ba520ec28b87138f89859a1793d57626d7b771a";  // À remplacer
 
     private final RecolteService recolteService;
     private final RendementService rendementService;
