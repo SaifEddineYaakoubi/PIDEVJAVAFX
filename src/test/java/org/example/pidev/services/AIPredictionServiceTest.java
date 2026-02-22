@@ -122,17 +122,7 @@ class AIPredictionServiceTest {
     }
 
     @Test
-    @DisplayName("Bascule entre Azure et Google")
-    void testProviderSwitching() {
-        aiService.switchProvider("GOOGLE");
-        assertEquals("GOOGLE", aiService.getActiveProvider(), "Doit basculer vers Google");
-
-        aiService.switchProvider("AZURE");
-        assertEquals("AZURE", aiService.getActiveProvider(), "Doit basculer vers Azure");
-    }
-
-    @Test
-    @DisplayName("Gère les prédictions invalides")
+    @DisplayName("Génère qualité d'indicateur basée sur confiance")
     void testInvalidCropPrediction() {
         AIPredictionService.AIPrediction prediction =
             aiService.getAIPrediction(null, 500, 20);

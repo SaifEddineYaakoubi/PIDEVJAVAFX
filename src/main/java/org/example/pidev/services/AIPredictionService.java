@@ -27,18 +27,20 @@ import java.util.stream.Collectors;
  */
 public class AIPredictionService {
 
-    // ⚠️ CONFIGURATION API IA
-    // Option 1: Azure Machine Learning
-    private static final String AZURE_ENDPOINT = "https://YOUR_WORKSPACE.eastus.inference.ml.azure.com/score";
-    private static final String AZURE_API_KEY = "YOUR_AZURE_API_KEY";
-
-    // Option 2: Google Cloud ML
-    private static final String GOOGLE_ENDPOINT = "https://ml.googleapis.com/v1/projects/YOUR_PROJECT/predict?key=YOUR_GOOGLE_API_KEY";
-    private static final String GOOGLE_API_KEY = "YOUR_GOOGLE_API_KEY";
+    // ⚠️ CONFIGURATION API IA - HUGGING FACE (100% GRATUIT ET RÉEL)
+    // Inscription gratuite: https://huggingface.co/join
+    // 1. Créer compte sur https://huggingface.co/join
+    // 2. Aller sur https://huggingface.co/settings/tokens
+    // 3. Cliquer "New token"
+    // 4. Nommer: "SmartFarm"
+    // 5. Copier le token et remplacer ci-dessous
+    private static final String HF_ENDPOINT =
+        "https://api-inference.huggingface.co/models/google/flan-t5-base";
+    private static final String HF_API_KEY = "hf_YOUR_TOKEN_HERE";  // À remplacer par votre token Hugging Face gratuit
 
     private final HttpClient httpClient;
     private boolean apiFailed = false;
-    private String activeProvider = "AZURE";  // AZURE ou GOOGLE
+
 
     public AIPredictionService() {
         this.httpClient = HttpClient.newHttpClient();
@@ -169,47 +171,41 @@ public class AIPredictionService {
      */
     private AIPrediction fetchAIPrediction(String cropType, double currentYield, double surfaceArea) {
         try {
-            System.out.println("🧠 Appel API IA (" + activeProvider + ")...");
+            System.out.println("🧠 Appel Hugging Face API...");
 
-            // Préparer les données pour le modèle ML
-            JSONObject inputData = new JSONObject();
-            JSONArray data = new JSONArray();
+            // Préparer le prompt pour le modèle de langage
+            String prompt = String.format(
+                "Analyse agricole: Culture %s, Rendement: %.0fkg, Surface: %.0fha. " +
+                "Prédit: rendement (kg), confiance (0-100), risque maladie (LOW/MEDIUM/HIGH), " +
+                "irrigation (Normal/Urgente), prix 30j (USD), date récolte (YYYY-MM-DD)",
+                cropType, currentYield, surfaceArea);
 
-            JSONObject instance = new JSONObject();
-            instance.put("crop_type", cropType);
-            instance.put("current_yield", currentYield);
-            instance.put("surface_area", surfaceArea);
-            instance.put("season", "2026_spring");
-
-            data.put(instance);
-            inputData.put("instances", data);
-
-            String endpoint = "AZURE".equals(activeProvider) ? AZURE_ENDPOINT : GOOGLE_ENDPOINT;
-            String apiKey = "AZURE".equals(activeProvider) ? AZURE_API_KEY : GOOGLE_API_KEY;
+            JSONObject payload = new JSONObject();
+            payload.put("inputs", prompt);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(endpoint))
-                    .header("User-Agent", "SmartFarm-JavaFX/1.0")
+                    .uri(URI.create(HF_ENDPOINT))
+                    .header("Authorization", "Bearer " + HF_API_KEY)
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + apiKey)
                     .timeout(Duration.ofSeconds(15))
-                    .POST(HttpRequest.BodyPublishers.ofString(inputData.toString()))
+                    .POST(HttpRequest.BodyPublishers.ofString(payload.toString()))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                System.out.println("✅ API IA réponse 200 OK");
+                System.out.println("✅ Hugging Face réponse 200 OK");
                 return parseAIPrediction(response.body(), cropType);
             } else if (response.statusCode() == 401) {
                 apiFailed = true;
-                System.out.println("❌ API IA - Clé API invalide (401)");
+                System.out.println("❌ Hugging Face - Token invalide (401)");
+                System.out.println("   ➡️ Obtenir token gratuit: https://huggingface.co/settings/tokens");
             } else {
-                System.out.println("⚠️ API IA - Code: " + response.statusCode());
+                System.out.println("⚠️ Hugging Face - Code: " + response.statusCode());
             }
 
         } catch (Exception e) {
-            System.out.println("⚠️ API IA indisponible: " + e.getMessage());
+            System.out.println("⚠️ Hugging Face indisponible: " + e.getMessage());
         }
 
         return null;
@@ -220,31 +216,55 @@ public class AIPredictionService {
      */
     private AIPrediction parseAIPrediction(String jsonResponse, String cropType) {
         try {
-            JSONObject json = new JSONObject(jsonResponse);
-            JSONArray predictions = json.optJSONArray("predictions");
+            // Hugging Face retourne un tableau
+            JSONArray responses = new JSONArray(jsonResponse);
 
-            if (predictions != null && predictions.length() > 0) {
-                JSONObject pred = predictions.getJSONObject(0);
+            if (responses.length() > 0) {
+                JSONObject response = responses.getJSONObject(0);
+                String generatedText = response.optString("generated_text", "");
 
-                double yieldPrediction = pred.optDouble("yield_prediction", 500);
-                double confidence = pred.optDouble("confidence", 75);
-                String diseaseRisk = pred.optString("disease_risk", "LOW");
-                String irrigationAdvice = pred.optString("irrigation_advice", "Normal");
-                double priceProjection = pred.optDouble("price_projection_30days", 100);
-                String optimalHarvestDate = pred.optString("optimal_harvest_date", "2026-05-15");
+                // Extraire valeurs du texte généré (simple parsing)
+                double yieldPrediction = extractNumberFromText(generatedText, "rendement|yield", 500);
+                double confidence = extractNumberFromText(generatedText, "confiance|confidence", 75);
+                double priceProjection = extractNumberFromText(generatedText, "prix|price", 100);
 
-                System.out.println("✅ Prédiction IA parsée avec succès");
+                String diseaseRisk = generatedText.contains("HIGH") ? "HIGH" :
+                                    (generatedText.contains("MEDIUM") ? "MEDIUM" : "LOW");
+                String irrigationAdvice = generatedText.contains("Urgente") ? "Irrigation urgente" : "Irrigation normale";
+                String optimalHarvestDate = "2026-05-15";  // Date par défaut
+
+                System.out.println("✅ Prédiction Hugging Face parsée");
 
                 return new AIPrediction(cropType, yieldPrediction, confidence, diseaseRisk,
                         irrigationAdvice, priceProjection, optimalHarvestDate,
-                        "RandomForest_v2.3", activeProvider);
+                        "FLAN-T5", "HUGGING_FACE");
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Erreur parsing IA: " + e.getMessage());
+            System.err.println("❌ Erreur parsing Hugging Face: " + e.getMessage());
         }
 
         return null;
+    }
+
+    /**
+     * Extrait un nombre du texte généré
+     */
+    private double extractNumberFromText(String text, String keyword, double defaultValue) {
+        try {
+            String[] words = text.split("\\s+");
+            for (int i = 0; i < words.length - 1; i++) {
+                if (words[i].toLowerCase().contains(keyword.split("\\|")[0])) {
+                    String next = words[i + 1].replaceAll("[^0-9.]", "");
+                    if (!next.isEmpty()) {
+                        return Double.parseDouble(next);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Garder la valeur par défaut
+        }
+        return defaultValue;
     }
 
     /**
@@ -264,15 +284,6 @@ public class AIPredictionService {
                 Math.round(priceProjection), "2026-05-15", "Fallback", "FALLBACK");
     }
 
-    /**
-     * Basculer entre Azure et Google
-     */
-    public void switchProvider(String provider) {
-        if ("GOOGLE".equalsIgnoreCase(provider) || "AZURE".equalsIgnoreCase(provider)) {
-            this.activeProvider = provider.toUpperCase();
-            System.out.println("🔄 Changement vers: " + activeProvider);
-        }
-    }
 
     /**
      * Récupère prédictions pour toutes cultures
@@ -292,9 +303,4 @@ public class AIPredictionService {
     public boolean isAPIAvailable() {
         return !apiFailed;
     }
-
-    public String getActiveProvider() {
-        return activeProvider;
-    }
 }
-
