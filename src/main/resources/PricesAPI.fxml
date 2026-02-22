@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<!--
+    ════════════════════════════════════════════════════════════════════════
+    WIDGET PRIX API - Affiche les prix du marché en temps réel
+    ════════════════════════════════════════════════════════════════════════
+-->
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.pidev.controllers.PricesAPIController"
+      spacing="16"
+      stylesheets="@prices-api.css"
+      style="-fx-padding: 20;">
+
+    <!-- HEADER -->
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="💰 Prix du Marché" styleClass="prices-title" />
+            <Label text="Données en temps réel - Mise à jour API Alpha Vantage" styleClass="prices-subtitle" />
+        </VBox>
+
+        <!-- Bouton Rafraîchir -->
+        <Button
+            text="🔄 Rafraîchir"
+            styleClass="btn-refresh-prices"
+            onAction="#handleRefreshPrices"
+            prefWidth="150" />
+    </HBox>
+
+    <!-- SEPARATOR -->
+    <Separator styleClass="separator-light" />
+
+    <!-- GRILLE DE PRIX -->
+    <GridPane fx:id="pricesGridPane"
+              styleClass="grid-pane"
+              hgap="16" vgap="16"
+              prefWidth="800">
+        <!-- Les cartes de prix seront ajoutées dynamiquement -->
+    </GridPane>
+
+    <!-- STATISTIQUES -->
+    <VBox spacing="12" style="-fx-padding: 20; -fx-background-color: #FFFFFF; -fx-background-radius: 12;">
+        <Label text="📊 Statistiques Marché" styleClass="prices-title" />
+
+        <HBox spacing="16">
+            <!-- Moyenne prix -->
+            <VBox styleClass="stats-card" HBox.hgrow="ALWAYS">
+                <Label text="Prix Moyen" styleClass="stats-label" />
+                <Label fx:id="avgPriceLabel" text="Calcul..." styleClass="stats-value" />
+            </VBox>
+
+            <!-- Meilleur prix -->
+            <VBox styleClass="stats-card" HBox.hgrow="ALWAYS">
+                <Label text="📈 Meilleur Prix" styleClass="stats-label" />
+                <Label fx:id="highestPriceLabel" text="Calcul..." styleClass="stats-value" />
+            </VBox>
+
+            <!-- Pire prix -->
+            <VBox styleClass="stats-card" HBox.hgrow="ALWAYS">
+                <Label text="📉 Pire Prix" styleClass="stats-label" />
+                <Label fx:id="lowestPriceLabel" text="Calcul..." styleClass="stats-value" />
+            </VBox>
+
+            <!-- Cultures en hausse -->
+            <VBox styleClass="stats-card" HBox.hgrow="ALWAYS">
+                <Label text="🟢 En Hausse" styleClass="stats-label" />
+                <Label fx:id="upCountLabel" text="Calcul..." styleClass="stats-value" />
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- STATUT API -->
+    <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-padding: 12; -fx-background-color: #F8F9FA; -fx-background-radius: 8;">
+        <Circle fx:id="apiStatusCircle" radius="6" fill="#27AE60" />
+        <Label fx:id="apiStatusLabel" text="✅ API Alpha Vantage: CONNECTÉE" styleClass="label-secondary" HBox.hgrow="ALWAYS" />
+        <Label fx:id="lastUpdateLabel" text="Dernière mise à jour: --" styleClass="label-secondary" />
+    </HBox>
+
+</VBox>
+

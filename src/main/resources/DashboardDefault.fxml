@@ -58,4 +58,10 @@
     <Label text="🤖 Prédictions Intelligentes" styleClass="section-title" style="-fx-text-fill: #7B1FA2; -fx-font-size: 20px; -fx-font-weight: 800;"/>
     <fx:include source="PredictionWidget.fxml"/>
 
+    <Separator style="-fx-padding: 10 0;"/>
+
+    <!-- WIDGET PRIX API -->
+    <Label text="💰 Marché Agricole - Prix en Temps Réel" styleClass="section-title" style="-fx-text-fill: #2E7D32; -fx-font-size: 20px; -fx-font-weight: 800;"/>
+    <fx:include source="PricesAPI.fxml"/>
+
 </VBox>
