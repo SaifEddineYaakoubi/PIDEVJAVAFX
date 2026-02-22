@@ -31,7 +31,7 @@ public class FAOPricesService {
     // 4. Copier la clé reçue par email
     // 5. Remplacer YOUR_ALPHA_VANTAGE_KEY ci-dessous
     private static final String API_BASE_URL = "https://www.alphavantage.co/query";
-    private static final String API_KEY = "YOUR_ALPHA_VANTAGE_KEY";  // À remplacer par votre clé gratuite
+    private static final String API_KEY = "2IQ6VVI25Z0ROT5Y";  // À remplacer par votre clé gratuite
 
     private final HttpClient httpClient;
     private boolean apiFailed = false;
