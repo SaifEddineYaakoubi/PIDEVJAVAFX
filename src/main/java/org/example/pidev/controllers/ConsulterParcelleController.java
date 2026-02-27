@@ -154,6 +154,8 @@ public class ConsulterParcelleController implements Initializable {
             btnDarkMode.setOnAction(e -> {
                 tm.toggleAndApply(listViewParcelles.getScene().getRoot());
                 btnDarkMode.setText(tm.isDarkMode() ? "☀️ Mode Clair" : "🌙 Mode Sombre");
+                // Refresh list cells to apply dark/light theme to cell content
+                listViewParcelles.refresh();
             });
         }
 
@@ -164,6 +166,13 @@ public class ConsulterParcelleController implements Initializable {
 
         // Alertes
         checkAlerts();
+
+        // Apply dark mode if already active (e.g. after navigation)
+        Platform.runLater(() -> {
+            if (listViewParcelles.getScene() != null) {
+                ThemeManager.getInstance().applyTheme(listViewParcelles.getScene().getRoot());
+            }
+        });
     }
 
     // ==================== CELL FACTORY avec TOOLTIP + DRAG & DROP ====================
@@ -179,37 +188,44 @@ public class ConsulterParcelleController implements Initializable {
                     setStyle("");
                     setTooltip(null);
                 } else {
+                    ThemeManager tm = ThemeManager.getInstance();
+                    boolean isDark = tm.isDarkMode();
+
                     HBox container = new HBox(20);
                     container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                    container.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10;");
+                    container.setStyle(tm.getCellCardStyle());
+
+                    String mutedColor = tm.getMutedTextFill();
+                    String textColor = tm.getPrimaryTextFill();
+                    String titleColor = tm.getParcelleTitleColor();
 
                     VBox nomBox = new VBox(3);
                     Label lblNomTitle = new Label("📝 Nom");
-                    lblNomTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblNomTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblNom = new Label(parcelle.getNom());
-                    lblNom.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a472a;");
+                    lblNom.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + titleColor + ";");
                     nomBox.getChildren().addAll(lblNomTitle, lblNom);
                     nomBox.setPrefWidth(200);
 
                     VBox superficieBox = new VBox(3);
                     Label lblSupTitle = new Label("📐 Superficie");
-                    lblSupTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblSupTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblSup = new Label(String.format("%.2f m²", parcelle.getSuperficie()));
-                    lblSup.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #374151;");
+                    lblSup.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
                     superficieBox.getChildren().addAll(lblSupTitle, lblSup);
                     superficieBox.setPrefWidth(120);
 
                     VBox locBox = new VBox(3);
                     Label lblLocTitle = new Label("📍 Localisation");
-                    lblLocTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblLocTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblLoc = new Label(parcelle.getLocalisation());
-                    lblLoc.setStyle("-fx-font-size: 14px; -fx-text-fill: #374151;");
+                    lblLoc.setStyle("-fx-font-size: 14px; -fx-text-fill: " + textColor + ";");
                     locBox.getChildren().addAll(lblLocTitle, lblLoc);
                     locBox.setPrefWidth(250);
 
                     VBox etatBox = new VBox(3);
                     Label lblEtatTitle = new Label("🏷️ État");
-                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblEtat = new Label(parcelle.getEtat());
                     String etatStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 15;";
                     switch (parcelle.getEtat().toLowerCase()) {
@@ -325,8 +341,11 @@ public class ConsulterParcelleController implements Initializable {
     }
 
     private void updateSortButtonStyles() {
+        boolean isDark = ThemeManager.getInstance().isDarkMode();
         String activeStyle = "-fx-background-color: linear-gradient(to right, #1a472a, #2d5a3f); -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand;";
-        String inactiveStyle = "-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #e5e7eb; -fx-border-radius: 8;";
+        String inactiveStyle = isDark ?
+            "-fx-background-color: #1e293b; -fx-text-fill: #e0e0e0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #0f3460; -fx-border-radius: 8;" :
+            "-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #e5e7eb; -fx-border-radius: 8;";
         if (btnSortNom != null) btnSortNom.setStyle("nom".equals(activeSortField) ? activeStyle : inactiveStyle);
         if (btnSortSuperficie != null) btnSortSuperficie.setStyle("superficie".equals(activeSortField) ? activeStyle : inactiveStyle);
         if (btnSortEtat != null) btnSortEtat.setStyle("etat".equals(activeSortField) ? activeStyle : inactiveStyle);
@@ -402,6 +421,7 @@ public class ConsulterParcelleController implements Initializable {
         if (btnDarkMode != null) {
             btnDarkMode.setText(tm.isDarkMode() ? "☀️ Mode Clair" : "🌙 Mode Sombre");
         }
+        listViewParcelles.refresh();
     }
 
     // ==================== EXISTING METHODS (clock, data, filters, stats) ====================

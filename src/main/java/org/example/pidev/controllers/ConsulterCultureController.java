@@ -127,6 +127,7 @@ public class ConsulterCultureController implements Initializable {
             btnDarkMode.setOnAction(e -> {
                 tm.toggleAndApply(listViewCultures.getScene().getRoot());
                 btnDarkMode.setText(tm.isDarkMode() ? "☀️ Mode Clair" : "🌙 Mode Sombre");
+                listViewCultures.refresh();
             });
         }
 
@@ -137,6 +138,13 @@ public class ConsulterCultureController implements Initializable {
 
         // Alertes
         checkAlerts();
+
+        // Apply dark mode if already active (e.g. after navigation)
+        javafx.application.Platform.runLater(() -> {
+            if (listViewCultures.getScene() != null) {
+                ThemeManager.getInstance().applyTheme(listViewCultures.getScene().getRoot());
+            }
+        });
     }
 
     // ==================== CELL FACTORY avec TOOLTIP + DRAG & DROP ====================
@@ -149,45 +157,51 @@ public class ConsulterCultureController implements Initializable {
                 if (empty || culture == null) {
                     setText(null); setGraphic(null); setStyle(""); setTooltip(null);
                 } else {
+                    ThemeManager tm = ThemeManager.getInstance();
+                    boolean isDark = tm.isDarkMode();
+                    String mutedColor = tm.getMutedTextFill();
+                    String textColor = tm.getPrimaryTextFill();
+                    String titleColor = tm.getCultureTitleColor();
+
                     HBox container = new HBox(15);
                     container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                    container.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10;");
+                    container.setStyle(tm.getCellCardStyle());
 
                     // Type
                     VBox typeBox = new VBox(3);
                     Label lblTypeTitle = new Label("🌱 Type");
-                    lblTypeTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblTypeTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblType = new Label(culture.getTypeCulture());
-                    lblType.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #78350f;");
+                    lblType.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + titleColor + ";");
                     typeBox.getChildren().addAll(lblTypeTitle, lblType);
                     typeBox.setPrefWidth(150);
 
                     // Plantation
                     VBox plantBox = new VBox(3);
                     Label lblPlantTitle = new Label("📅 Plantation");
-                    lblPlantTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblPlantTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     String datePlant = culture.getDatePlantation() != null ?
                         culture.getDatePlantation().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "-";
                     Label lblPlant = new Label(datePlant);
-                    lblPlant.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+                    lblPlant.setStyle("-fx-font-size: 13px; -fx-text-fill: " + textColor + ";");
                     plantBox.getChildren().addAll(lblPlantTitle, lblPlant);
                     plantBox.setPrefWidth(100);
 
                     // Récolte prévue
                     VBox recolteBox = new VBox(3);
                     Label lblRecolteTitle = new Label("📆 Récolte Prévue");
-                    lblRecolteTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblRecolteTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     String dateRec = culture.getDateRecoltePrevue() != null ?
                         culture.getDateRecoltePrevue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "-";
                     Label lblRecolte = new Label(dateRec);
-                    lblRecolte.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+                    lblRecolte.setStyle("-fx-font-size: 13px; -fx-text-fill: " + textColor + ";");
                     recolteBox.getChildren().addAll(lblRecolteTitle, lblRecolte);
                     recolteBox.setPrefWidth(110);
 
                     // Jours restants
                     VBox joursBox = new VBox(3);
                     Label lblJoursTitle = new Label("⏱️ Jours");
-                    lblJoursTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblJoursTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblJours = new Label();
                     String joursStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;";
                     if (culture.getDateRecoltePrevue() != null) {
@@ -204,7 +218,7 @@ public class ConsulterCultureController implements Initializable {
                     // État
                     VBox etatBox = new VBox(3);
                     Label lblEtatTitle = new Label("🏷️ État");
-                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblEtat = new Label(culture.getEtatCroissance());
                     String etatStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 15;";
                     switch (culture.getEtatCroissance().toLowerCase()) {
@@ -221,9 +235,9 @@ public class ConsulterCultureController implements Initializable {
                     // Parcelle
                     VBox parcelleBox = new VBox(3);
                     Label lblParcelleTitle = new Label("📍 Parcelle");
-                    lblParcelleTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #9ca3af;");
+                    lblParcelleTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
                     Label lblParcelle = new Label(culture.getNomParcelle() != null ? culture.getNomParcelle() : "-");
-                    lblParcelle.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+                    lblParcelle.setStyle("-fx-font-size: 13px; -fx-text-fill: " + textColor + ";");
                     parcelleBox.getChildren().addAll(lblParcelleTitle, lblParcelle);
                     parcelleBox.setPrefWidth(130);
 
@@ -317,8 +331,11 @@ public class ConsulterCultureController implements Initializable {
     }
 
     private void updateSortButtonStyles() {
+        boolean isDark = ThemeManager.getInstance().isDarkMode();
         String active = "-fx-background-color: linear-gradient(to right, #78350f, #b45309); -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand;";
-        String inactive = "-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #e5e7eb; -fx-border-radius: 8;";
+        String inactive = isDark ?
+            "-fx-background-color: #1e293b; -fx-text-fill: #e0e0e0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #0f3460; -fx-border-radius: 8;" :
+            "-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #e5e7eb; -fx-border-radius: 8;";
         if (btnSortType != null) { btnSortType.setStyle("type".equals(activeSortField) ? active : inactive); btnSortType.setText("type".equals(activeSortField) ? ("Type " + (sortAscending ? "↑" : "↓")) : "Type ↕"); }
         if (btnSortDate != null) { btnSortDate.setStyle("date".equals(activeSortField) ? active : inactive); btnSortDate.setText("date".equals(activeSortField) ? ("Date " + (sortAscending ? "↑" : "↓")) : "Date ↕"); }
         if (btnSortEtat != null) { btnSortEtat.setStyle("etat".equals(activeSortField) ? active : inactive); btnSortEtat.setText("etat".equals(activeSortField) ? ("État " + (sortAscending ? "↑" : "↓")) : "État ↕"); }
