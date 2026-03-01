@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.pidev.controllers.StatistiquesVenteController"
+      style="-fx-background-color: #f4f7f6;">
+
+    <!-- ============ SIDEBAR (Left) - AGRI-MODERN STYLE ============ -->
+    <VBox spacing="25" styleClass="sidebar" prefWidth="320" HBox.hgrow="NEVER" style="-fx-background-color: #2d5a27; -fx-padding: 30;">
+
+        <!-- Logo Section -->
+        <VBox spacing="8" style="-fx-padding: 20; -fx-background-color: rgba(118, 185, 71, 0.08); -fx-background-radius: 15;" alignment="TOP_CENTER">
+            <Label text="🌱" style="-fx-font-size: 40px;"/>
+            <Label text="SMART FARM" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #ffffff;"/>
+            <Label text="Statistiques" style="-fx-font-size: 12px; -fx-text-fill: #76b947;"/>
+        </VBox>
+
+        <!-- Navigation Section -->
+        <VBox spacing="12" style="-fx-padding: 0;">
+            <Label text="NAVIGATION" style="-fx-font-size: 11px; -fx-text-fill: #a0d468; -fx-font-weight: bold; -fx-padding: 10 0 8 0;"/>
+            <Button text="← Retour au Dashboard"
+                    onAction="#handleRetour"
+                    style="-fx-font-size: 13px; -fx-padding: 12px 20px; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2); -fx-pref-width: 260; -fx-pref-height: 48;"/>
+        </VBox>
+
+        <!-- Info Section -->
+        <VBox spacing="12" style="-fx-padding: 20; -fx-background-color: rgba(118, 185, 71, 0.05); -fx-background-radius: 12;">
+            <Label text="📊 INFORMATIONS" style="-fx-font-size: 11px; -fx-text-fill: #a0d468; -fx-font-weight: bold;"/>
+            <Label text="Analyse détaillée des ventes par client avec graphiques interactifs"
+                   style="-fx-font-size: 11px; -fx-text-fill: #bdc3c7; -fx-wrap-text: true;"/>
+        </VBox>
+
+        <!-- Spacer -->
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <!-- Footer -->
+        <VBox spacing="8" alignment="BOTTOM_CENTER" style="-fx-padding: 15 0 0 0; -fx-border-width: 1 0 0 0; -fx-border-color: rgba(255,255,255,0.1);">
+            <Label text="📅 18 Février 2026"
+                   style="-fx-font-size: 10px; -fx-text-fill: #a0d468;"/>
+            <Label text="© 2026 Smart Farm"
+                   style="-fx-font-size: 9px; -fx-text-fill: #95a5a6;"/>
+        </VBox>
+    </VBox>
+
+    <!-- ============ MAIN CONTENT (Right) - MODERN LAYOUT ============ -->
+    <VBox spacing="25" style="-fx-padding: 30; -fx-background-color: #f4f7f6;" HBox.hgrow="ALWAYS">
+
+        <!-- Header Card -->
+        <VBox spacing="8" style="-fx-padding: 25; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.12), 15, 0, 0, 4);">
+            <Label text="📊 Statistiques des Ventes" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;"/>
+            <Label text="Analyse complète et détaillée de vos performances commerciales" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+
+        <!-- KPI Cards Row -->
+        <HBox spacing="20" alignment="TOP_CENTER">
+            <!-- KPI 1: Clients -->
+            <VBox spacing="10" alignment="CENTER" style="-fx-padding: 24; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-border-width: 0 0 0 4; -fx-border-color: #3498db; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.12), 15, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                <Label text="👥" style="-fx-font-size: 36px;"/>
+                <Label text="Total Clients" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6; -fx-font-weight: normal;"/>
+                <Label fx:id="totalClientsLabel" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;"/>
+                <Label text="Enregistrés" style="-fx-font-size: 11px; -fx-text-fill: #bdc3c7;"/>
+            </VBox>
+
+            <!-- KPI 2: Ventes -->
+            <VBox spacing="10" alignment="CENTER" style="-fx-padding: 24; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-border-width: 0 0 0 4; -fx-border-color: #9b59b6; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.12), 15, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                <Label text="📈" style="-fx-font-size: 36px;"/>
+                <Label text="Total Ventes" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6; -fx-font-weight: normal;"/>
+                <Label fx:id="totalVentesLabel" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;"/>
+                <Label text="Transactions" style="-fx-font-size: 11px; -fx-text-fill: #bdc3c7;"/>
+            </VBox>
+
+            <!-- KPI 3: Montant -->
+            <VBox spacing="10" alignment="CENTER" style="-fx-padding: 24; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-border-width: 0 0 0 4; -fx-border-color: #f39c12; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.12), 15, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                <Label text="💰" style="-fx-font-size: 36px;"/>
+                <Label text="Montant Total" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6; -fx-font-weight: normal;"/>
+                <Label fx:id="montantTotalLabel" text="0.00 TND" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;"/>
+                <Label text="Revenus" style="-fx-font-size: 11px; -fx-text-fill: #bdc3c7;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Chart Section Card -->
+        <VBox spacing="15" style="-fx-padding: 28; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.1), 12, 0, 0, 3);" VBox.vgrow="ALWAYS">
+
+            <!-- Chart Title -->
+            <Label text="📊 Montant des Ventes par Client" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;"/>
+
+            <!-- BarChart -->
+            <BarChart fx:id="barChart"
+                      title=""
+                      animated="true"
+                      style="-fx-padding: 15; -fx-font-size: 12px; -fx-text-fill: #2c3e50;"
+                      VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Client"
+                                  style="-fx-text-fill: #2d5a27; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Montant (TND)"
+                                style="-fx-text-fill: #2d5a27; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+        <!-- Action Buttons Card -->
+        <HBox spacing="12" alignment="CENTER" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.08), 10, 0, 0, 2);">
+            <Button text="🔄 Rafraîchir les Données"
+                    onAction="#handleRefresh"
+                    style="-fx-font-size: 13px; -fx-padding: 11px 28px; -fx-background-color: linear-gradient(to bottom, #76b947, #5fa032); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.3), 8, 0, 0, 2);"
+                    prefWidth="200" prefHeight="44"/>
+        </HBox>
+    </VBox>
+</HBox>
+

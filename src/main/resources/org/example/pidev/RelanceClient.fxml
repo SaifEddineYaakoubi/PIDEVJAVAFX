@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="TOP_LEFT" spacing="20" style="-fx-padding: 25; -fx-background-color: #f4f7f6;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pidev.controllers.RelanceClientController">
+    <children>
+        <!-- HEADER CARD -->
+        <VBox spacing="12" style="-fx-padding: 25; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.12), 15, 0, 0, 4);">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #d9534f;" text="🔔 Clients à Relancer" />
+                <Region HBox.hgrow="ALWAYS" />
+                <VBox alignment="CENTER" style="-fx-padding: 10; -fx-background-color: #f8d7da; -fx-background-radius: 10; -fx-border-color: #f5c6cb; -fx-border-width: 1;">
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #721c24;" text="Clients inactifs" />
+                    <Label fx:id="totalInactiveLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #d9534f;" text="0" />
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- STATS CARD -->
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.08), 10, 0, 0, 3);">
+            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;" text="📊 Statistiques d'inactivité" />
+            <Label fx:id="statsLabel" style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Chargement..." />
+        </VBox>
+
+        <!-- CLIENTS LIST CARD -->
+        <VBox style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.1), 12, 0, 0, 3);" VBox.vgrow="ALWAYS">
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2d5a27;" text="Liste des clients à relancer" />
+            <ListView fx:id="inactiveClientsList" prefHeight="400" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50; -fx-background-color: transparent; -fx-padding: 10;" />
+        </VBox>
+
+        <!-- ACTION BUTTONS CARD -->
+        <HBox alignment="CENTER" spacing="12" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(45, 90, 39, 0.08), 10, 0, 0, 2);">
+            <Button onAction="#handleRefresh" style="-fx-font-size: 13px; -fx-padding: 11px 22px; -fx-background-color: linear-gradient(to bottom, #76b947, #5fa032); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(118, 185, 71, 0.2), 6, 0, 0, 1);" text="🔄 Actualiser" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#handleClose" style="-fx-font-size: 13px; -fx-padding: 11px 22px; -fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;" text="✕ Fermer" />
+        </HBox>
+    </children>
+</VBox>
+
