@@ -4,6 +4,7 @@ import org.example.pidev.interfaces.IService;
 import org.example.pidev.models.Role;
 import org.example.pidev.models.Utilisateur;
 import org.example.pidev.utils.DBConnection;
+import org.example.pidev.utils.PasswordUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ public class UtilisateurService implements IService<Utilisateur> {
 
     @Override
     public boolean add(Utilisateur utilisateur) {
-        String sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role, statut, date_creation) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role, statut, date_creation, face_image_path) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -22,10 +23,13 @@ public class UtilisateurService implements IService<Utilisateur> {
             ps.setString(1, utilisateur.getNom());
             ps.setString(2, utilisateur.getPrenom());
             ps.setString(3, utilisateur.getEmail());
-            ps.setString(4, utilisateur.getMotDePasse());
+            // Hacher le mot de passe avant stockage en BDD
+            String mdp = utilisateur.getMotDePasse();
+            ps.setString(4, PasswordUtils.isHashed(mdp) ? mdp : PasswordUtils.hash(mdp));
             ps.setString(5, utilisateur.getRole().name());
             ps.setBoolean(6, utilisateur.isStatut());
             ps.setDate(7, Date.valueOf(utilisateur.getDateCreation()));
+            ps.setString(8, utilisateur.getFaceImagePath());
 
             int result = ps.executeUpdate();
             System.out.println("ADD: " + (result > 0 ? "Succès" : "Échec"));
@@ -40,7 +44,7 @@ public class UtilisateurService implements IService<Utilisateur> {
 
     @Override
     public void update(Utilisateur utilisateur) {
-        String sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, mot_de_passe=?, role=?, statut=?, date_creation=? " +
+        String sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, mot_de_passe=?, role=?, statut=?, date_creation=?, face_image_path=? " +
                 "WHERE id_user=?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -49,11 +53,14 @@ public class UtilisateurService implements IService<Utilisateur> {
             ps.setString(1, utilisateur.getNom());
             ps.setString(2, utilisateur.getPrenom());
             ps.setString(3, utilisateur.getEmail());
-            ps.setString(4, utilisateur.getMotDePasse());
+            // Hacher le mot de passe si ce n'est pas déjà un hash
+            String mdp = utilisateur.getMotDePasse();
+            ps.setString(4, PasswordUtils.isHashed(mdp) ? mdp : PasswordUtils.hash(mdp));
             ps.setString(5, utilisateur.getRole().name());
             ps.setBoolean(6, utilisateur.isStatut());
             ps.setDate(7, Date.valueOf(utilisateur.getDateCreation()));
-            ps.setInt(8, utilisateur.getIdUser());
+            ps.setString(8, utilisateur.getFaceImagePath());
+            ps.setInt(9, utilisateur.getIdUser());
 
             int rows = ps.executeUpdate();
             System.out.println("UPDATE: " + rows + " ligne(s) modifiée(s)");
@@ -64,7 +71,7 @@ public class UtilisateurService implements IService<Utilisateur> {
         }
     }
 
-    public void delete(int id) {
+    public boolean delete(int id) {
         String sql = "DELETE FROM utilisateur WHERE id_user=?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -73,10 +80,12 @@ public class UtilisateurService implements IService<Utilisateur> {
             ps.setInt(1, id);
             int rows = ps.executeUpdate();
             System.out.println("DELETE: " + rows + " ligne(s) supprimée(s)");
+            return rows > 0;
 
         } catch (SQLException e) {
             System.err.println("Erreur delete: " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -182,6 +191,16 @@ public class UtilisateurService implements IService<Utilisateur> {
         Date date = rs.getDate("date_creation");
         if (date != null) {
             user.setDateCreation(date.toLocalDate());
+        }
+
+        // Récupérer face_image_path si la colonne existe
+        try {
+            String faceImagePath = rs.getString("face_image_path");
+            if (faceImagePath != null) {
+                user.setFaceImagePath(faceImagePath);
+            }
+        } catch (SQLException e) {
+            // Colonne n'existe pas, ignorer
         }
 
         return user;

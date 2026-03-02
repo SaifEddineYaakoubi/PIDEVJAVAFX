@@ -7,24 +7,27 @@ public class Recolte {
     private double quantite;
     private LocalDate dateRecolte;
     private String qualite;
-    private int idCulture;
+    private String typeCulture;
+    private String localisation;
 
     public Recolte() {
     }
 
-    public Recolte(int idRecolte, double quantite, LocalDate dateRecolte, String qualite, int idCulture) {
+    public Recolte(int idRecolte, double quantite, LocalDate dateRecolte, String qualite, String typeCulture, String localisation) {
         this.idRecolte = idRecolte;
         this.quantite = quantite;
         this.dateRecolte = dateRecolte;
         this.qualite = qualite;
-        this.idCulture = idCulture;
+        this.typeCulture = typeCulture;
+        this.localisation = localisation;
     }
 
-    public Recolte(double quantite, LocalDate dateRecolte, String qualite, int idCulture) {
+    public Recolte(double quantite, LocalDate dateRecolte, String qualite, String typeCulture, String localisation) {
         this.quantite = quantite;
         this.dateRecolte = dateRecolte;
         this.qualite = qualite;
-        this.idCulture = idCulture;
+        this.typeCulture = typeCulture;
+        this.localisation = localisation;
     }
 
     public int getIdRecolte() {
@@ -59,12 +62,20 @@ public class Recolte {
         this.qualite = qualite;
     }
 
-    public int getIdCulture() {
-        return idCulture;
+    public String getTypeCulture() {
+        return typeCulture;
     }
 
-    public void setIdCulture(int idCulture) {
-        this.idCulture = idCulture;
+    public void setTypeCulture(String typeCulture) {
+        this.typeCulture = typeCulture;
+    }
+
+    public String getLocalisation() {
+        return localisation;
+    }
+
+    public void setLocalisation(String localisation) {
+        this.localisation = localisation;
     }
 
     @Override
@@ -74,7 +85,8 @@ public class Recolte {
                 ", quantite=" + quantite +
                 ", dateRecolte=" + dateRecolte +
                 ", qualite='" + qualite + '\'' +
-                ", idCulture=" + idCulture +
+                ", typeCulture='" + typeCulture + '\'' +
+                ", localisation='" + localisation + '\'' +
                 '}';
     }
 }

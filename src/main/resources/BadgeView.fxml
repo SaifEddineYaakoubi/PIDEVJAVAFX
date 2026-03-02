@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.utilisateur.BadgeController"
+            styleClass="root">
+
+    <!-- ========== TOP TITLE ========== -->
+    <top>
+        <VBox alignment="CENTER_LEFT" spacing="5" styleClass="form-card">
+            <Label text="Gestion des Badges" styleClass="section-title"/>
+            <Label text="Ajoutez et gérez les badges des utilisateurs"
+                   styleClass="form-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- ========== CENTER CONTENT ========== -->
+    <center>
+        <HBox spacing="30">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- ===== LEFT : FORM ===== -->
+            <VBox spacing="15" styleClass="form-card" prefWidth="350">
+
+                <Label text="Nom du Badge" styleClass="form-label"/>
+                <TextField fx:id="tfNom"
+                           promptText="Ex: Meilleur Agriculteur"
+                           styleClass="text-field-modern"/>
+
+                <Label text="Description" styleClass="form-label"/>
+                <TextField fx:id="tfDescription"
+                           promptText="Description du badge"
+                           styleClass="text-field-modern"/>
+
+                <Label text="Niveau" styleClass="form-label"/>
+                <ComboBox fx:id="cbNiveau"
+                          styleClass="combo-box-modern"
+                          promptText="Choisir niveau"/>
+
+                <Label text="Assigner à l'utilisateur" styleClass="form-label"/>
+
+                <!-- Label qui affiche l'utilisateur cible si la vue est ouverte depuis la liste utilisateurs -->
+                <Label fx:id="lblTargetUser" text="" styleClass="form-subtitle" visible="false"/>
+
+                <!-- ComboBox pour choisir un utilisateur si la fenêtre est ouverte seule -->
+                <ComboBox fx:id="cbUsers" promptText="Sélectionner un utilisateur" styleClass="combo-box-modern"/>
+
+                <HBox spacing="10">
+                    <Button text="Ajouter"
+                            onAction="#ajouterBadge"
+                            styleClass="btn-success"/>
+
+                    <Button text="Modifier"
+                            onAction="#modifierBadge"
+                            styleClass="btn-warning"/>
+
+                    <Button text="Supprimer"
+                            onAction="#supprimerBadge"
+                            styleClass="btn-danger"/>
+
+                    <Button text="Assigner" onAction="#assignerBadge" styleClass="btn-primary"/>
+                </HBox>
+
+            </VBox>
+
+            <!-- ===== RIGHT : TABLE ===== -->
+            <VBox spacing="15">
+
+                <Label text="Liste des Badges"
+                       styleClass="section-title"/>
+
+                <TableView fx:id="tableBadge" VBox.vgrow="ALWAYS">
+
+                    <columns>
+                        <TableColumn fx:id="colId"
+                                     text="ID"
+                                     prefWidth="70" visible="false"/>
+
+                        <TableColumn fx:id="colNom"
+                                     text="Nom"
+                                     prefWidth="180"/>
+
+                        <TableColumn fx:id="colDescription"
+                                     text="Description"
+                                     prefWidth="250"/>
+
+                        <TableColumn fx:id="colNiveau"
+                                     text="Niveau"
+                                     prefWidth="120"/>
+
+                    </columns>
+
+                </TableView>
+
+            </VBox>
+
+        </HBox>
+    </center>
+
+</BorderPane>

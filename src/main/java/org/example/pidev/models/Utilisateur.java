@@ -11,6 +11,7 @@ public class Utilisateur {
     private Role role;
     private boolean statut;
     private LocalDate dateCreation;
+    private String faceImagePath;
 
     public Utilisateur() {
     }
@@ -34,6 +35,14 @@ public class Utilisateur {
         this.role = role;
         this.statut = statut;
         this.dateCreation = dateCreation;
+    }
+
+    public String getFaceImagePath() {
+        return faceImagePath;
+    }
+
+    public void setFaceImagePath(String faceImagePath) {
+        this.faceImagePath = faceImagePath;
     }
 
     public int getIdUser() {

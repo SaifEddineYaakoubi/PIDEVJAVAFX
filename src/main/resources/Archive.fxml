@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.pidev.controllers.RecolteArchiveController"
+      spacing="15" style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <!-- Titre -->
+    <Label text="📦 Archive des Récoltes Supprimées"
+           style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2d5016;"/>
+
+    <!-- Statistiques -->
+    <HBox spacing="20" style="-fx-padding: 10; -fx-background-color: white; -fx-border-radius: 5; -fx-border-color: #e0e0e0;">
+        <Label fx:id="lblTotalArchives" text="Total archivé: 0 récoltes"
+               style="-fx-font-size: 12; -fx-font-weight: bold;"/>
+        <Label fx:id="lblTotalQuantite" text="Quantité totale: 0.00 kg"
+               style="-fx-font-size: 12; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- Filtres -->
+    <VBox spacing="10" style="-fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white; -fx-border-radius: 5;">
+        <Label text="🔍 Filtres" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
+        <HBox spacing="10">
+            <Label text="Culture:" style="-fx-min-width: 60;"/>
+            <TextField fx:id="txtFilterCulture" promptText="Filtrer par culture..." HBox.hgrow="ALWAYS"/>
+
+            <Label text="Cause:" style="-fx-min-width: 50;"/>
+            <TextField fx:id="txtFilterCause" promptText="Filtrer par cause..." HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </VBox>
+
+    <!-- Tableau d'archive -->
+    <VBox VBox.vgrow="ALWAYS" spacing="10">
+        <TableView fx:id="archiveTable" style="-fx-font-size: 11;" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colIdArchive" text="ID Archive" prefWidth="60" visible="false"/>
+                <TableColumn fx:id="colIdOriginal" text="ID Original" prefWidth="60" visible="false"/>
+                <TableColumn fx:id="colQuantite" text="Quantité (kg)" prefWidth="80"/>
+                <TableColumn fx:id="colDateRecolte" text="Date Récolte" prefWidth="90"/>
+                <TableColumn fx:id="colQualite" text="Qualité" prefWidth="80"/>
+                <TableColumn fx:id="colTypeCulture" text="Culture" prefWidth="80"/>
+                <TableColumn fx:id="colLocalisation" text="Localisation" prefWidth="100"/>
+                <TableColumn fx:id="colCauseSupression" text="Cause" prefWidth="120"/>
+                <TableColumn fx:id="colDateArchivage" text="Date Archivage" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="10" style="-fx-padding: 10;">
+        <Button fx:id="btnRefresh" text="🔄 Rafraîchir" style="-fx-padding: 8; -fx-font-size: 11;"/>
+        <Button fx:id="btnDeleteArchive" text="🗑️ Supprimer la sélection" style="-fx-padding: 8; -fx-font-size: 11; -fx-background-color: #ff9800; -fx-text-fill: white;"/>
+        <Button fx:id="btnClearAll" text="⚠️ Vider l'archive" style="-fx-padding: 8; -fx-font-size: 11; -fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Notes -->
+    <VBox spacing="5" style="-fx-border-color: #ffc107; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: #fff9c4; -fx-border-radius: 5;">
+        <Label text="ℹ️ Information" style="-fx-font-weight: bold; -fx-font-size: 11; -fx-text-fill: #f57f17;"/>
+        <Label text="• Chaque récolte supprimée est automatiquement archivée avec sa cause de suppression"
+               style="-fx-font-size: 10; -fx-text-fill: #333; -fx-wrap-text: true;"/>
+        <Label text="• Vous pouvez consulter, filtrer ou supprimer définitivement les archives"
+               style="-fx-font-size: 10; -fx-text-fill: #333; -fx-wrap-text: true;"/>
+        <Label text="• Attention: La suppression d'une archive est irréversible"
+               style="-fx-font-size: 10; -fx-text-fill: #d32f2f; -fx-wrap-text: true;"/>
+    </VBox>
+
+</VBox>
+

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane style="-fx-background-color: #faf5f0;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pidev.controllers.Produits.ConsulterProduitController">
+
+    <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <!-- Sidebar -->
+        <VBox prefWidth="280" spacing="0" style="-fx-background-color: linear-gradient(to bottom, #78350f, #451a03); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 30 20 25 20;">
+                <Label style="-fx-font-size: 45px;" text="📦" textFill="#ebefeb" />
+                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" text="SMART FARM" />
+                <Label style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);" text="Gestion Agricole" />
+            </VBox>
+
+            <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;" />
+
+            <VBox spacing="5" style="-fx-padding: 20 15;">
+                <Label style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;" text="NAVIGATION" />
+
+                <Button alignment="CENTER_LEFT" prefHeight="45" prefWidth="250" style="-fx-background-color: linear-gradient(to right, #a9744f, #6e4b2a);                                -fx-text-fill: white;                                -fx-font-size: 14px;                                -fx-font-weight: bold;                                -fx-background-radius: 10;                                -fx-cursor: hand;" text="   📦  Produits" />
+
+                <Button alignment="CENTER_LEFT" disable="false" onAction="#navigateToConsulterStock" prefHeight="45" prefWidth="250" style="-fx-background-color: linear-gradient(to right, #f7efde, #e4d1b0);                                -fx-text-fill: #6e4b2a;                                -fx-font-size: 14px;                                -fx-font-weight: bold;                                -fx-background-radius: 10;                                -fx-cursor: hand;" text="   📦  Stock" />
+
+                <Button onAction="#handleChatbot" alignment="CENTER_LEFT" prefHeight="45" prefWidth="250" style="-fx-background-color: linear-gradient(to right, #f7efde, #e4d1b0);                                -fx-text-fill: #6e4b2a;                                -fx-font-size: 14px;                                -fx-font-weight: bold;                                -fx-background-radius: 10;                                -fx-cursor: hand;" text="   🤖  Assistant Agricole" />
+
+            </VBox>
+
+            <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;" />
+
+            <VBox spacing="12" style="-fx-padding: 20 15;" VBox.vgrow="ALWAYS">
+                <Label style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;" text="📦 STATISTIQUES" />
+                <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 18;">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <StackPane prefHeight="45" prefWidth="45" style="-fx-background-color: fff; -fx-background-radius: 12;">
+                            <Label style="-fx-font-size: 20px;" text="📦" textFill="#097117" />
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);" text="Total Produits" />
+                            <Label fx:id="lblTotalProduits" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" text="0" />
+                        </VBox>
+                    </HBox>
+                    <!-- Statistiques par type de produit -->
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #067f47; -fx-font-weight: bold;" text="Légume :           " />
+                        <StackPane fx:id="barEngrais" prefHeight="18" prefWidth="80" style="-fx-background-color: linear-gradient(to right, #00703c, #00703c); -fx-background-radius: 8; -fx-padding: 0 8;">
+                            <Label fx:id="lblNbEngrais" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #92400e;" text="0" />
+                        </StackPane>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #1a8d53; -fx-font-weight: bold;" text="Fruit :                " />
+                        <StackPane fx:id="barFertilisant" prefHeight="18" prefWidth="80" style="-fx-background-color: linear-gradient(to right, #1a8d53, #1a8d53); -fx-background-radius: 8; -fx-padding: 0 8;">
+                            <Label fx:id="lblNbFertilisant" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #78350f;" text="0" />
+                        </StackPane>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #44a762; -fx-font-weight: bold;" text="Alimentation : " />
+                        <StackPane fx:id="barSemence" prefHeight="18" prefWidth="80" style="-fx-background-color: linear-gradient(to right, #44a762, #44a762); -fx-background-radius: 8; -fx-padding: 0 8;">
+                            <Label fx:id="lblNbSemence" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #78350f;" text="0" />
+                        </StackPane>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #75d2a3; -fx-font-weight: bold;" text="Autre :              " />
+                        <StackPane fx:id="barAutre" prefHeight="18" prefWidth="80" style="-fx-background-color: linear-gradient(to right, #75d2a3, #75d2a3); -fx-background-radius: 8; -fx-padding: 0 8;">
+                            <Label fx:id="lblNbAutre" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #78350f;" text="0" />
+                        </StackPane>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Pied de sidebar : Profil + Déconnexion -->
+            <VBox alignment="CENTER" spacing="8" style="-fx-padding: 12; -fx-background-color: rgba(0,0,0,0.18);">
+                <HBox spacing="8" alignment="CENTER">
+                    <Button fx:id="btnProfil" text="👤 Profil" onAction="#handleProfil" prefWidth="120" prefHeight="36"
+                            style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.15); -fx-border-radius: 10;"/>
+                    <Button fx:id="btnDeconnexion" text="🚪 Déconnexion" onAction="#handleDeconnexion" prefWidth="120" prefHeight="36"
+                            style="-fx-background-color: rgba(239,68,68,0.2); -fx-text-fill: #fca5a5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(239,68,68,0.3); -fx-border-radius: 10;"/>
+                </HBox>
+                <Label text="© 2026 Smart Farm" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 10px;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- Contenu principal -->
+        <VBox HBox.hgrow="ALWAYS" spacing="20" style="-fx-padding: 30;">
+
+            <!-- Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2d3748;" text="Liste des Produits" />
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button onAction="#ajouterProduit" style="-fx-background-color: linear-gradient(to right, #38a169, #2f855a); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 10 25;" text="➕ Nouveau Produit" />
+            </HBox>
+
+            <!-- Recherche -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <ComboBox fx:id="comboCritere" prefHeight="38" prefWidth="169" promptText="Critère de recherche" />
+                <TextField fx:id="txtValeurRecherche" prefWidth="220" prefHeight="38" promptText="Valeur à rechercher" />
+                <Button onAction="#rechercherProduit" style="-fx-background-color: linear-gradient(to right, #904214, #904214); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 8 20;" text="🔍 Rechercher" />
+            </HBox>
+
+            <!-- Liste + Image -->
+            <HBox spacing="20" VBox.vgrow="ALWAYS">
+                <ListView fx:id="listProduits" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #d6c5b4; -fx-border-width: 1.5; -fx-padding: 10;" />
+                <VBox alignment="CENTER" spacing="10" prefWidth="200">
+                    <ImageView fx:id="imageProduit" fitHeight="163.0" fitWidth="163.0" preserveRatio="true" />
+                    <Label fx:id="lblPrixIndicatif" wrapText="true" maxWidth="200" style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #a9744f;" text="" />
+                </VBox>
+            </HBox>
+
+            <!-- Boutons modifier / supprimer / exporter PDF -->
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button onAction="#modifierProduit" style="-fx-background-color: linear-gradient(to right, #904214, #6e4b2a); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 10 22;" text="✏️ Modifier" />
+                <Button onAction="#supprimerProduit" style="-fx-background-color: linear-gradient(to right, #e53e3e, #c53030); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 10 22;" text="🗑️ Supprimer" />
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button onAction="#exporterPDFProduit" style="-fx-background-color: linear-gradient(to right, #38a169, #2f855a); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 10 22;" text="📄 Exporter PDF" />
+            </HBox>
+
+        </VBox>
+
+    </HBox>
+
+</AnchorPane>

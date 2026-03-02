@@ -1,0 +1,262 @@
+/*
+   ═══════════════════════════════════════════════════════════════════════════
+   STYLES PRÉDICTIONS IA - DESIGN MODERNE ET INNOVANT
+   ═══════════════════════════════════════════════════════════════════════════
+   Design tendance 2026 avec gradients, cards animées et indicateurs intelligents
+*/
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   CONTAINER PRÉDICTIONS IA
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.ai-predictions-container {
+    -fx-padding: 20;
+    -fx-spacing: 20;
+    -fx-background-color: #F5F7FA;
+}
+
+.ai-predictions-title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7B1FA2;
+    -fx-padding: 0 0 16 0;
+}
+
+.ai-predictions-subtitle {
+    -fx-font-size: 13;
+    -fx-text-fill: #7F8C8D;
+    -fx-padding: 0 0 20 0;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   CARTES PRÉDICTIONS IA
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.ai-prediction-card {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FFFFFF 0%, #F8F9FA 100%);
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-border-width: 1;
+    -fx-border-color: #E0E6ED;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(123,31,162,0.12), 10, 0, 0, 5);
+}
+
+.ai-prediction-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(123,31,162,0.2), 15, 0, 0, 8);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FFFFFF 0%, #EEF2FA 100%);
+}
+
+/* Titre culture */
+.ai-card-title {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+    -fx-padding: 0 0 12 0;
+}
+
+/* Emoji culture */
+.ai-card-emoji {
+    -fx-font-size: 48;
+    -fx-padding: 8 0;
+}
+
+/* Rendement prédit */
+.ai-card-yield {
+    -fx-font-size: 28;
+    -fx-font-weight: 800;
+    -fx-text-fill: #7B1FA2;
+    -fx-padding: 8 0;
+}
+
+.ai-card-yield-label {
+    -fx-font-size: 12;
+    -fx-text-fill: #7F8C8D;
+}
+
+/* Confiance/Accuracy */
+.ai-card-confidence {
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-padding: 12 0;
+}
+
+.confidence-excellent {
+    -fx-text-fill: #27AE60;
+}
+
+.confidence-good {
+    -fx-text-fill: #3498DB;
+}
+
+.confidence-moderate {
+    -fx-text-fill: #F39C12;
+}
+
+.confidence-low {
+    -fx-text-fill: #E74C3C;
+}
+
+/* Risque maladie */
+.ai-card-disease {
+    -fx-font-size: 14;
+    -fx-padding: 8 0;
+}
+
+.disease-low {
+    -fx-text-fill: #27AE60;
+}
+
+.disease-medium {
+    -fx-text-fill: #F39C12;
+}
+
+.disease-high {
+    -fx-text-fill: #E74C3C;
+}
+
+/* Irrigation */
+.ai-card-irrigation {
+    -fx-font-size: 13;
+    -fx-text-fill: #3498DB;
+    -fx-padding: 8 0;
+}
+
+/* Prix futur */
+.ai-card-price {
+    -fx-font-size: 14;
+    -fx-text-fill: #27AE60;
+    -fx-padding: 8 0;
+}
+
+/* Date récolte */
+.ai-card-harvest {
+    -fx-font-size: 13;
+    -fx-text-fill: #7F8C8D;
+    -fx-padding: 8 0;
+}
+
+/* Modèle ML utilisé */
+.ai-card-model {
+    -fx-font-size: 10;
+    -fx-text-fill: #BDC3C7;
+    -fx-font-style: italic;
+    -fx-padding: 8 0 0 0;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   PROGRESS BAR CONFIANCE
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.confidence-progress {
+    -fx-padding: 8 0 0 0;
+}
+
+.confidence-progress .track {
+    -fx-background-color: #ECF0F1;
+    -fx-border-width: 0;
+}
+
+.confidence-progress .bar {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #7B1FA2 0%, #9C27B0 100%);
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   QUALITÉ INDICATEUR
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.quality-indicator {
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-padding: 8 0;
+}
+
+.quality-excellent {
+    -fx-text-fill: #27AE60;
+}
+
+.quality-very-good {
+    -fx-text-fill: #3498DB;
+}
+
+.quality-good {
+    -fx-text-fill: #F39C12;
+}
+
+.quality-moderate {
+    -fx-text-fill: #E67E22;
+}
+
+.quality-low {
+    -fx-text-fill: #E74C3C;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   CONSEILS GLOBAUX
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.ai-global-advice {
+    -fx-font-size: 12;
+    -fx-padding: 12 16;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-font-weight: 600;
+    -fx-text-alignment: justify;
+    -fx-wrap-text: true;
+}
+
+.advice-excellent {
+    -fx-background-color: #D5F4E6;
+    -fx-text-fill: #27AE60;
+    -fx-border-color: #27AE60;
+    -fx-border-width: 1;
+}
+
+.advice-good {
+    -fx-background-color: #D6EAF8;
+    -fx-text-fill: #2980B9;
+    -fx-border-color: #2980B9;
+    -fx-border-width: 1;
+}
+
+.advice-warning {
+    -fx-background-color: #FCF3DE;
+    -fx-text-fill: #D68910;
+    -fx-border-color: #D68910;
+    -fx-border-width: 1;
+}
+
+.advice-caution {
+    -fx-background-color: #FADBD8;
+    -fx-text-fill: #C0392B;
+    -fx-border-color: #C0392B;
+    -fx-border-width: 1;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   SÉPARATEURS
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.ai-separator {
+    -fx-border-color: #E0E6ED;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12 0 0 0;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   GRILLE CARTES
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.ai-grid-pane {
+    -fx-hgap: 16;
+    -fx-vgap: 16;
+    -fx-padding: 0;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   ANIMATIONS - À NOTER: JavaFX ne supporte pas @keyframes
+   Utilisez plutôt les animations Java dans le code
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Les animations @keyframes ne sont pas supportées en JavaFX CSS */
+/* Pour les animations, utilisez plutôt Java code avec Timeline ou TranslateTransition */

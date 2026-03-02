@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.DashboardController"
+            stylesheets="@smartfarmm.css">
+
+    <!-- SIDEBAR UNIQUE -->
+    <left>
+        <VBox fx:id="sidebarBox" spacing="0" style="-fx-pref-width:280;">
+            <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                <VBox spacing="0" style="-fx-background-color: transparent;">
+
+                    <!-- Logo et Titre -->
+                    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 30 20 18 20;">
+                        <Label text="🌾" style="-fx-font-size: 45px; -fx-text-fill: white;" />
+                        <Label text="SMART FARM" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Gestion Agricole" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);" />
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.06); -fx-pref-height: 1;" />
+
+                    <!-- Menu Navigation -->
+                    <VBox spacing="6" style="-fx-padding: 18 14;">
+                        <Label text="NAVIGATION" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;" />
+
+                        <!-- keep fx:id names for controller -->
+                        <Button fx:id="btnDashboard" text="   🏠  Accueil" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+
+                        <Label text="RÉCOLTES &amp; RENDEMENTS" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-weight: bold; -fx-padding: 8 0 0 0;" />
+                        <Button fx:id="btnRecoltes" text="   🌾  Récoltes" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button sidebar-button-active" />
+                        <Button fx:id="btnRendements" text="   📈  Rendements" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnSoil" text="   🪴  Analyse du Sol" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnPredictions" text="   🤖  Prédictions IA" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnArchive" text="   📦  Archive" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+
+                        <Label text="PARCELLES &amp; CULTURES" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-weight: bold; -fx-padding: 8 0 0 0;" />
+                        <Button fx:id="btnParcelles" text="   🌱  Parcelles" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnCultures" text="   🌿  Cultures" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+
+                        <Label text="OUTILS" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-weight: bold; -fx-padding: 8 0 0 0;" />
+                        <Button fx:id="btnChatbot" text="   🤖  Assistant Agricole" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+
+                        <Label text="VENTES &amp; CLIENTS" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-weight: bold; -fx-padding: 8 0 0 0;" />
+                        <Button fx:id="btnClients" text="   👥  Clients" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnVentes" text="   💰  Ventes" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnRapports" text="   📊  Rapports Ventes" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnFidelite" text="   💎  Fidélité" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnRelance" text="   🔔  Relance Clients" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                        <Button fx:id="btnConversion" text="   📈  Conversion" prefWidth="250" prefHeight="44"
+                                styleClass="sidebar-button" />
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.06); -fx-pref-height: 1;" />
+
+                    <!-- ========== ZONE DYNAMIQUE : contenu change selon le module actif ========== -->
+                    <VBox fx:id="dynamicStatsContainer" spacing="12" style="-fx-padding: 18 14;">
+                        <!-- Rempli dynamiquement par le DashboardController selon le module -->
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.06); -fx-pref-height: 1;" />
+
+                    <!-- ========== MÉTÉO EN DIRECT ========== -->
+                    <VBox fx:id="weatherSection" spacing="10" style="-fx-padding: 15 14;" visible="false" managed="false">
+                        <Label text="🌤️ MÉTÉO EN DIRECT" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                        <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 15;">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label fx:id="lblWeatherEmoji" text="⏳" style="-fx-font-size: 40px;"/>
+                                <VBox spacing="2">
+                                    <Label fx:id="lblWeatherTemp" text="..." style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                                    <Label fx:id="lblWeatherDesc" text="Chargement..." style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                                </VBox>
+                            </HBox>
+                            <Label fx:id="lblWeatherCity" text="" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.5);"/>
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label text="💧" style="-fx-font-size: 14px;"/>
+                                    <Label fx:id="lblWeatherHumidity" text="..." style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #60a5fa;"/>
+                                    <Label text="Humidité" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.5);"/>
+                                </VBox>
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label text="💨" style="-fx-font-size: 14px;"/>
+                                    <Label fx:id="lblWeatherWind" text="..." style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4ade80;"/>
+                                    <Label text="Vent" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.5);"/>
+                                </VBox>
+                            </HBox>
+                            <Label fx:id="lblWeatherAdvice" text="" wrapText="true"
+                                   style="-fx-font-size: 10px; -fx-text-fill: #fbbf24; -fx-background-color: rgba(251,191,36,0.1); -fx-padding: 8; -fx-background-radius: 8;"/>
+                        </VBox>
+                        <Label text="Sélectionnez une parcelle pour sa météo" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-style: italic;"/>
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.06); -fx-pref-height: 1;" />
+
+                    <!-- ALERTES -->
+                    <VBox spacing="12" style="-fx-padding: 12 14;">
+                        <Label text="🔔 ALERTES" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                        <VBox fx:id="vboxAlerts" spacing="6" />
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.06); -fx-pref-height: 1;" />
+
+                    <!-- HISTORIQUE -->
+                    <VBox spacing="12" style="-fx-padding: 12 14;">
+                        <Label text="📜 HISTORIQUE" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                        <ListView fx:id="lvHistorique" prefHeight="120" styleClass="history-list" />
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.06); -fx-pref-height: 1;" />
+
+                    <!-- 🌙 MODE SOMBRE -->
+                    <VBox spacing="8" style="-fx-padding: 12 14;">
+                        <ToggleButton fx:id="btnDarkMode" text="🌙 Mode Sombre" prefWidth="250" prefHeight="38" styleClass="dark-mode-toggle"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+            <!-- Pied de sidebar -->
+            <VBox alignment="CENTER" spacing="8" style="-fx-padding: 12; -fx-background-color: rgba(0,0,0,0.18);">
+                <!-- Boutons Profil et Déconnexion -->
+                <HBox spacing="8" alignment="CENTER">
+                    <Button fx:id="btnProfil" text="👤 Profil" prefWidth="120" prefHeight="36"
+                            style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(255,255,255,0.15); -fx-border-radius: 10;"/>
+                    <Button fx:id="btnDeconnexion" text="🚪 Déconnexion" prefWidth="120" prefHeight="36"
+                            style="-fx-background-color: rgba(239,68,68,0.2); -fx-text-fill: #fca5a5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: rgba(239,68,68,0.3); -fx-border-radius: 10;"/>
+                </HBox>
+                <Label fx:id="lblDateTime" text="" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 12px;"/>
+                <Label text="© 2026 Smart Farm" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 10px;"/>
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- CENTER -->
+    <center>
+        <ScrollPane fx:id="centerScroll" fitToWidth="true" fitToHeight="true" pannable="true"
+                    vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+                    style="-fx-background-color: transparent; -fx-background: transparent;">
+            <!-- Contenu chargé dynamiquement par le DashboardController -->
+        </ScrollPane>
+    </center>
+
+</BorderPane>

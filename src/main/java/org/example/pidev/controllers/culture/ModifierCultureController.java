@@ -1,15 +1,22 @@
 package org.example.pidev.controllers.culture;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
 import org.example.pidev.services.CultureService;
 import org.example.pidev.services.ParcelleService;
+import org.example.pidev.utils.ActionHistoryService;
+import org.example.pidev.utils.AnimationUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -154,7 +161,7 @@ public class ModifierCultureController implements Initializable {
         if (text.contains("Germination")) return "germination";
         if (text.contains("Croissance")) return "croissance";
         if (text.contains("Floraison")) return "floraison";
-        if (text.contains("Maturité")) return "maturité";
+        if (text.contains("Maturité")) return "mature";  // Le service attend "mature" et non "maturité"
         return text;
     }
 
@@ -165,12 +172,12 @@ public class ModifierCultureController implements Initializable {
         this.currentCulture = culture;
         // Sauvegarder les valeurs originales pour le reset
         this.originalCulture = new Culture(
-            culture.getIdCulture(),
-            culture.getTypeCulture(),
-            culture.getDatePlantation(),
-            culture.getDateRecoltePrevue(),
-            culture.getEtatCroissance(),
-            culture.getIdParcelle()
+                culture.getIdCulture(),
+                culture.getTypeCulture(),
+                culture.getDatePlantation(),
+                culture.getDateRecoltePrevue(),
+                culture.getEtatCroissance(),
+                culture.getIdParcelle()
         );
 
         // Remplir les champs
@@ -247,6 +254,8 @@ public class ModifierCultureController implements Initializable {
             cultureService.update(currentCulture);
 
             showSuccess("✅ Culture modifiée avec succès !");
+            AnimationUtils.showSuccessAnimation(lblSuccess);
+            ActionHistoryService.getInstance().logUpdate("Culture", currentCulture.getTypeCulture());
 
             // Fermer la fenêtre après un court délai
             javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
@@ -295,6 +304,7 @@ public class ModifierCultureController implements Initializable {
     private void showError(String message) {
         lblError.setText(message);
         lblSuccess.setText("");
+        AnimationUtils.showErrorAnimation(lblError);
     }
 
     private void showSuccess(String message) {

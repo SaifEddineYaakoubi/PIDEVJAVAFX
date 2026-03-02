@@ -4,52 +4,85 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
 
 <StackPane xmlns="http://javafx.com/javafx/17"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.example.pidev.controllers.utilisateur.LoginController"
            stylesheets="@styles/smartfarm.css"
-           styleClass="root">
+           styleClass="login-root">
 
+    <!-- Background gradient overlay -->
+    <VBox styleClass="login-bg" />
+
+    <!-- Login Card -->
     <VBox alignment="CENTER"
-          maxWidth="420"
-          spacing="20"
-          styleClass="form-card">
+          maxWidth="440" maxHeight="560"
+          spacing="0"
+          styleClass="login-card">
 
-        <!-- TITLE -->
-        <Label text="🌿 SMART FARM"
-               styleClass="form-title"/>
-
-        <Label text="Gestion Intelligente"
-               styleClass="form-subtitle"/>
-
-        <!-- EMAIL -->
-        <VBox spacing="5">
-            <Label text="Email"
-                   styleClass="form-label"/>
-            <TextField fx:id="emailField"
-                       promptText="Entrez votre email"
-                       styleClass="text-field-modern"/>
+        <!-- Header with logo -->
+        <VBox alignment="CENTER" spacing="8" styleClass="login-header">
+            <Label text="🌿" style="-fx-font-size: 52px;"/>
+            <Label text="SMART FARM" styleClass="login-brand"/>
+            <Label text="Gestion Agricole Intelligente" styleClass="login-tagline"/>
         </VBox>
 
-        <!-- PASSWORD -->
-        <VBox spacing="5">
-            <Label text="Mot de passe"
-                   styleClass="form-label"/>
-            <PasswordField fx:id="passwordField"
-                           promptText="Entrez votre mot de passe"
-                           styleClass="text-field-modern"/>
+        <!-- Separator -->
+        <HBox styleClass="login-separator" />
+
+        <!-- Form body -->
+        <VBox spacing="18" styleClass="login-body">
+
+            <!-- Email Field -->
+            <VBox spacing="6">
+                <Label text="📧  Adresse email" styleClass="login-label"/>
+                <TextField fx:id="emailField"
+                           promptText="votre@email.com"
+                           styleClass="login-field"/>
+            </VBox>
+
+            <!-- Password Field -->
+            <VBox spacing="6">
+                <Label text="🔒  Mot de passe" styleClass="login-label"/>
+                <PasswordField fx:id="passwordField"
+                               promptText="••••••••"
+                               styleClass="login-field"/>
+            </VBox>
+
+            <!-- Login Button -->
+            <Button text="Se connecter"
+                    fx:id="loginButton"
+                    onAction="#handleLogin"
+                    styleClass="login-btn"
+                    maxWidth="Infinity"/>
+
+            <!-- Face ID Button -->
+            <Button text="🔐  Connexion Face ID"
+                    fx:id="faceLoginButton"
+                    onAction="#handleFaceLogin"
+                    styleClass="login-btn-faceid"
+                    maxWidth="Infinity"/>
+
+            <!-- Progress -->
+            <StackPane alignment="CENTER">
+                <ProgressIndicator fx:id="progressIndicator" visible="false"
+                                   prefWidth="28" prefHeight="28"/>
+            </StackPane>
+
+            <!-- Message -->
+            <Label fx:id="messageLabel"
+                   styleClass="login-message"
+                   wrapText="true"
+                   alignment="CENTER"
+                   maxWidth="Infinity"/>
         </VBox>
 
-        <!-- LOGIN BUTTON -->
-        <Button text="Se connecter"
-                fx:id="loginButton"
-                onAction="#handleLogin"
-                styleClass="btn-success"/>
-
-        <!-- MESSAGE -->
-        <Label fx:id="messageLabel"
-               styleClass="message-error"/>
+        <!-- Footer -->
+        <VBox alignment="CENTER" spacing="4" styleClass="login-footer">
+            <Label text="© 2026 Smart Farm — Tous droits réservés"
+                   styleClass="login-copyright"/>
+        </VBox>
 
     </VBox>
 

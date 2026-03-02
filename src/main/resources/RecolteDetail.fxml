@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.RecolteDetailController"
+            stylesheets="@smartfarmm.css">
+
+    <!-- TOP - HEADER -->
+    <top>
+        <HBox spacing="15" styleClass="toolbar">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Button text="← Retour" styleClass="button-secondary" fx:id="btnRetour"/>
+            <Label text="📋 Détail de la Récolte" styleClass="section-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblStatus" text="Prêt" styleClass="status-label"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER - FORM -->
+    <center>
+        <VBox spacing="20" styleClass="content-area">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- ID (HIDDEN) -->
+            <HBox spacing="15" visible="false" managed="false">
+                <Label text="ID Récolte:" styleClass="form-label" prefWidth="150"/>
+                <TextField fx:id="tfIdRecolte" editable="false" styleClass="text-field-modern" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- QUANTITÉ -->
+            <HBox spacing="15">
+                <Label text="Quantité (kg):" styleClass="form-label" prefWidth="150"/>
+                <TextField fx:id="tfQuantite" promptText="Ex: 5000" styleClass="text-field-modern" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- DATE -->
+            <HBox spacing="15">
+                <Label text="Date de Récolte:" styleClass="form-label" prefWidth="150"/>
+                <DatePicker fx:id="dpDate" styleClass="date-picker-modern" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- QUALITÉ -->
+            <HBox spacing="15">
+                <Label text="Qualité:" styleClass="form-label" prefWidth="150"/>
+                <TextField fx:id="tfQualite" promptText="Ex: Premium, A, B" styleClass="text-field-modern" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- TYPE CULTURE -->
+            <HBox spacing="15">
+                <Label text="Type de Culture:" styleClass="form-label" prefWidth="150"/>
+                <TextField fx:id="tfTypeCulture" promptText="Ex: Blé, Orge, Maïs" styleClass="text-field-modern" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- LOCALISATION -->
+            <HBox spacing="15">
+                <Label text="Localisation:" styleClass="form-label" prefWidth="150"/>
+                <TextField fx:id="tfLocalisation" promptText="Ex: Seliana, Sfax" styleClass="text-field-modern" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- SÉPARATEUR -->
+            <Separator/>
+
+            <!-- STATISTIQUES -->
+            <VBox spacing="10">
+                <Label text="📊 Informations Supplémentaires" styleClass="section-subtitle"/>
+
+                <HBox spacing="15">
+                    <VBox spacing="5" style="-fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Rendement Moyen:" styleClass="form-label"/>
+                        <Label fx:id="lblRendementMoyen" text="N/A" styleClass="status-label"/>
+                    </VBox>
+
+                    <VBox spacing="5" style="-fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Nombre de Rendements:" styleClass="form-label"/>
+                        <Label fx:id="lblNbRendements" text="0" styleClass="status-label"/>
+                    </VBox>
+
+                    <VBox spacing="5" style="-fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Quantité Totale Récoltée:" styleClass="form-label"/>
+                        <Label fx:id="lblQuantiteTotale" text="0.00 kg" styleClass="status-label"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- NOTES -->
+            <VBox spacing="10">
+                <Label text="📝 Notes" styleClass="section-subtitle"/>
+                <TextArea fx:id="taaNotes" wrapText="true" prefRowCount="4" promptText="Ajouter des notes sur cette récolte..." styleClass="text-area-modern"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- BUTTONS -->
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <Button text="💾 Enregistrer" styleClass="button-primary" fx:id="btnEnregistrer"/>
+                <Button text="🔄 Actualiser" styleClass="button-secondary" fx:id="btnActualiser"/>
+                <Button text="🗑️ Supprimer" styleClass="button-danger" fx:id="btnSupprimer"/>
+                <Button text="← Retour" styleClass="button-secondary" fx:id="btnRetour2"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
+

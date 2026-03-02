@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<AnchorPane style="-fx-padding: 40; -fx-background-color: #f4f7f6;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pidev.controllers.ahmed.DashboardHomeController">
+
+    <stylesheets>
+        <URL value="@smartfarm.css" />
+    </stylesheets>
+
+    <children>
+        <VBox spacing="30">
+            <!-- HEADER SECTION -->
+            <VBox spacing="5" styleClass="dashboard-header">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label styleClass="dashboard-title" text="🌱 Tableau de Bord SMART FARM" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="notificationLabel" styleClass="notification-label" />
+                </HBox>
+                <Label styleClass="dashboard-subtitle" text="Bienvenue dans votre espace de gestion" />
+            </VBox>
+
+            <!-- STATS CARDS -->
+            <HBox fx:id="statsCardsBox" spacing="20" style="-fx-padding: 10 0;" />
+
+            <!-- ACTIVITIES SECTION -->
+            <VBox fx:id="activitiesBox" spacing="15" styleClass="activities-section" />
+        </VBox>
+    </children>
+</AnchorPane>
+

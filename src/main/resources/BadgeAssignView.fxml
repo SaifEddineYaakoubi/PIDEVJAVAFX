@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.utilisateur.BadgeAssignController"
+            styleClass="root"
+            prefHeight="700"
+            prefWidth="900">
+
+    <!-- ========== TOP TITLE ========== -->
+    <top>
+        <VBox alignment="CENTER_LEFT" spacing="5" styleClass="form-card">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Attribution de Badges aux Utilisateurs" styleClass="section-title"/>
+            <Label text="1️⃣ Créez des badges  →  2️⃣ Sélectionnez un utilisateur  →  3️⃣ Assignez"
+                   styleClass="form-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- ========== CENTER CONTENT ========== -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- ===== SECTION 1 : CRÉER BADGES ===== -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-card">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="📋 Créer Badge:" styleClass="form-label" minWidth="120"/>
+                <TextField fx:id="tfBadgeName"
+                           promptText="Nom..."
+                           HBox.hgrow="ALWAYS"
+                           styleClass="text-field-modern"
+                           maxWidth="200"/>
+                <ComboBox fx:id="cbBadgeNiveau"
+                          promptText="Niveau"
+                          styleClass="combo-box-modern"
+                          minWidth="100"/>
+                <Button text="➕ Créer" onAction="#creerBadge" styleClass="btn-success" minWidth="90"/>
+            </HBox>
+
+            <!-- ===== SECTION 2 : LISTE BADGES (LISTVIEW) ===== -->
+            <VBox spacing="8" VBox.vgrow="ALWAYS" styleClass="form-card">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="📦 Sélectionnez un Badge:" styleClass="form-label"/>
+                <ListView fx:id="listBadges"
+                          VBox.vgrow="ALWAYS"
+                          minHeight="200"
+                          prefHeight="250"/>
+            </VBox>
+
+            <!-- ===== SECTION 3 : ASSIGNATION ===== -->
+            <VBox spacing="10" styleClass="form-card">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <Label text="👤 Assigner le badge à un utilisateur:" styleClass="form-label"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Utilisateur:" minWidth="80"/>
+                    <ComboBox fx:id="cbUsers"
+                              promptText="Choisir un utilisateur..."
+                              HBox.hgrow="ALWAYS"
+                              styleClass="combo-box-modern"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="✅ Assigner" onAction="#assignerBadge" styleClass="btn-success" minWidth="120"/>
+                    <Button text="❌ Fermer" onAction="#fermer" styleClass="btn-secondary" minWidth="100"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
+
+
+
+
+

@@ -14,11 +14,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.pidev.models.Badge;
 import org.example.pidev.models.Utilisateur;
 import org.example.pidev.services.utilisateur.UtilisateurService;
 import org.example.pidev.utils.Session;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
@@ -113,21 +115,82 @@ public class UtilisateurController {
                     String email = user.getEmail() != null ? user.getEmail() : "";
                     String role = user.getRole() != null ? user.getRole().name() : "";
 
-                    // Simple layout: Nom Prenom on the left, email and role in smaller text
+                    // Créer le label avec nom et prénom
                     Label nameLabel = new Label((nom + " " + prenom).trim());
                     nameLabel.getStyleClass().add("list-item-title");
 
+                    // Créer le label avec email et rôle
                     Label metaLabel = new Label(email + "  —  " + role);
                     metaLabel.getStyleClass().add("list-item-subtitle");
                     metaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: gray;");
 
-                    VBox vbox = new VBox(nameLabel, metaLabel);
+                    // Charger les badges de cet utilisateur
+                    HBox badgesBox = new HBox(5);
+                    List<Badge> userBadges = getUserBadgesForList(user.getIdUser());
+
+                    if (!userBadges.isEmpty()) {
+                        Label badgesLabel = new Label("Badges: ");
+                        badgesLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
+                        badgesBox.getChildren().add(badgesLabel);
+
+                        for (Badge badge : userBadges) {
+                            String icon = getIconForLevel(badge.getNiveau());
+                            Label badgeLabel = new Label(icon);
+                            badgeLabel.setStyle("-fx-font-size: 14px;");
+                            badgesBox.getChildren().add(badgeLabel);
+                        }
+                    }
+
+                    VBox vbox = new VBox(nameLabel, metaLabel, badgesBox);
+                    vbox.setSpacing(3);
                     HBox.setHgrow(vbox, Priority.ALWAYS);
 
                     setGraphic(vbox);
                 }
             }
         });
+    }
+
+    // Récupérer les badges d'un utilisateur
+    private List<Badge> getUserBadgesForList(int userId) {
+        List<Badge> badges = new ArrayList<>();
+        String sql = "SELECT b.id, b.nom, b.niveau FROM badge b " +
+                "INNER JOIN user_badge ub ON b.id = ub.badge_id " +
+                "WHERE ub.user_id = ?";
+        try {
+            org.example.pidev.utils.DBConnection dbConnection = org.example.pidev.utils.DBConnection.getInstance();
+            java.sql.Connection cnx = dbConnection.getConnection();
+
+            if (cnx != null && !cnx.isClosed()) {
+                java.sql.PreparedStatement ps = cnx.prepareStatement(sql);
+                ps.setInt(1, userId);
+                java.sql.ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    Badge badge = new Badge();
+                    badge.setId(rs.getInt("id"));
+                    badge.setNom(rs.getString("nom"));
+                    badge.setNiveau(rs.getString("niveau"));
+                    badges.add(badge);
+                }
+            }
+        } catch (Exception e) {
+            // Silencieusement ignorer les erreurs (les badges sont optionnels)
+        }
+
+        return badges;
+    }
+
+    // Helper pour obtenir l'icône basée sur le niveau
+    private String getIconForLevel(String niveau) {
+        if (niveau == null) return "⭕";
+        return switch(niveau.toLowerCase()) {
+            case "bronze" -> "🥉";
+            case "argent" -> "🥈";
+            case "or" -> "🥇";
+            case "platine" -> "💎";
+            default -> "⭐";
+        };
     }
 
     public void loadUsers() {
@@ -259,11 +322,26 @@ public class UtilisateurController {
     @FXML
     private void handleLogout() {
         try {
+            Session.clear();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) usersList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setMaximized(false);
+            Scene scene = new Scene(root, 600, 500);
+            var css1 = getClass().getResource("/styles/smartfarm.css");
+            if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
+            var css2 = getClass().getResource("/smartfarmm.css");
+            if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Smart Farm - Connexion");
+            stage.setResizable(false);
+            stage.setWidth(600);
+            stage.setHeight(500);
             stage.centerOnScreen();
+            stage.setOnCloseRequest(evt -> {
+                javafx.application.Platform.exit();
+                System.exit(0);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -284,8 +362,10 @@ public class UtilisateurController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(usersList.getScene().getWindow());
             Scene scene = new Scene(root);
-            var css = getClass().getResource("/styles/smartfarm.css");
-            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            var css1 = getClass().getResource("/styles/smartfarm.css");
+            if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
+            var css2 = getClass().getResource("/smartfarmm.css");
+            if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
             stage.setScene(scene);
             stage.setResizable(false);
             stage.showAndWait();
@@ -341,4 +421,96 @@ public class UtilisateurController {
     private void handleFilterChange() {
         applyFilter();
     }
+
+    @FXML
+    private void openBadges() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BadgeView.fxml"));
+            Parent root = loader.load();
+
+            // Passer l'utilisateur sélectionné si présent
+            BadgeController badgeController = loader.getController();
+            Utilisateur selected = usersList.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                badgeController.setSelectedUser(selected);
+            }
+
+            Stage stage = new Stage();
+            stage.setTitle("Gestion des Badges");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(usersList.getScene().getWindow());
+            Scene scene = new Scene(root);
+            var css = getClass().getResource("/styles/smartfarm.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+            // rafraîchir éventuellement après fermeture
+            loadUsers();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openBadgeAssign() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BadgeAssignView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Attribution de Badges");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(usersList.getScene().getWindow());
+            Scene scene = new Scene(root);
+            var css = getClass().getResource("/styles/smartfarm.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+            loadUsers();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void openChatbot() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chatbot_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) usersList.getScene().getWindow();
+            Scene scene = new Scene(root);
+
+            var css1 = getClass().getResource("/styles/smartfarm.css");
+            if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
+            var css2 = getClass().getResource("/smartfarmm.css");
+            if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
+
+            stage.setScene(scene);
+            stage.setTitle("Smart Farm - Assistant Agricole");
+            stage.setResizable(true);
+            stage.setMinWidth(900);
+            stage.setMinHeight(600);
+            stage.setMaximized(true);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir l'assistant agricole: " + e.getMessage());
+        }
+    }
+
+    // Add this helper method for alerts
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
 }

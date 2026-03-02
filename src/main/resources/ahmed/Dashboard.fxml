@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<HBox spacing="0" styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pidev.controllers.ahmed.DashboardController">
+
+    <stylesheets>
+        <URL value="@smartfarm.css" />
+    </stylesheets>
+
+    <children>
+        <!-- SIDEBAR (NAVIGATION) -->
+        <VBox fx:id="sidebar" prefWidth="280" styleClass="sidebar">
+            <!-- Logo Section -->
+            <VBox spacing="5" styleClass="logo-section" alignment="TOP_CENTER">
+                <Label styleClass="logo-emoji" text="🌱" />
+                <Label styleClass="logo-text" text="SMART FARM" />
+                <Label styleClass="logo-tagline" text="Dashboard" />
+            </VBox>
+
+            <!-- Menu Section -->
+            <VBox spacing="12" styleClass="menu-section">
+                <Label styleClass="menu-title" text="NAVIGATION" />
+                <Button fx:id="btnDashboard" onAction="#onDashboardClick" styleClass="sidebar-button,sidebar-button-yellow" text="📊 Dashboard" />
+                <Button fx:id="btnClients" onAction="#onClientsClick" styleClass="sidebar-button,sidebar-button-blue" text="👥 Clients" />
+                <Button fx:id="btnVentes" onAction="#onVentesClick" styleClass="sidebar-button,sidebar-button-purple" text="📈 Ventes" />
+                <Button fx:id="btnRapports" onAction="#onRapportsClick" styleClass="sidebar-button,sidebar-button-orange" text="📊 Rapports" />
+                <Button fx:id="btnFidelite" onAction="#onFideliteClick" styleClass="sidebar-button,sidebar-button-green" text="💎 Fidélité" />
+                <Button fx:id="btnRelance" onAction="#onRelanceClick" styleClass="sidebar-button,sidebar-button-red" text="🔔 Relance" />
+                <Button fx:id="btnConversion" onAction="#onConversionClick" styleClass="sidebar-button,sidebar-button-orange" text="📊 Conversion" />
+            </VBox>
+
+            <!-- Stats Section -->
+            <VBox spacing="12" styleClass="stats-section">
+                <Label styleClass="menu-title" text="STATISTIQUES" />
+                <VBox fx:id="statsBox" spacing="10" />
+            </VBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- Footer Section -->
+            <VBox spacing="10" alignment="BOTTOM_CENTER" styleClass="footer-section">
+                <Button onAction="#onQuitClick" styleClass="exit-button" text="🚪 Quitter" />
+                <Label styleClass="footer-date" fx:id="dateLabel" />
+            </VBox>
+        </VBox>
+
+        <!-- MAIN CONTENT AREA (Dynamic Views Only) -->
+        <StackPane HBox.hgrow="ALWAYS">
+            <children>
+                <!-- FIRST CHILD: Main Content ScrollPane -->
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER">
+                    <content>
+                        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f4f7f6;" />
+                    </content>
+                </ScrollPane>
+
+                <!-- SECOND CHILD: AI Chat Overlay (pickOnBounds="false" allows clicking below) -->
+                <AnchorPane fx:id="chatContainerPane" pickOnBounds="false">
+                    <!-- Chat Window VBox (Hidden by default) -->
+                    <VBox fx:id="chatWindow" visible="false" prefWidth="300" prefHeight="400"
+                          styleClass="chat-window" AnchorPane.bottomAnchor="80" AnchorPane.rightAnchor="20">
+                        <!-- Header -->
+                        <HBox spacing="10" styleClass="chat-header" alignment="CENTER_LEFT">
+                            <Label text="🤖 AI Assistant" styleClass="chat-title" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnCloseChat" onAction="#toggleChat" text="✕" styleClass="chat-close-btn" />
+                        </HBox>
+
+                        <!-- Messages Area -->
+                        <ScrollPane fx:id="chatMessagesPane" fitToWidth="true" VBox.vgrow="ALWAYS">
+                            <content>
+                                <VBox fx:id="chatMessagesBox" spacing="8" styleClass="chat-messages" />
+                            </content>
+                        </ScrollPane>
+
+                        <!-- Input Area -->
+                        <HBox spacing="5" styleClass="chat-input-area">
+                            <TextField fx:id="chatInput" promptText="Posez une question..." HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnSendMessage" onAction="#sendChatMessage" text="📤" styleClass="chat-send-btn" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- AI Chat Button -->
+                    <Button fx:id="btnFloatingChat" onAction="#toggleChat" text="🤖"
+                            styleClass="floating-chat-btn" AnchorPane.bottomAnchor="20" AnchorPane.rightAnchor="20" />
+                </AnchorPane>
+            </children>
+        </StackPane>
+    </children>
+</HBox>
+

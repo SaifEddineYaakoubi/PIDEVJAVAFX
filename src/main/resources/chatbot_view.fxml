@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.pidev.controllers.utilisateur.ChatbotController"
+      prefWidth="1200" prefHeight="800" minWidth="800" minHeight="600">
+    <padding>
+        <Insets bottom="15" left="20" right="20" top="15" />
+    </padding>
+
+    <!-- Header avec navigation - Style dashboard -->
+    <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: linear-gradient(to right, #1a472a, #2d5a3f); -fx-padding: 15 20; -fx-background-radius: 10;">
+        <VBox>
+            <Label text="🌾 SmartFarm Assistant" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;">
+                <font>
+                    <Font name="System Bold" size="22" />
+                </font>
+            </Label>
+            <Label fx:id="userGreetingLabel" text="Welcome!" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 14px;" />
+            <Label fx:id="userRoleLabel" text="" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 12px;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+
+        <!-- Boutons de navigation -->
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <ComboBox fx:id="languageSelector" prefWidth="180" style="-fx-background-color: white; -fx-background-radius: 20;"/>
+            <Button fx:id="backToDashboardButton"
+                    text="← Tableau de bord"
+                    style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 25;"
+                    onAction="#navigateToDashboard"/>
+            <Button fx:id="logoutButton"
+                    text="Déconnexion"
+                    style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 25;"
+                    onAction="#handleLogout"/>
+        </HBox>
+    </HBox>
+
+    <!-- Suggestions - Style moderne -->
+    <VBox fx:id="suggestionsContainer" spacing="10" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);">
+        <Label text="Questions suggérées:" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="70" style="-fx-background-color: transparent;">
+            <HBox fx:id="suggestionsBox" spacing="10" />
+        </ScrollPane>
+    </VBox>
+
+    <!-- Chat Area - Prend tout l'espace restant -->
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background-color: #f8f9fa; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 15;">
+        <VBox fx:id="chatContainer" spacing="15">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Input Area - Style moderne -->
+    <HBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);">
+        <TextArea fx:id="messageInput" promptText="Tapez votre message ici..." HBox.hgrow="ALWAYS"
+                  prefRowCount="2" wrapText="true"
+                  style="-fx-background-radius: 25; -fx-border-radius: 25; -fx-padding: 10 15; -fx-font-size: 14px;"/>
+        <Button fx:id="sendButton" text="Envoyer" prefHeight="50" prefWidth="120"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 25; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Boutons utilitaires -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Effacer la conversation" onAction="#clearChat"
+                style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 8 15; -fx-background-radius: 20;"/>
+        <Button text="Exporter l'historique" onAction="#exportChat"
+                style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 8 15; -fx-background-radius: 20;"/>
+    </HBox>
+
+</VBox>

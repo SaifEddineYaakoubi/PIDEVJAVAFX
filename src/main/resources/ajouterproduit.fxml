@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="580.0" prefWidth="700.0"
+            style="-fx-background-color: linear-gradient(to bottom right, #a9744f, #6e4b2a);"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.pidev.controllers.Produits.AjouterProduitController">
+
+    <VBox alignment="CENTER" spacing="25"
+          style="-fx-background-color: #f7efe6;
+                 -fx-background-radius: 30;
+                 -fx-effect: dropshadow(gaussian, rgba(80,60,30,0.25), 30, 0, 0, 10);
+                 -fx-padding: 40;"
+          AnchorPane.bottomAnchor="30"
+          AnchorPane.leftAnchor="40"
+          AnchorPane.rightAnchor="40"
+          AnchorPane.topAnchor="30">
+
+        <!-- Header -->
+        <VBox alignment="CENTER" spacing="8">
+            <StackPane prefHeight="80" prefWidth="80"
+                       style="-fx-background-color: linear-gradient(to bottom right, #a9744f, #6e4b2a);
+                              -fx-background-radius: 40;">
+                <Label text="🌱" style="-fx-font-size: 38px;"/>
+            </StackPane>
+
+            <Label text="Nouveau Produit"
+                   style="-fx-font-size: 28px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #6e4b2a;"/>
+
+            <Label text="Ajoutez un nouveau produit à votre stock"
+                   style="-fx-font-size: 13px;
+                          -fx-text-fill: #a9744f;"/>
+        </VBox>
+
+        <!-- Formulaire -->
+        <GridPane alignment="CENTER" hgap="20" vgap="18">
+
+            <!-- Nom -->
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="📝 Nom du produit"
+                       style="-fx-font-size: 12px;
+                              -fx-text-fill: #6e4b2a;
+                              -fx-font-weight: bold;"/>
+                <TextField fx:id="tfNom"
+                           prefHeight="45" prefWidth="280"
+                           promptText="Ex: Engrais, Semence..."
+                           style="-fx-background-color: #f3e5d0;
+                                  -fx-border-color: #a9744f;
+                                  -fx-border-radius: 12;
+                                  -fx-background-radius: 12;
+                                  -fx-padding: 10 15;
+                                  -fx-font-size: 14px;
+                                  -fx-text-fill: #6e4b2a;"/>
+            </VBox>
+
+            <!-- Type -->
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="📝 Type"
+                       style="-fx-font-size: 12px;
+                              -fx-text-fill: #6e4b2a;
+                              -fx-font-weight: bold;"/>
+                <TextField fx:id="tfType"
+                           prefHeight="45" prefWidth="280"
+                           style="-fx-background-color: #f3e5d0;
+                                  -fx-border-color: #a9744f;
+                                  -fx-border-radius: 12;
+                                  -fx-background-radius: 12;
+                                  -fx-padding: 10 15;
+                                  -fx-font-size: 14px;
+                                  -fx-text-fill: #6e4b2a;"/>
+            </VBox>
+
+            <!-- Unité -->
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="📦 Unité"
+                       style="-fx-font-size: 12px;
+                              -fx-text-fill: #6e4b2a;
+                              -fx-font-weight: bold;"/>
+                <TextField fx:id="tfUnite"
+                           prefHeight="45" prefWidth="280"
+                           promptText="Ex: L, KG..."
+                           style="-fx-background-color: #f3e5d0;
+                                  -fx-border-color: #a9744f;
+                                  -fx-border-radius: 12;
+                                  -fx-background-radius: 12;
+                                  -fx-padding: 10 15;
+                                  -fx-font-size: 14px;
+                                  -fx-text-fill: #6e4b2a;"/>
+            </VBox>
+
+            <!-- Prix -->
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="💲 Prix unitaire"
+                       style="-fx-font-size: 12px;
+                              -fx-text-fill: #6e4b2a;
+                              -fx-font-weight: bold;"/>
+                <TextField fx:id="tfPrixUnitaire"
+                           prefHeight="45" prefWidth="280"
+                           promptText="Ex: 10.5"
+                           style="-fx-background-color: #f3e5d0;
+                                  -fx-border-color: #a9744f;
+                                  -fx-border-radius: 12;
+                                  -fx-background-radius: 12;
+                                  -fx-padding: 10 15;
+                                  -fx-font-size: 14px;
+                                  -fx-text-fill: #6e4b2a;"/>
+            </VBox>
+
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+
+        </GridPane>
+
+        <!-- Message -->
+        <Label fx:id="lblMessage"
+               style="-fx-text-fill: #a9744f;
+                      -fx-font-size: 13px;
+                      -fx-font-weight: bold;"/>
+
+        <!-- Bouton -->
+        <Button fx:id="addp"
+                text="✓ Enregistrer"
+                onAction="#add"
+                style="-fx-background-color: #a9744f;
+                       -fx-text-fill: white;
+                       -fx-font-weight: bold;
+                       -fx-background-radius: 10;
+                       -fx-padding: 10 30;"/>
+
+    </VBox>
+</AnchorPane>

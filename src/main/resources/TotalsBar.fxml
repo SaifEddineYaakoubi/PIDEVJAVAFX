@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- EXEMPLE DE BARRE DE TOTAUX AVEC LES NOUVEAUX STYLES -->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.pidev.controllers.TotalsBarController"
+      styleClass="totals-container"
+      style="-fx-spacing: 20; -fx-padding: 20; -fx-background-color: #fdfaf6;">
+
+    <!-- TITRE -->
+    <Label text="Statistiques Globales"
+           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4e342e;"/>
+
+    <!-- CONTENEURS DE TOTAUX -->
+    <HBox style="-fx-spacing: 20; -fx-padding: 20;">
+
+        <!-- CONTENEUR RECOLTE - VERT -->
+        <VBox fx:id="recolteContainer"
+              styleClass="total-container,total-container-recolte"
+              style="-fx-padding: 20; -fx-spacing: 10; -fx-min-width: 250;">
+
+            <!-- Header avec icône -->
+            <HBox styleClass="total-header" style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT;">
+                <Label text="🌾" styleClass="total-icon" style="-fx-font-size: 24px;"/>
+                <Label text="Total Récoltes" styleClass="total-label"/>
+            </HBox>
+
+            <!-- Valeur -->
+            <Label fx:id="totalRecoltesValue"
+                   text="0"
+                   styleClass="total-value"/>
+
+            <!-- Subtitle -->
+            <Label text="récoltes enregistrées"
+                   styleClass="total-subtitle"/>
+        </VBox>
+
+        <!-- CONTENEUR RENDEMENT - MARRON -->
+        <VBox fx:id="rendementContainer"
+              styleClass="total-container,total-container-rendement"
+              style="-fx-padding: 20; -fx-spacing: 10; -fx-min-width: 250;">
+
+            <!-- Header avec icône -->
+            <HBox styleClass="total-header" style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT;">
+                <Label text="📊" styleClass="total-icon" style="-fx-font-size: 24px;"/>
+                <Label text="Total Rendements" styleClass="total-label"/>
+            </HBox>
+
+            <!-- Valeur -->
+            <Label fx:id="totalRendementsValue"
+                   text="0"
+                   styleClass="total-value"/>
+
+            <!-- Subtitle -->
+            <Label text="rendements enregistrés"
+                   styleClass="total-subtitle"/>
+        </VBox>
+    </HBox>
+</VBox>
+

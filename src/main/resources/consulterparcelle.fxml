@@ -2,10 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -15,181 +15,262 @@
     <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
         <!-- ============ SIDEBAR GAUCHE ============ -->
-        <VBox prefWidth="280" spacing="0" style="-fx-background-color: linear-gradient(to bottom, #1a472a, #0d2818); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+        <VBox fx:id="sidebarParcelle" prefWidth="290" spacing="0" style="-fx-background-color: linear-gradient(to bottom, #1a472a, #0d2818); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 5, 0);">
 
-            <!-- Logo et Titre -->
-            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 30 20 25 20;">
-                <Label text="🌿" style="-fx-font-size: 45px;"/>
-                <Label text="SMART FARM" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                <Label text="Gestion Agricole" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
-            </VBox>
+            <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                <VBox spacing="0" style="-fx-background-color: transparent;">
 
-            <!-- Séparateur -->
-            <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+                    <!-- Logo et Titre -->
+                    <VBox fx:id="logoSection" alignment="CENTER" spacing="5" style="-fx-padding: 25 20 20 20;">
+                        <Label text="🌿" style="-fx-font-size: 40px;"/>
+                        <Label text="SMART FARM" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                        <Label text="Gestion Agricole" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
+                    </VBox>
 
-            <!-- Menu Navigation -->
-            <VBox spacing="5" style="-fx-padding: 20 15;">
-                <Label text="NAVIGATION" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                    <!-- Séparateur -->
+                    <HBox fx:id="logoSeparator" style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
 
-                <Button text="   👤  Profil" onAction="#openProfile" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
-                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 14px; -fx-background-radius: 10; -fx-cursor: hand;"/>
+                    <!-- Menu Navigation -->
+                    <VBox fx:id="navSection" spacing="5" style="-fx-padding: 15 15;">
+                        <Label text="NAVIGATION" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
 
-                <Button text="   🌱  Parcelles" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
-                        style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"/>
+                        <Label text="PARCELLES &amp; CULTURES" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-weight: bold; -fx-padding: 5 0 0 0;"/>
+                        <Button text="   🌱  Parcelles" prefWidth="250" prefHeight="40" alignment="CENTER_LEFT"
+                                style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"/>
+                        <Button text="   🌾  Cultures" onAction="#navigateToConsulterCulture" prefWidth="250" prefHeight="40" alignment="CENTER_LEFT"
+                                style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;"/>
 
-                <Button text="   🌾  Cultures" onAction="#navigateToConsulterCulture" prefWidth="250" prefHeight="45" alignment="CENTER_LEFT"
-                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 14px; -fx-background-radius: 10; -fx-cursor: hand;"/>
-            </VBox>
+                        <Label text="RÉCOLTES &amp; RENDEMENTS" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+                        <Button text="   📊  Dashboard" onAction="#navigateToDashboard" prefWidth="250" prefHeight="40" alignment="CENTER_LEFT"
+                                style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;"/>
+                    </VBox>
 
-            <!-- Séparateur -->
-            <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+                    <HBox fx:id="navSeparator" style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
 
-            <!-- Statistiques dans la sidebar -->
-            <VBox spacing="12" style="-fx-padding: 20 15;" VBox.vgrow="ALWAYS">
-                <Label text="📊 STATISTIQUES" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                    <!-- ======== MÉTÉO (OpenWeatherMap) ======== -->
+                    <VBox spacing="10" style="-fx-padding: 15 15;">
+                        <Label text="🌤️ MÉTÉO EN DIRECT" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
 
-                <!-- Total Parcelles -->
-                <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 18;">
-                    <HBox spacing="12" alignment="CENTER_LEFT">
-                        <StackPane prefWidth="45" prefHeight="45" style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2); -fx-background-radius: 12;">
-                            <Label text="📊" style="-fx-font-size: 20px;"/>
-                        </StackPane>
-                        <VBox spacing="2">
-                            <Label text="Total Parcelles" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
-                            <Label fx:id="lblTotalParcelles" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                        <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 15;">
+                            <!-- Emoji + Température -->
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label fx:id="lblWeatherEmoji" text="⏳" style="-fx-font-size: 40px;"/>
+                                <VBox spacing="2">
+                                    <Label fx:id="lblWeatherTemp" text="..." style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                                    <Label fx:id="lblWeatherDesc" text="Chargement..." style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Ville -->
+                            <Label fx:id="lblWeatherCity" text="" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.5);"/>
+
+                            <!-- Détails météo -->
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label text="💧" style="-fx-font-size: 14px;"/>
+                                    <Label fx:id="lblWeatherHumidity" text="..." style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #60a5fa;"/>
+                                    <Label text="Humidité" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.5);"/>
+                                </VBox>
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label text="💨" style="-fx-font-size: 14px;"/>
+                                    <Label fx:id="lblWeatherWind" text="..." style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4ade80;"/>
+                                    <Label text="Vent" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.5);"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Conseil agricole -->
+                            <Label fx:id="lblWeatherAdvice" text="" wrapText="true"
+                                   style="-fx-font-size: 10px; -fx-text-fill: #fbbf24; -fx-background-color: rgba(251,191,36,0.1); -fx-padding: 8; -fx-background-radius: 8;"/>
                         </VBox>
-                    </HBox>
-                </VBox>
 
-                <!-- Superficie Totale -->
-                <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 18;">
-                    <HBox spacing="12" alignment="CENTER_LEFT">
-                        <StackPane prefWidth="45" prefHeight="45" style="-fx-background-color: linear-gradient(to bottom right, #11998e, #38ef7d); -fx-background-radius: 12;">
-                            <Label text="📐" style="-fx-font-size: 20px;"/>
-                        </StackPane>
-                        <VBox spacing="2">
-                            <Label text="Superficie Totale" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.6);"/>
-                            <Label fx:id="lblSuperficieTotale" text="0 m²" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                        <Label text="Sélectionnez une parcelle pour sa météo" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.3); -fx-font-style: italic;"/>
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+
+                    <!-- Statistiques dans la sidebar -->
+                    <VBox spacing="10" style="-fx-padding: 15 15;">
+                        <Label text="📊 STATISTIQUES" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+
+                        <!-- Total Parcelles -->
+                        <VBox spacing="6" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 12; -fx-padding: 12;">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane prefWidth="40" prefHeight="40" style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2); -fx-background-radius: 10;">
+                                    <Label text="📊" style="-fx-font-size: 18px;"/>
+                                </StackPane>
+                                <VBox spacing="2">
+                                    <Label text="Total Parcelles" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.6);"/>
+                                    <Label fx:id="lblTotalParcelles" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                                </VBox>
+                            </HBox>
                         </VBox>
-                    </HBox>
+
+                        <!-- Superficie Totale -->
+                        <VBox spacing="6" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 12; -fx-padding: 12;">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane prefWidth="40" prefHeight="40" style="-fx-background-color: linear-gradient(to bottom right, #11998e, #38ef7d); -fx-background-radius: 10;">
+                                    <Label text="📐" style="-fx-font-size: 18px;"/>
+                                </StackPane>
+                                <VBox spacing="2">
+                                    <Label text="Superficie Totale" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.6);"/>
+                                    <Label fx:id="lblSuperficieTotale" text="0 m²" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- États -->
+                        <VBox spacing="8" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 12; -fx-padding: 12;">
+                            <Label text="Répartition par état" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: bold;"/>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane prefWidth="10" prefHeight="10" style="-fx-background-color: #4ade80; -fx-background-radius: 5;"/>
+                                <Label text="Actives" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblActives" text="0" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4ade80;"/>
+                            </HBox>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane prefWidth="10" prefHeight="10" style="-fx-background-color: #fbbf24; -fx-background-radius: 5;"/>
+                                <Label text="En Repos" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblRepos" text="0" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;"/>
+                            </HBox>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane prefWidth="10" prefHeight="10" style="-fx-background-color: #60a5fa; -fx-background-radius: 5;"/>
+                                <Label text="Exploitées" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblExploitees" text="0" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #60a5fa;"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+
+                    <!-- 🔔 ALERTES -->
+                    <VBox spacing="8" style="-fx-padding: 15 15;">
+                        <Label text="🔔 ALERTES" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                        <VBox fx:id="vboxAlerts" spacing="6"/>
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+
+                    <!-- 📜 HISTORIQUE -->
+                    <VBox spacing="8" style="-fx-padding: 15 15;">
+                        <Label text="📜 HISTORIQUE" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.4); -fx-font-weight: bold;"/>
+                        <ListView fx:id="lvHistorique" prefHeight="120" styleClass="history-list"/>
+                    </VBox>
+
+                    <HBox style="-fx-background-color: rgba(255,255,255,0.1); -fx-pref-height: 1;"/>
+
+                    <!-- 🌙 MODE SOMBRE -->
+                    <VBox spacing="8" style="-fx-padding: 15 15;">
+                        <ToggleButton fx:id="btnDarkMode" text="🌙 Mode Sombre" prefWidth="250" prefHeight="38" styleClass="dark-mode-toggle"/>
+                    </VBox>
+
                 </VBox>
-
-                <!-- États -->
-                <VBox spacing="10" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-padding: 18;">
-                    <Label text="Répartition par état" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: bold;"/>
-
-                    <!-- Actives -->
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <StackPane prefWidth="12" prefHeight="12" style="-fx-background-color: #4ade80; -fx-background-radius: 6;"/>
-                        <Label text="Actives" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label fx:id="lblActives" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4ade80;"/>
-                    </HBox>
-
-                    <!-- En Repos -->
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <StackPane prefWidth="12" prefHeight="12" style="-fx-background-color: #fbbf24; -fx-background-radius: 6;"/>
-                        <Label text="En Repos" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label fx:id="lblRepos" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;"/>
-                    </HBox>
-
-                    <!-- Exploitées -->
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <StackPane prefWidth="12" prefHeight="12" style="-fx-background-color: #60a5fa; -fx-background-radius: 6;"/>
-                        <Label text="Exploitées" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label fx:id="lblExploitees" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #60a5fa;"/>
-                    </HBox>
-                </VBox>
-            </VBox>
+            </ScrollPane>
 
             <!-- Pied de sidebar -->
-            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 15; -fx-background-color: rgba(0,0,0,0.2);">
-                <Label fx:id="lblDateTime" text="" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 12px;"/>
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 12; -fx-background-color: rgba(0,0,0,0.2);">
+                <Label fx:id="lblDateTime" text="" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 11px;"/>
                 <Label text="© 2026 Smart Farm" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 10px;"/>
             </VBox>
 
         </VBox>
 
         <!-- ============ CONTENU PRINCIPAL (DROITE) ============ -->
-        <VBox spacing="25" HBox.hgrow="ALWAYS" style="-fx-padding: 30;">
+        <VBox spacing="20" HBox.hgrow="ALWAYS" style="-fx-padding: 25;">
 
             <!-- En-tête -->
             <HBox spacing="20" alignment="CENTER_LEFT">
                 <VBox spacing="5">
-                    <Label text="🌱 Gestion des Parcelles" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a472a;"/>
-                    <Label text="Visualisez et gérez toutes vos parcelles agricoles" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+                    <Label text="🌱 Gestion des Parcelles" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1a472a;"/>
+                    <Label text="Visualisez et gérez toutes vos parcelles agricoles" style="-fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="➕ Nouvelle Parcelle" onAction="#navigateToAjouterParcelle" prefHeight="45"
-                        style="-fx-background-color: linear-gradient(to right, #1a472a, #2d5a3f); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(26,71,42,0.4), 12, 0, 0, 4);"/>
+                <Button text="➕ Nouvelle Parcelle" onAction="#navigateToAjouterParcelle" prefHeight="42"
+                        style="-fx-background-color: linear-gradient(to right, #1a472a, #2d5a3f); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(26,71,42,0.4), 12, 0, 0, 4);"/>
             </HBox>
 
-            <!-- Carte principale avec tableau -->
-            <VBox spacing="20" VBox.vgrow="ALWAYS"
-                  style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 5);">
+            <!-- Contenu principal en deux parties -->
+            <HBox spacing="20" VBox.vgrow="ALWAYS">
 
-                <!-- Barre de recherche et filtres -->
-                <HBox spacing="15" alignment="CENTER_LEFT">
-                    <HBox alignment="CENTER_LEFT" prefHeight="45" style="-fx-background-color: #f3f4f6; -fx-background-radius: 12; -fx-padding: 0 18;">
-                        <Label text="🔍" style="-fx-font-size: 16px; -fx-text-fill: #9ca3af;"/>
-                        <TextField fx:id="tfRecherche" promptText="Rechercher une parcelle..." prefWidth="300" prefHeight="45"
-                                   style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 14px;"/>
+                <!-- Liste des parcelles -->
+                <VBox spacing="18" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 5);">
+
+                    <!-- Barre de recherche et filtres -->
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <HBox alignment="CENTER_LEFT" prefHeight="42" style="-fx-background-color: #f3f4f6; -fx-background-radius: 10; -fx-padding: 0 15;">
+                            <Label text="🔍" style="-fx-font-size: 15px; -fx-text-fill: #9ca3af;"/>
+                            <TextField fx:id="tfRecherche" promptText="Rechercher une parcelle..." prefWidth="250" prefHeight="42"
+                                       style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px;"/>
+                        </HBox>
+
+                        <ComboBox fx:id="cbFiltre" promptText="🏷️ Filtrer par état" prefWidth="170" prefHeight="42"
+                                  style="-fx-background-color: #f3f4f6; -fx-border-color: transparent; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 12px;"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button text="🔄 Rafraîchir" onAction="#rafraichirListe" prefHeight="42"
+                                style="-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 10;"/>
                     </HBox>
 
-                    <ComboBox fx:id="cbFiltre" promptText="🏷️ Filtrer par état" prefWidth="180" prefHeight="45"
-                              style="-fx-background-color: #f3f4f6; -fx-border-color: transparent; -fx-border-radius: 12; -fx-background-radius: 12; -fx-font-size: 13px;"/>
+                    <!-- Boutons de tri -->
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Trier par:" style="-fx-font-size: 11px; -fx-text-fill: #6b7280; -fx-font-weight: bold;"/>
+                        <Button fx:id="btnSortNom" text="Nom ↕" onAction="#trierParNom" styleClass="sort-button"/>
+                        <Button fx:id="btnSortSuperficie" text="Superficie ↕" onAction="#trierParSuperficie" styleClass="sort-button"/>
+                        <Button fx:id="btnSortEtat" text="État ↕" onAction="#trierParEtat" styleClass="sort-button"/>
+                    </HBox>
 
-                    <Region HBox.hgrow="ALWAYS"/>
+                    <!-- Liste -->
+                    <ListView fx:id="listViewParcelles" VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-background-radius: 10;"/>
 
-                    <Button text="🔄 Rafraîchir" onAction="#rafraichirListe" prefHeight="45"
-                            style="-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 12;"/>
-                </HBox>
+                    <!-- Boutons d'action -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button fx:id="btnModifier" text="✏️ Modifier" onAction="#modifierParcelle" prefHeight="40"
+                                style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706); -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 10 22; -fx-cursor: hand; -fx-background-radius: 10;"/>
 
-                <!-- Tableau -->
-                <TableView fx:id="tableViewParcelles" VBox.vgrow="ALWAYS"
-                           style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-background-radius: 12;">
-                    <columns>
-                        <TableColumn fx:id="colNom" text="📝 Nom de la Parcelle" prefWidth="250">
-                            <cellValueFactory><PropertyValueFactory property="nom"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colSuperficie" text="📐 Superficie (m²)" prefWidth="180">
-                            <cellValueFactory><PropertyValueFactory property="superficie"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colLocalisation" text="📍 Localisation" prefWidth="350">
-                            <cellValueFactory><PropertyValueFactory property="localisation"/></cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="colEtat" text="🏷️ État" prefWidth="150">
-                            <cellValueFactory><PropertyValueFactory property="etat"/></cellValueFactory>
-                        </TableColumn>
-                    </columns>
-                </TableView>
+                        <Button fx:id="btnSupprimer" text="🗑️ Supprimer" onAction="#supprimerParcelle" prefHeight="40"
+                                style="-fx-background-color: linear-gradient(to right, #ef4444, #dc2626); -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 10 22; -fx-cursor: hand; -fx-background-radius: 10;"/>
 
-                <!-- Boutons d'action -->
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <Button fx:id="btnModifier" text="✏️ Modifier" onAction="#modifierParcelle" prefHeight="45"
-                            style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 28; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.4), 10, 0, 0, 3);"/>
+                        <Region HBox.hgrow="ALWAYS"/>
 
-                    <Button fx:id="btnSupprimer" text="🗑️ Supprimer" onAction="#supprimerParcelle" prefHeight="45"
-                            style="-fx-background-color: linear-gradient(to right, #ef4444, #dc2626); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 28; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(239,68,68,0.4), 10, 0, 0, 3);"/>
+                        <Label fx:id="lblResultats" text="Affichage: 0 sur 0" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
 
-                    <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="📄 Exporter PDF" onAction="#exporterListe" prefHeight="40"
+                                style="-fx-background-color: linear-gradient(to right, #6366f1, #4f46e5); -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 10 22; -fx-cursor: hand; -fx-background-radius: 10;"/>
+                    </HBox>
+                </VBox>
 
-                    <Label fx:id="lblResultats" text="Affichage: 0 sur 0" style="-fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
+                <!-- ======== CARTE OpenStreetMap (droite) ======== -->
+                <VBox spacing="10" minWidth="350" prefWidth="420" HBox.hgrow="SOMETIMES"
+                      style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);">
 
-                    <Button text="📄 Exporter PDF" onAction="#exporterListe" prefHeight="45"
-                            style="-fx-background-color: linear-gradient(to right, #6366f1, #4f46e5); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 12 28; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.4), 10, 0, 0, 3);"/>
-                </HBox>
-            </VBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: linear-gradient(to right, #1a472a, #2d6a3f); -fx-background-radius: 12; -fx-padding: 12 18;">
+                        <Label text="🗺️" style="-fx-font-size: 20px;"/>
+                        <VBox spacing="2">
+                            <Label text="Carte Interactive" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                            <Label text="OpenStreetMap • Satellite • Terrain" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                        </VBox>
+                    </HBox>
+
+                    <WebView fx:id="webViewMap" VBox.vgrow="ALWAYS" minHeight="300"/>
+
+                    <HBox spacing="8" alignment="CENTER" style="-fx-background-color: #f0fdf4; -fx-padding: 10 14; -fx-background-radius: 10; -fx-border-color: #bbf7d0; -fx-border-radius: 10; -fx-border-width: 1;">
+                        <Label text="📍" style="-fx-font-size: 14px;"/>
+                        <Label text="Sélectionnez une parcelle pour afficher sa localisation" style="-fx-font-size: 11px; -fx-text-fill: #166534; -fx-font-weight: bold;" wrapText="true"/>
+                    </HBox>
+                </VBox>
+            </HBox>
 
             <!-- Barre de statut -->
-            <HBox spacing="15" alignment="CENTER_LEFT"
-                  style="-fx-background-color: white; -fx-padding: 18 25; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);">
-                <Label text="💡" style="-fx-font-size: 18px;"/>
-                <Label fx:id="lblMessage" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 15 22; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);">
+                <Label text="💡" style="-fx-font-size: 16px;"/>
+                <Label fx:id="lblMessage" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Label text="Double-cliquez sur une ligne pour modifier" style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+                <Label text="Double-cliquez sur une ligne pour modifier" style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
             </HBox>
 
         </VBox>

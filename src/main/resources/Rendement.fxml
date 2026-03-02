@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox spacing="20" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.pidev.controllers.RendementController"
+      stylesheets="@smartfarmm.css"
+      style="-fx-padding: 25; -fx-background-color: transparent;">
+
+    <!-- En-tête -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <VBox spacing="5">
+            <Label text="📈 Gestion des Rendements" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #78350f;"/>
+            <Label text="Analysez les performances et la productivité de vos récoltes" style="-fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnAjouter" text="➕ Ajouter Rendement" prefHeight="42"
+                style="-fx-background-color: linear-gradient(to right, #78350f, #b45309); -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(120,53,15,0.4), 12, 0, 0, 4);"/>
+        <Button fx:id="btnActualiser" text="🔄 Actualiser" prefHeight="42"
+                style="-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 10;"/>
+    </HBox>
+
+    <!-- Contenu principal -->
+    <VBox spacing="18" VBox.vgrow="ALWAYS"
+          style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 5);">
+
+        <!-- Barre de recherche -->
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <HBox alignment="CENTER_LEFT" prefHeight="42" style="-fx-background-color: #f3f4f6; -fx-background-radius: 10; -fx-padding: 0 15;">
+                <Label text="🔍" style="-fx-font-size: 15px; -fx-text-fill: #9ca3af;"/>
+                <TextField fx:id="searchField" promptText="Rechercher un rendement..." prefWidth="300" prefHeight="42"
+                           style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px;"/>
+            </HBox>
+            <Button fx:id="btnChercher" text="Chercher" prefHeight="42"
+                    style="-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 10;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblTotal" text="Total: 0 rendements" style="-fx-font-size: 12px; -fx-text-fill: #6b7280; -fx-font-weight: bold;"/>
+        </HBox>
+
+        <!-- TableView -->
+        <TableView fx:id="tableRendements" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: transparent; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-background-radius: 10;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60" visible="false"/>
+                <TableColumn fx:id="colSurface" text="Surface (ha)" prefWidth="120"/>
+                <TableColumn fx:id="colQuantite" text="Quantité (kg)" prefWidth="120"/>
+                <TableColumn fx:id="colProductivite" text="Productivité (kg/ha)" prefWidth="150"/>
+                <TableColumn fx:id="colRecolte" text="Récolte" prefWidth="100"/>
+                <TableColumn fx:id="colAction" text="Actions" prefWidth="180"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Barre de statut -->
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-background-color: white; -fx-padding: 15 22; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 3);">
+        <Label text="💡" style="-fx-font-size: 16px;"/>
+        <Label fx:id="lblStatus" text="Prêt" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #78350f;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Double-cliquez sur une ligne pour modifier" style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
+    </HBox>
+
+</VBox>

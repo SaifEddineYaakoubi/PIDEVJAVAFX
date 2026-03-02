@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.pidev.controllers.utilisateur.UserBadgesController"
+            styleClass="root"
+            prefHeight="600"
+            prefWidth="1000">
+
+    <!-- ========== TOP TITLE ========== -->
+    <top>
+        <VBox alignment="CENTER_LEFT" spacing="5" styleClass="form-card">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Badges des Utilisateurs" styleClass="section-title"/>
+            <Label text="Visualisez les badges assignés à chaque utilisateur"
+                   styleClass="form-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- ========== CENTER CONTENT ========== -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+
+            <!-- Recherche -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField"
+                           promptText="🔍 Rechercher un utilisateur..."
+                           HBox.hgrow="ALWAYS"
+                           styleClass="text-field-modern"
+                           onKeyReleased="#handleSearch"/>
+            </HBox>
+
+            <!-- ListView des utilisateurs avec badges -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="👥 Utilisateurs et leurs badges:" styleClass="form-label"/>
+                <ListView fx:id="userBadgesList" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Boutons -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="🔄 Rafraîchir" onAction="#refreshData" styleClass="btn-primary" minWidth="120"/>
+                <Button text="❌ Fermer" onAction="#closeWindow" styleClass="btn-secondary" minWidth="100"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
+

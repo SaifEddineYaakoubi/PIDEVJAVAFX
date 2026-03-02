@@ -8,6 +8,9 @@ public interface IService<T> {
 
     void update(T t);
 
+    default boolean delete(int id) {
+        throw new UnsupportedOperationException("delete not implemented");
+    }
 
     T getById(int id);
 

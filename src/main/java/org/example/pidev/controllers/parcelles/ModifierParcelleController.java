@@ -1,16 +1,25 @@
 package org.example.pidev.controllers.parcelles;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.example.pidev.models.Parcelle;
+import org.example.pidev.services.GeoLocationService;
+import org.example.pidev.services.GeoLocationService.LocationResult;
 import org.example.pidev.services.ParcelleService;
+import org.example.pidev.utils.ActionHistoryService;
+import org.example.pidev.utils.AnimationUtils;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ModifierParcelleController implements Initializable {
 
@@ -47,13 +56,27 @@ public class ModifierParcelleController implements Initializable {
     @FXML
     private Button btnReset;
 
+    // OpenStreetMap elements
+    @FXML
+    private ListView<String> lvSuggestions;
+
+    @FXML
+    private WebView webViewMap;
+
+    @FXML
+    private Label lblCoordinates;
+
     private ParcelleService parcelleService;
+    private GeoLocationService geoLocationService;
     private Parcelle currentParcelle;
     private Parcelle originalParcelle;
+    private List<LocationResult> currentResults;
+    private Timer searchTimer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         parcelleService = new ParcelleService();
+        geoLocationService = new GeoLocationService();
 
         // Remplir le ComboBox avec les états possibles
         cbEtat.setItems(FXCollections.observableArrayList("active", "repos", "exploitée"));
@@ -61,8 +84,89 @@ public class ModifierParcelleController implements Initializable {
         // Effacer les messages d'erreur quand l'utilisateur tape
         tfNom.textProperty().addListener((obs, old, newVal) -> clearMessages());
         tfSuperficie.textProperty().addListener((obs, old, newVal) -> clearMessages());
-        tfLocalisation.textProperty().addListener((obs, old, newVal) -> clearMessages());
         cbEtat.valueProperty().addListener((obs, old, newVal) -> clearMessages());
+
+        // Configurer la recherche de localisation avec délai (debounce)
+        tfLocalisation.textProperty().addListener((obs, old, newVal) -> {
+            clearMessages();
+            if (searchTimer != null) searchTimer.cancel();
+            if (newVal != null && newVal.trim().length() >= 3) {
+                searchTimer = new Timer(true);
+                searchTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> searchLocations(newVal.trim()));
+                    }
+                }, 500);
+            } else {
+                if (lvSuggestions != null) {
+                    lvSuggestions.setVisible(false);
+                    lvSuggestions.setManaged(false);
+                }
+            }
+        });
+
+        // Configurer la sélection d'une suggestion
+        if (lvSuggestions != null) {
+            lvSuggestions.setVisible(false);
+            lvSuggestions.setManaged(false);
+            lvSuggestions.setOnMouseClicked(event -> {
+                int selectedIndex = lvSuggestions.getSelectionModel().getSelectedIndex();
+                if (selectedIndex >= 0 && currentResults != null && selectedIndex < currentResults.size()) {
+                    selectLocation(currentResults.get(selectedIndex));
+                }
+            });
+        }
+
+        // Initialiser la carte
+        if (webViewMap != null) {
+            String defaultHtml = GeoLocationService.getMapHtml(36.8065, 10.1815, "Tunisie");
+            webViewMap.getEngine().loadContent(defaultHtml);
+        }
+
+        if (lblCoordinates != null) lblCoordinates.setText("");
+    }
+
+    private void searchLocations(String query) {
+        try {
+            currentResults = geoLocationService.searchLocation(query, 5);
+            if (currentResults != null && !currentResults.isEmpty()) {
+                lvSuggestions.getItems().clear();
+                for (LocationResult result : currentResults) {
+                    lvSuggestions.getItems().add("📍 " + result.getDisplayName());
+                }
+                lvSuggestions.setVisible(true);
+                lvSuggestions.setManaged(true);
+                lvSuggestions.setPrefHeight(Math.min(currentResults.size() * 35, 175));
+            } else {
+                lvSuggestions.setVisible(false);
+                lvSuggestions.setManaged(false);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur recherche localisation: " + e.getMessage());
+        }
+    }
+
+    private void selectLocation(LocationResult location) {
+        tfLocalisation.setText(location.getShortName());
+        if (lblCoordinates != null) lblCoordinates.setText("📌 GPS: " + location.getCoordinates());
+        lvSuggestions.setVisible(false);
+        lvSuggestions.setManaged(false);
+        if (webViewMap != null) {
+            String mapHtml = GeoLocationService.getMapHtml(location.getLatitude(), location.getLongitude(), location.getShortName());
+            webViewMap.getEngine().loadContent(mapHtml);
+        }
+        showSuccess("📍 Localisation sélectionnée : " + location.getShortName());
+    }
+
+    @FXML
+    void rechercherSurCarte(ActionEvent event) {
+        String localisation = tfLocalisation.getText();
+        if (localisation != null && !localisation.trim().isEmpty()) {
+            searchLocations(localisation.trim());
+        } else {
+            showError("Veuillez saisir une localisation à rechercher.");
+        }
     }
 
     /**
@@ -70,25 +174,35 @@ public class ModifierParcelleController implements Initializable {
      */
     public void setParcelle(Parcelle parcelle) {
         this.currentParcelle = parcelle;
-        // Sauvegarder les valeurs originales pour le reset
         this.originalParcelle = new Parcelle(
-            parcelle.getIdParcelle(),
-            parcelle.getNom(),
-            parcelle.getSuperficie(),
-            parcelle.getLocalisation(),
-            parcelle.getEtat(),
-            parcelle.getIdUser()
+                parcelle.getIdParcelle(),
+                parcelle.getNom(),
+                parcelle.getSuperficie(),
+                parcelle.getLocalisation(),
+                parcelle.getEtat(),
+                parcelle.getIdUser()
         );
 
-        // Remplir les champs
         tfNom.setText(parcelle.getNom());
         tfSuperficie.setText(String.valueOf(parcelle.getSuperficie()));
         tfLocalisation.setText(parcelle.getLocalisation());
         cbEtat.setValue(parcelle.getEtat());
 
-        // Afficher l'info
-        if (lblInfo != null) {
-            lblInfo.setText("Modification de: " + parcelle.getNom());
+        if (lblInfo != null) lblInfo.setText("Modification de: " + parcelle.getNom());
+
+        // Charger la carte pour la localisation actuelle
+        if (webViewMap != null && parcelle.getLocalisation() != null) {
+            new Thread(() -> {
+                var results = geoLocationService.searchLocation(parcelle.getLocalisation(), 1);
+                Platform.runLater(() -> {
+                    if (results != null && !results.isEmpty()) {
+                        var loc = results.get(0);
+                        String mapHtml = GeoLocationService.getMapHtml(loc.getLatitude(), loc.getLongitude(), parcelle.getNom());
+                        webViewMap.getEngine().loadContent(mapHtml);
+                        if (lblCoordinates != null) lblCoordinates.setText("📌 GPS: " + loc.getCoordinates());
+                    }
+                });
+            }).start();
         }
     }
 
@@ -102,28 +216,11 @@ public class ModifierParcelleController implements Initializable {
             String localisation = tfLocalisation.getText();
             String etat = cbEtat.getValue();
 
-            // Validation des champs vides
-            if (nom == null || nom.trim().isEmpty()) {
-                showError("Le nom de la parcelle est obligatoire.");
-                return;
-            }
+            if (nom == null || nom.trim().isEmpty()) { showError("Le nom de la parcelle est obligatoire."); return; }
+            if (superficieStr == null || superficieStr.trim().isEmpty()) { showError("La superficie est obligatoire."); return; }
+            if (localisation == null || localisation.trim().isEmpty()) { showError("La localisation est obligatoire."); return; }
+            if (etat == null || etat.trim().isEmpty()) { showError("Veuillez sélectionner un état."); return; }
 
-            if (superficieStr == null || superficieStr.trim().isEmpty()) {
-                showError("La superficie est obligatoire.");
-                return;
-            }
-
-            if (localisation == null || localisation.trim().isEmpty()) {
-                showError("La localisation est obligatoire.");
-                return;
-            }
-
-            if (etat == null || etat.trim().isEmpty()) {
-                showError("Veuillez sélectionner un état.");
-                return;
-            }
-
-            // Conversion et validation de la superficie
             double superficie;
             try {
                 superficie = Double.parseDouble(superficieStr.trim());
@@ -132,19 +229,18 @@ public class ModifierParcelleController implements Initializable {
                 return;
             }
 
-            // Mettre à jour l'objet Parcelle
             currentParcelle.setNom(nom.trim());
             currentParcelle.setSuperficie(superficie);
             currentParcelle.setLocalisation(localisation.trim());
             currentParcelle.setEtat(etat);
             currentParcelle.setIdUser(CURRENT_USER_ID);
 
-            // Modifier via le service
             parcelleService.update(currentParcelle);
 
             showSuccess("✅ Parcelle modifiée avec succès !");
+            AnimationUtils.showSuccessAnimation(lblSuccess);
+            ActionHistoryService.getInstance().logUpdate("Parcelle", currentParcelle.getNom());
 
-            // Fermer la fenêtre après un court délai
             javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
             pause.setOnFinished(e -> fermerFenetre(null));
             pause.play();
@@ -183,6 +279,7 @@ public class ModifierParcelleController implements Initializable {
     private void showError(String message) {
         lblError.setText(message);
         lblSuccess.setText("");
+        AnimationUtils.showErrorAnimation(lblError);
     }
 
     private void showSuccess(String message) {

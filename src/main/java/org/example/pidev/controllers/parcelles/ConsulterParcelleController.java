@@ -7,9 +7,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,151 +19,439 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.example.pidev.controllers.utilisateur.ProfileController;
+import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
+import org.example.pidev.services.CultureService;
 import org.example.pidev.services.ParcelleService;
+import org.example.pidev.services.WeatherService;
+import org.example.pidev.services.GeoLocationService;
+import org.example.pidev.utils.ActionHistoryService;
+import org.example.pidev.utils.AnimationUtils;
+import org.example.pidev.utils.ThemeManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class ConsulterParcelleController implements Initializable {
 
-    @FXML
-    private TableView<Parcelle> tableViewParcelles;
+    @FXML private VBox sidebarParcelle;
+    @FXML private ListView<Parcelle> listViewParcelles;
+    @FXML private TextField tfRecherche;
+    @FXML private ComboBox<String> cbFiltre;
+    @FXML private Label lblMessage;
+    @FXML private Label lblResultats;
+    @FXML private Label lblDateTime;
 
-    @FXML
-    private TableColumn<Parcelle, String> colNom;
+    // Statistiques
+    @FXML private Label lblTotalParcelles;
+    @FXML private Label lblSuperficieTotale;
+    @FXML private Label lblActives;
+    @FXML private Label lblRepos;
+    @FXML private Label lblExploitees;
 
-    @FXML
-    private TableColumn<Parcelle, Double> colSuperficie;
+    @FXML private Button btnModifier;
+    @FXML private Button btnSupprimer;
 
-    @FXML
-    private TableColumn<Parcelle, String> colLocalisation;
+    // Météo
+    @FXML private Label lblWeatherEmoji;
+    @FXML private Label lblWeatherTemp;
+    @FXML private Label lblWeatherDesc;
+    @FXML private Label lblWeatherCity;
+    @FXML private Label lblWeatherHumidity;
+    @FXML private Label lblWeatherWind;
+    @FXML private Label lblWeatherAdvice;
+    @FXML private javafx.scene.web.WebView webViewMap;
 
-    @FXML
-    private TableColumn<Parcelle, String> colEtat;
-
-    @FXML
-    private TextField tfRecherche;
-
-    @FXML
-    private ComboBox<String> cbFiltre;
-
-    @FXML
-    private Label lblMessage;
-
-    @FXML
-    private Label lblResultats;
-
-    @FXML
-    private Label lblDateTime;
-
-    // Labels pour les statistiques
-    @FXML
-    private Label lblTotalParcelles;
-
-    @FXML
-    private Label lblSuperficieTotale;
-
-    @FXML
-    private Label lblActives;
-
-    @FXML
-    private Label lblRepos;
-
-    @FXML
-    private Label lblExploitees;
-
-    @FXML
-    private Button btnModifier;
-
-    @FXML
-    private Button btnSupprimer;
+    // Nouveaux éléments avancés
+    @FXML private ToggleButton btnDarkMode;
+    @FXML private VBox vboxAlerts;
+    @FXML private ListView<String> lvHistorique;
+    @FXML private Button btnSortNom;
+    @FXML private Button btnSortSuperficie;
+    @FXML private Button btnSortEtat;
 
     private ParcelleService parcelleService;
+    private CultureService cultureService;
+    private WeatherService weatherService;
+    private GeoLocationService geoLocationService;
     private ObservableList<Parcelle> parcellesList;
     private FilteredList<Parcelle> filteredParcelles;
+
+    // Tri
+    private Comparator<Parcelle> currentComparator = null;
+    private boolean sortAscending = true;
+    private String activeSortField = "";
+
+    // Callback vers le Dashboard quand une parcelle est sélectionnée (pour la météo)
+    private Consumer<Parcelle> onParcelleSelected;
+
+    /**
+     * Définit le callback appelé quand une parcelle est sélectionnée.
+     * Utilisé par le DashboardController pour mettre à jour la météo dans la sidebar.
+     */
+    public void setOnParcelleSelected(Consumer<Parcelle> callback) {
+        this.onParcelleSelected = callback;
+    }
+
+    /**
+     * Cache la sidebar locale quand la vue est embarquée dans le Dashboard unifié.
+     * Le Dashboard possède sa propre sidebar unique avec stats dynamiques.
+     */
+    public void hideSidebar() {
+        if (sidebarParcelle != null) {
+            sidebarParcelle.setVisible(false);
+            sidebarParcelle.setManaged(false);
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         parcelleService = new ParcelleService();
+        cultureService = new CultureService();
+        weatherService = new WeatherService();
+        geoLocationService = new GeoLocationService();
 
-        // Configurer les colonnes
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colSuperficie.setCellValueFactory(new PropertyValueFactory<>("superficie"));
-        colLocalisation.setCellValueFactory(new PropertyValueFactory<>("localisation"));
-        colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
+        // Cell factory avec tooltips et drag & drop
+        listViewParcelles.setCellFactory(param -> createParcelleCell());
 
-        // Appliquer style aux cellules d'état
-        colEtat.setCellFactory(column -> new TableCell<Parcelle, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item);
-                    switch (item.toLowerCase()) {
-                        case "active":
-                            setStyle("-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-alignment: CENTER;");
-                            break;
-                        case "repos":
-                            setStyle("-fx-background-color: #FFE0B2; -fx-text-fill: #E65100; -fx-font-weight: bold; -fx-alignment: CENTER;");
-                            break;
-                        case "exploitée":
-                            setStyle("-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0; -fx-font-weight: bold; -fx-alignment: CENTER;");
-                            break;
-                        default:
-                            setStyle("-fx-alignment: CENTER;");
-                    }
-                }
-            }
-        });
-
-        // Initialiser le filtre ComboBox
         cbFiltre.setItems(FXCollections.observableArrayList("Tous", "Active", "Repos", "Exploitée"));
         cbFiltre.setValue("Tous");
         cbFiltre.setOnAction(e -> applyFilters());
 
-        // Charger les données
         loadData();
 
-        // Configurer la recherche en temps réel
         tfRecherche.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
 
-        // Démarrer l'horloge
         startClock();
 
-        // Double-clic pour modifier
-        tableViewParcelles.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && tableViewParcelles.getSelectionModel().getSelectedItem() != null) {
+        listViewParcelles.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && listViewParcelles.getSelectionModel().getSelectedItem() != null) {
                 modifierParcelle(null);
             }
         });
 
-        // Désactiver les boutons Modifier et Supprimer par défaut
         if (btnModifier != null) btnModifier.setDisable(true);
         if (btnSupprimer != null) btnSupprimer.setDisable(true);
 
-        // Activer/Désactiver les boutons selon la sélection
-        tableViewParcelles.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            boolean hasSelection = newSelection != null;
-            if (btnModifier != null) btnModifier.setDisable(!hasSelection);
-            if (btnSupprimer != null) btnSupprimer.setDisable(!hasSelection);
+        listViewParcelles.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            boolean has = newSel != null;
+            if (btnModifier != null) btnModifier.setDisable(!has);
+            if (btnSupprimer != null) btnSupprimer.setDisable(!has);
+            if (has) {
+                loadWeatherForParcelle(newSel);
+                loadMapForParcelle(newSel);
+                // Notifier le Dashboard pour mettre à jour la météo dans la sidebar
+                if (onParcelleSelected != null) {
+                    onParcelleSelected.accept(newSel);
+                }
+            }
+        });
+
+        loadDefaultWeather();
+
+        if (webViewMap != null) {
+            String defaultHtml = GeoLocationService.getMapHtml(36.8065, 10.1815, "Tunisie");
+            webViewMap.getEngine().loadContent(defaultHtml);
+        }
+
+        // === Fonctionnalités avancées ===
+
+        // Dark Mode
+        if (btnDarkMode != null) {
+            ThemeManager tm = ThemeManager.getInstance();
+            btnDarkMode.setSelected(tm.isDarkMode());
+            btnDarkMode.setText(tm.isDarkMode() ? "☀️ Mode Clair" : "🌙 Mode Sombre");
+            btnDarkMode.setOnAction(e -> {
+                tm.toggleAndApply(listViewParcelles.getScene().getRoot());
+                btnDarkMode.setText(tm.isDarkMode() ? "☀️ Mode Clair" : "🌙 Mode Sombre");
+                // Refresh list cells to apply dark/light theme to cell content
+                listViewParcelles.refresh();
+            });
+        }
+
+        // Historique
+        if (lvHistorique != null) {
+            lvHistorique.setItems(ActionHistoryService.getInstance().getHistory());
+        }
+
+        // Alertes
+        checkAlerts();
+
+        // Apply dark mode if already active (e.g. after navigation)
+        Platform.runLater(() -> {
+            if (listViewParcelles.getScene() != null) {
+                ThemeManager.getInstance().applyTheme(listViewParcelles.getScene().getRoot());
+            }
         });
     }
+
+    // ==================== CELL FACTORY avec TOOLTIP + DRAG & DROP ====================
+
+    private ListCell<Parcelle> createParcelleCell() {
+        ListCell<Parcelle> cell = new ListCell<>() {
+            @Override
+            protected void updateItem(Parcelle parcelle, boolean empty) {
+                super.updateItem(parcelle, empty);
+                if (empty || parcelle == null) {
+                    setText(null);
+                    setGraphic(null);
+                    setStyle("");
+                    setTooltip(null);
+                } else {
+                    ThemeManager tm = ThemeManager.getInstance();
+                    boolean isDark = tm.isDarkMode();
+
+                    HBox container = new HBox(20);
+                    container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    container.setStyle(tm.getCellCardStyle());
+
+                    String mutedColor = tm.getMutedTextFill();
+                    String textColor = tm.getPrimaryTextFill();
+                    String titleColor = tm.getParcelleTitleColor();
+
+                    VBox nomBox = new VBox(3);
+                    Label lblNomTitle = new Label("📝 Nom");
+                    lblNomTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
+                    Label lblNom = new Label(parcelle.getNom());
+                    lblNom.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + titleColor + ";");
+                    nomBox.getChildren().addAll(lblNomTitle, lblNom);
+                    nomBox.setPrefWidth(200);
+
+                    VBox superficieBox = new VBox(3);
+                    Label lblSupTitle = new Label("📐 Superficie");
+                    lblSupTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
+                    Label lblSup = new Label(String.format("%.2f m²", parcelle.getSuperficie()));
+                    lblSup.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
+                    superficieBox.getChildren().addAll(lblSupTitle, lblSup);
+                    superficieBox.setPrefWidth(120);
+
+                    VBox locBox = new VBox(3);
+                    Label lblLocTitle = new Label("📍 Localisation");
+                    lblLocTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
+                    Label lblLoc = new Label(parcelle.getLocalisation());
+                    lblLoc.setStyle("-fx-font-size: 14px; -fx-text-fill: " + textColor + ";");
+                    locBox.getChildren().addAll(lblLocTitle, lblLoc);
+                    locBox.setPrefWidth(250);
+
+                    VBox etatBox = new VBox(3);
+                    Label lblEtatTitle = new Label("🏷️ État");
+                    lblEtatTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedColor + ";");
+                    Label lblEtat = new Label(parcelle.getEtat());
+                    String etatStyle = "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 15;";
+                    switch (parcelle.getEtat().toLowerCase()) {
+                        case "active": etatStyle += "-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32;"; break;
+                        case "repos": etatStyle += "-fx-background-color: #FFE0B2; -fx-text-fill: #E65100;"; break;
+                        case "exploitée": etatStyle += "-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0;"; break;
+                        default: etatStyle += "-fx-background-color: #E0E0E0; -fx-text-fill: #616161;";
+                    }
+                    lblEtat.setStyle(etatStyle);
+                    etatBox.getChildren().addAll(lblEtatTitle, lblEtat);
+                    etatBox.setPrefWidth(120);
+
+                    container.getChildren().addAll(nomBox, superficieBox, locBox, etatBox);
+                    setGraphic(container);
+                    setStyle("-fx-padding: 5 0; -fx-background-color: transparent;");
+
+                    // === TOOLTIP ENRICHI ===
+                    Tooltip tooltip = new Tooltip(
+                            "🏡 " + parcelle.getNom() + "\n" +
+                                    "📐 Superficie: " + String.format("%.2f m²", parcelle.getSuperficie()) + "\n" +
+                                    "📍 Localisation: " + parcelle.getLocalisation() + "\n" +
+                                    "🏷️ État: " + parcelle.getEtat()
+                    );
+                    tooltip.setShowDelay(Duration.millis(300));
+                    tooltip.setShowDuration(Duration.seconds(15));
+                    tooltip.setStyle("-fx-font-size: 12px; -fx-background-color: rgba(26,71,42,0.95); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 8;");
+                    setTooltip(tooltip);
+                }
+            }
+        };
+
+        // === DRAG & DROP ===
+        cell.setOnDragDetected(event -> {
+            if (cell.getItem() == null) return;
+            Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent cc = new ClipboardContent();
+            cc.putString(String.valueOf(cell.getIndex()));
+            db.setContent(cc);
+            cell.setStyle("-fx-opacity: 0.5;");
+            event.consume();
+        });
+
+        cell.setOnDragOver(event -> {
+            if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        cell.setOnDragEntered(event -> {
+            if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
+                cell.setStyle("-fx-border-color: #667eea; -fx-border-width: 0 0 2 0; -fx-border-style: dashed;");
+            }
+        });
+
+        cell.setOnDragExited(event -> {
+            cell.setStyle("-fx-padding: 5 0; -fx-background-color: transparent;");
+        });
+
+        cell.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            if (db.hasString()) {
+                int draggedIdx = Integer.parseInt(db.getString());
+                int targetIdx = cell.getIndex();
+                if (draggedIdx != targetIdx && draggedIdx < parcellesList.size() && targetIdx < parcellesList.size()) {
+                    Parcelle dragged = parcellesList.remove(draggedIdx);
+                    parcellesList.add(targetIdx, dragged);
+                    listViewParcelles.getSelectionModel().select(targetIdx);
+                    ActionHistoryService.getInstance().log("🔀 Réorganisation: " + dragged.getNom());
+                }
+                event.setDropCompleted(true);
+            }
+            event.consume();
+        });
+
+        cell.setOnDragDone(event -> {
+            cell.setStyle("-fx-padding: 5 0; -fx-background-color: transparent;");
+        });
+
+        return cell;
+    }
+
+    // ==================== TRI ====================
+
+    @FXML
+    void trierParNom(ActionEvent event) {
+        sortBy("nom", Comparator.comparing(Parcelle::getNom, String.CASE_INSENSITIVE_ORDER));
+    }
+
+    @FXML
+    void trierParSuperficie(ActionEvent event) {
+        sortBy("superficie", Comparator.comparingDouble(Parcelle::getSuperficie));
+    }
+
+    @FXML
+    void trierParEtat(ActionEvent event) {
+        sortBy("etat", Comparator.comparing(Parcelle::getEtat, String.CASE_INSENSITIVE_ORDER));
+    }
+
+    private void sortBy(String field, Comparator<Parcelle> comparator) {
+        if (field.equals(activeSortField)) {
+            sortAscending = !sortAscending;
+        } else {
+            activeSortField = field;
+            sortAscending = true;
+        }
+        currentComparator = sortAscending ? comparator : comparator.reversed();
+        FXCollections.sort(parcellesList, currentComparator);
+
+        updateSortButtonStyles();
+        showMessage("🔤 Trié par " + field + (sortAscending ? " ↑" : " ↓"), "#1565C0");
+    }
+
+    private void updateSortButtonStyles() {
+        boolean isDark = ThemeManager.getInstance().isDarkMode();
+        String activeStyle = "-fx-background-color: linear-gradient(to right, #1a472a, #2d5a3f); -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand;";
+        String inactiveStyle = isDark ?
+                "-fx-background-color: #1e293b; -fx-text-fill: #e0e0e0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #0f3460; -fx-border-radius: 8;" :
+                "-fx-background-color: #f3f4f6; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: #e5e7eb; -fx-border-radius: 8;";
+        if (btnSortNom != null) btnSortNom.setStyle("nom".equals(activeSortField) ? activeStyle : inactiveStyle);
+        if (btnSortSuperficie != null) btnSortSuperficie.setStyle("superficie".equals(activeSortField) ? activeStyle : inactiveStyle);
+        if (btnSortEtat != null) btnSortEtat.setStyle("etat".equals(activeSortField) ? activeStyle : inactiveStyle);
+
+        if (btnSortNom != null) btnSortNom.setText("nom".equals(activeSortField) ? ("Nom " + (sortAscending ? "↑" : "↓")) : "Nom ↕");
+        if (btnSortSuperficie != null) btnSortSuperficie.setText("superficie".equals(activeSortField) ? ("Superficie " + (sortAscending ? "↑" : "↓")) : "Superficie ↕");
+        if (btnSortEtat != null) btnSortEtat.setText("etat".equals(activeSortField) ? ("État " + (sortAscending ? "↑" : "↓")) : "État ↕");
+    }
+
+    // ==================== ALERTES ====================
+
+    private void checkAlerts() {
+        if (vboxAlerts == null) return;
+        vboxAlerts.getChildren().clear();
+
+        try {
+            var cultures = cultureService.getAll();
+            int alertCount = 0;
+            for (Culture c : cultures) {
+                if (c.getDateRecoltePrevue() == null) continue;
+                long jours = ChronoUnit.DAYS.between(LocalDate.now(), c.getDateRecoltePrevue());
+
+                if (jours < 0) {
+                    VBox alertCard = createAlertCard("🚨 RÉCOLTE DÉPASSÉE",
+                            c.getTypeCulture() + " — dépassée de " + Math.abs(jours) + " jours",
+                            "rgba(239,68,68,0.15)", "#ef4444");
+                    vboxAlerts.getChildren().add(alertCard);
+                    AnimationUtils.slideInFromLeft(alertCard, alertCount * 150);
+                    alertCount++;
+                } else if (jours <= 7) {
+                    VBox alertCard = createAlertCard("⚠️ Récolte proche",
+                            c.getTypeCulture() + " — dans " + jours + " jour(s)",
+                            "rgba(245,158,11,0.15)", "#f59e0b");
+                    vboxAlerts.getChildren().add(alertCard);
+                    AnimationUtils.slideInFromLeft(alertCard, alertCount * 150);
+                    alertCount++;
+                }
+
+                if (alertCount >= 5) break; // Max 5 alertes
+            }
+
+            if (alertCount == 0) {
+                Label noAlert = new Label("✅ Aucune alerte");
+                noAlert.setStyle("-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 11px; -fx-padding: 8;");
+                vboxAlerts.getChildren().add(noAlert);
+            }
+        } catch (Exception e) {
+            System.out.println("⚠️ Erreur alertes: " + e.getMessage());
+        }
+    }
+
+    private VBox createAlertCard(String title, String message, String bgColor, String borderColor) {
+        VBox card = new VBox(4);
+        card.setStyle("-fx-background-color: " + bgColor + "; -fx-border-color: " + borderColor + "; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10;");
+
+        Label lblTitle = new Label(title);
+        lblTitle.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: " + borderColor + ";");
+
+        Label lblMsg = new Label(message);
+        lblMsg.setStyle("-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.8);");
+        lblMsg.setWrapText(true);
+
+        card.getChildren().addAll(lblTitle, lblMsg);
+        return card;
+    }
+
+    // ==================== DARK MODE ====================
+
+    @FXML
+    void toggleDarkMode(ActionEvent event) {
+        ThemeManager tm = ThemeManager.getInstance();
+        tm.toggleAndApply(listViewParcelles.getScene().getRoot());
+        if (btnDarkMode != null) {
+            btnDarkMode.setText(tm.isDarkMode() ? "☀️ Mode Clair" : "🌙 Mode Sombre");
+        }
+        listViewParcelles.refresh();
+    }
+
+    // ==================== EXISTING METHODS (clock, data, filters, stats) ====================
 
     private void startClock() {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
@@ -175,9 +465,7 @@ public class ConsulterParcelleController implements Initializable {
     private void loadData() {
         parcellesList = FXCollections.observableArrayList(parcelleService.getAll());
         filteredParcelles = new FilteredList<>(parcellesList, p -> true);
-        tableViewParcelles.setItems(filteredParcelles);
-
-        // Mettre à jour les statistiques
+        listViewParcelles.setItems(filteredParcelles);
         updateStatistics();
     }
 
@@ -206,7 +494,6 @@ public class ConsulterParcelleController implements Initializable {
             boolean matchesSearch = true;
             boolean matchesFilter = true;
 
-            // Filtre par recherche
             if (searchText != null && !searchText.trim().isEmpty()) {
                 String lowerCaseFilter = searchText.toLowerCase().trim();
                 matchesSearch = parcelle.getNom().toLowerCase().contains(lowerCaseFilter) ||
@@ -214,7 +501,6 @@ public class ConsulterParcelleController implements Initializable {
                         parcelle.getEtat().toLowerCase().contains(lowerCaseFilter);
             }
 
-            // Filtre par état
             if (filterEtat != null && !"Tous".equals(filterEtat)) {
                 matchesFilter = parcelle.getEtat().equalsIgnoreCase(filterEtat);
             }
@@ -234,6 +520,7 @@ public class ConsulterParcelleController implements Initializable {
         tfRecherche.clear();
         cbFiltre.setValue("Tous");
         loadData();
+        checkAlerts();
     }
 
     @FXML
@@ -243,28 +530,25 @@ public class ConsulterParcelleController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier PDF", "*.pdf"));
         fileChooser.setInitialFileName("parcelles_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
 
-        File file = fileChooser.showSaveDialog(tableViewParcelles.getScene().getWindow());
+        File file = fileChooser.showSaveDialog(listViewParcelles.getScene().getWindow());
         if (file != null) {
             try {
                 Document document = new Document(PageSize.A4);
                 PdfWriter.getInstance(document, new FileOutputStream(file));
                 document.open();
 
-                // Titre du document
                 Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, new BaseColor(46, 125, 50));
                 Paragraph title = new Paragraph("🌱 Liste des Parcelles", titleFont);
                 title.setAlignment(Element.ALIGN_CENTER);
                 title.setSpacingAfter(10);
                 document.add(title);
 
-                // Date d'export
                 Font dateFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, BaseColor.GRAY);
                 Paragraph date = new Paragraph("Exporté le: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm")), dateFont);
                 date.setAlignment(Element.ALIGN_CENTER);
                 date.setSpacingAfter(20);
                 document.add(date);
 
-                // Statistiques
                 Font statsFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL);
                 double superficieTotale = parcellesList.stream().mapToDouble(Parcelle::getSuperficie).sum();
                 Paragraph stats = new Paragraph(String.format("Total: %d parcelles | Superficie totale: %.2f m²", filteredParcelles.size(), superficieTotale), statsFont);
@@ -272,12 +556,10 @@ public class ConsulterParcelleController implements Initializable {
                 stats.setSpacingAfter(15);
                 document.add(stats);
 
-                // Tableau
                 PdfPTable table = new PdfPTable(4);
                 table.setWidthPercentage(100);
                 table.setWidths(new float[]{2.5f, 1.5f, 3f, 1.5f});
 
-                // En-têtes
                 Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
                 BaseColor headerColor = new BaseColor(46, 125, 50);
 
@@ -290,46 +572,35 @@ public class ConsulterParcelleController implements Initializable {
                     table.addCell(cell);
                 }
 
-                // Données
                 Font dataFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
                 boolean alternate = false;
                 for (Parcelle p : filteredParcelles) {
                     BaseColor rowColor = alternate ? new BaseColor(245, 245, 245) : BaseColor.WHITE;
 
                     PdfPCell cellNom = new PdfPCell(new Phrase(p.getNom(), dataFont));
-                    cellNom.setBackgroundColor(rowColor);
-                    cellNom.setPadding(6);
-                    table.addCell(cellNom);
+                    cellNom.setBackgroundColor(rowColor); cellNom.setPadding(6); table.addCell(cellNom);
 
                     PdfPCell cellSup = new PdfPCell(new Phrase(String.format("%.2f", p.getSuperficie()), dataFont));
-                    cellSup.setBackgroundColor(rowColor);
-                    cellSup.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    cellSup.setPadding(6);
-                    table.addCell(cellSup);
+                    cellSup.setBackgroundColor(rowColor); cellSup.setHorizontalAlignment(Element.ALIGN_CENTER); cellSup.setPadding(6); table.addCell(cellSup);
 
                     PdfPCell cellLoc = new PdfPCell(new Phrase(p.getLocalisation(), dataFont));
-                    cellLoc.setBackgroundColor(rowColor);
-                    cellLoc.setPadding(6);
-                    table.addCell(cellLoc);
+                    cellLoc.setBackgroundColor(rowColor); cellLoc.setPadding(6); table.addCell(cellLoc);
 
                     PdfPCell cellEtat = new PdfPCell(new Phrase(p.getEtat(), dataFont));
-                    cellEtat.setBackgroundColor(rowColor);
-                    cellEtat.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    cellEtat.setPadding(6);
-                    table.addCell(cellEtat);
+                    cellEtat.setBackgroundColor(rowColor); cellEtat.setHorizontalAlignment(Element.ALIGN_CENTER); cellEtat.setPadding(6); table.addCell(cellEtat);
 
                     alternate = !alternate;
                 }
 
                 document.add(table);
 
-                // Pied de page
                 Paragraph footer = new Paragraph("\n© Smart Farm - Gestion Agricole Intelligente", dateFont);
                 footer.setAlignment(Element.ALIGN_CENTER);
                 document.add(footer);
 
                 document.close();
                 showMessage("✅ PDF exporté: " + file.getName(), "#2E7D32");
+                ActionHistoryService.getInstance().logExport("PDF", file.getName());
 
             } catch (Exception e) {
                 showMessage("❌ Erreur d'export PDF: " + e.getMessage(), "#C62828");
@@ -339,32 +610,26 @@ public class ConsulterParcelleController implements Initializable {
 
     @FXML
     void modifierParcelle(ActionEvent event) {
-        Parcelle selected = tableViewParcelles.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showMessage("⚠️ Veuillez sélectionner une parcelle à modifier.", "#FF9800");
-            return;
-        }
+        Parcelle selected = listViewParcelles.getSelectionModel().getSelectedItem();
+        if (selected == null) { showMessage("⚠️ Veuillez sélectionner une parcelle à modifier.", "#FF9800"); return; }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierparcelle.fxml"));
             Parent root = loader.load();
-
-            // Passer la parcelle sélectionnée au contrôleur
             ModifierParcelleController controller = loader.getController();
             controller.setParcelle(selected);
 
-            // Ouvrir dans une nouvelle fenêtre popup
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(tableViewParcelles.getScene().getWindow());
+            popupStage.initOwner(listViewParcelles.getScene().getWindow());
             popupStage.setTitle("Smart Farm - Modifier la Parcelle");
-            popupStage.setScene(new Scene(root));
+            Scene popupScene = new Scene(root);
+            addCss(popupScene);
+            popupStage.setScene(popupScene);
             popupStage.setResizable(false);
-
-            // Attendre la fermeture et recharger les données
             popupStage.showAndWait();
             loadData();
-
+            checkAlerts();
         } catch (IOException e) {
             showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
         }
@@ -372,17 +637,13 @@ public class ConsulterParcelleController implements Initializable {
 
     @FXML
     void supprimerParcelle(ActionEvent event) {
-        Parcelle selected = tableViewParcelles.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showMessage("⚠️ Veuillez sélectionner une parcelle à supprimer.", "#FF9800");
-            return;
-        }
+        Parcelle selected = listViewParcelles.getSelectionModel().getSelectedItem();
+        if (selected == null) { showMessage("⚠️ Veuillez sélectionner une parcelle à supprimer.", "#FF9800"); return; }
 
-        // Confirmation
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Supprimer la parcelle");
-        alert.setContentText("Êtes-vous sûr de vouloir supprimer la parcelle \"" + selected.getNom() + "\" ?\n\nCette action est irréversible.");
+        alert.setContentText("Êtes-vous sûr de vouloir supprimer \"" + selected.getNom() + "\" ?\n\nCette action est irréversible.");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -392,58 +653,24 @@ public class ConsulterParcelleController implements Initializable {
                     parcellesList.remove(selected);
                     updateStatistics();
                     showMessage("✅ Parcelle supprimée avec succès !", "#2E7D32");
+                    ActionHistoryService.getInstance().logDelete("Parcelle", selected.getNom());
                 } else {
-                    showMessage("❌ Erreur lors de la suppression de la parcelle.", "#C62828");
+                    showMessage("❌ Erreur lors de la suppression.", "#C62828");
                 }
             } catch (RuntimeException e) {
-                String errorMessage = e.getMessage();
-                if (errorMessage != null && errorMessage.contains("foreign key constraint")) {
-                    // Afficher une alerte d'erreur explicative
+                String msg = e.getMessage();
+                if (msg != null && msg.contains("foreign key constraint")) {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Suppression impossible");
                     errorAlert.setHeaderText("❌ Cette parcelle ne peut pas être supprimée");
-                    errorAlert.setContentText(
-                        "La parcelle \"" + selected.getNom() + "\" contient des cultures associées.\n\n" +
-                        "Pour supprimer cette parcelle, vous devez d'abord :\n" +
-                        "1. Aller dans la liste des cultures\n" +
-                        "2. Supprimer toutes les cultures de cette parcelle\n" +
-                        "3. Revenir supprimer la parcelle\n\n" +
-                        "💡 Astuce : Utilisez le filtre par parcelle dans la liste des cultures."
-                    );
+                    errorAlert.setContentText("La parcelle \"" + selected.getNom() + "\" contient des cultures associées.\n\n" +
+                            "Supprimez d'abord les cultures de cette parcelle.");
                     errorAlert.showAndWait();
-                    showMessage("⚠️ Suppression annulée - Cultures associées existantes", "#FF9800");
+                    showMessage("⚠️ Suppression annulée - Cultures associées", "#FF9800");
                 } else {
-                    showMessage("❌ Erreur: " + errorMessage, "#C62828");
+                    showMessage("❌ Erreur: " + msg, "#C62828");
                 }
             }
-        }
-    }
-
-    // Ouvre le modal Profil pour l'utilisateur connecté
-    @FXML
-    private void openProfile() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
-            Parent root = loader.load();
-
-            ProfileController controller = loader.getController();
-            controller.setUser(org.example.pidev.utils.Session.getCurrentUser());
-
-            Stage stage = new Stage();
-            stage.setTitle("Mon Profil");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(tableViewParcelles.getScene().getWindow());
-            Scene scene = new Scene(root);
-            var css = getClass().getResource("/styles/smartfarm.css");
-            if (css != null) scene.getStylesheets().add(css.toExternalForm());
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.showAndWait();
-
-            // Après fermeture, recharger les données si nécessaire
-            loadData();
-        } catch (IOException e) {
-            showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
         }
     }
 
@@ -454,19 +681,17 @@ public class ConsulterParcelleController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterparcelle.fxml"));
             Parent root = loader.load();
-
-            // Ouvrir dans une nouvelle fenêtre popup
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(tableViewParcelles.getScene().getWindow());
+            popupStage.initOwner(listViewParcelles.getScene().getWindow());
             popupStage.setTitle("Smart Farm - Ajouter une Parcelle");
-            popupStage.setScene(new Scene(root));
+            Scene popupScene = new Scene(root);
+            addCss(popupScene);
+            popupStage.setScene(popupScene);
             popupStage.setResizable(false);
-
-            // Attendre la fermeture et recharger les données
             popupStage.showAndWait();
             loadData();
-
+            checkAlerts();
         } catch (IOException e) {
             showMessage("❌ Erreur: " + e.getMessage(), "#C62828");
         }
@@ -477,27 +702,89 @@ public class ConsulterParcelleController implements Initializable {
         navigateTo("/consulterculture.fxml", "Liste des Cultures");
     }
 
+    @FXML
+    void navigateToDashboard(ActionEvent event) {
+        navigateTo("/Dashboard.fxml", "Dashboard");
+    }
 
     private void navigateTo(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) tableViewParcelles.getScene().getWindow();
-
-            // Obtenir les dimensions de l'écran
-            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
-
-            // Créer une nouvelle scène avec les dimensions de l'écran
-            Scene newScene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            Stage stage = (Stage) listViewParcelles.getScene().getWindow();
+            Scene newScene = new Scene(root);
+            addCss(newScene);
             stage.setScene(newScene);
             stage.setTitle("Smart Farm - " + title);
-
-            // Positionner et maximiser
-            stage.setX(screenBounds.getMinX());
-            stage.setY(screenBounds.getMinY());
+            stage.setResizable(true);
+            stage.setMinWidth(1100);
+            stage.setMinHeight(700);
             stage.setMaximized(true);
+            ThemeManager.getInstance().applyTheme(root);
         } catch (IOException e) {
             showMessage("❌ Erreur de navigation: " + e.getMessage(), "#C62828");
+        }
+    }
+
+    // ==================== MÉTÉO & CARTE ====================
+
+    private void loadDefaultWeather() {
+        setWeatherLoading();
+        new Thread(() -> {
+            WeatherService.WeatherData data = weatherService.getWeatherByCity("Tunis");
+            Platform.runLater(() -> updateWeatherUI(data));
+        }).start();
+    }
+
+    private void loadWeatherForParcelle(Parcelle parcelle) {
+        if (parcelle == null || parcelle.getLocalisation() == null) return;
+        setWeatherLoading();
+        new Thread(() -> {
+            WeatherService.WeatherData data = weatherService.getWeatherByLocation(parcelle.getLocalisation());
+            Platform.runLater(() -> updateWeatherUI(data));
+        }).start();
+    }
+
+    private void loadMapForParcelle(Parcelle parcelle) {
+        if (parcelle == null || parcelle.getLocalisation() == null || webViewMap == null) return;
+        new Thread(() -> {
+            var results = geoLocationService.searchLocation(parcelle.getLocalisation(), 1);
+            Platform.runLater(() -> {
+                if (results != null && !results.isEmpty()) {
+                    var loc = results.get(0);
+                    webViewMap.getEngine().loadContent(GeoLocationService.getMapHtml(loc.getLatitude(), loc.getLongitude(), parcelle.getNom()));
+                }
+            });
+        }).start();
+    }
+
+    private void setWeatherLoading() {
+        if (lblWeatherEmoji != null) lblWeatherEmoji.setText("⏳");
+        if (lblWeatherTemp != null) lblWeatherTemp.setText("...");
+        if (lblWeatherDesc != null) lblWeatherDesc.setText("Chargement...");
+        if (lblWeatherCity != null) lblWeatherCity.setText("");
+        if (lblWeatherHumidity != null) lblWeatherHumidity.setText("...");
+        if (lblWeatherWind != null) lblWeatherWind.setText("...");
+        if (lblWeatherAdvice != null) lblWeatherAdvice.setText("");
+    }
+
+    private void updateWeatherUI(WeatherService.WeatherData data) {
+        if (data != null) {
+            if (lblWeatherEmoji != null) lblWeatherEmoji.setText(data.getWeatherEmoji());
+            if (lblWeatherTemp != null) lblWeatherTemp.setText(data.getFormattedTemp());
+            if (lblWeatherDesc != null) lblWeatherDesc.setText(data.getDescription());
+            if (lblWeatherCity != null) lblWeatherCity.setText(data.getCityName());
+            if (lblWeatherHumidity != null) lblWeatherHumidity.setText(data.getHumidity() + "%");
+            if (lblWeatherWind != null) lblWeatherWind.setText(String.format("%.0f km/h", data.getWindSpeed()));
+            if (lblWeatherAdvice != null) lblWeatherAdvice.setText(data.getAgricultureAdvice());
+        } else {
+            if (lblWeatherEmoji != null) lblWeatherEmoji.setText("⚠️");
+            if (lblWeatherTemp != null) lblWeatherTemp.setText("N/A");
+            if (lblWeatherDesc != null) lblWeatherDesc.setText("Météo indisponible");
+            if (lblWeatherCity != null) lblWeatherCity.setText("");
+            if (lblWeatherHumidity != null) lblWeatherHumidity.setText("N/A");
+            if (lblWeatherWind != null) lblWeatherWind.setText("N/A");
+            if (lblWeatherAdvice != null) lblWeatherAdvice.setText("⚠️ Vérifiez votre connexion internet");
         }
     }
 
@@ -506,5 +793,14 @@ public class ConsulterParcelleController implements Initializable {
     private void showMessage(String message, String color) {
         lblMessage.setText(message);
         lblMessage.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 12px; -fx-font-weight: bold;");
+    }
+
+    private void addCss(Scene scene) {
+        try {
+            var css1 = getClass().getResource("/styles/smartfarm.css");
+            if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
+            var css2 = getClass().getResource("/smartfarmm.css");
+            if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
+        } catch (Exception ignored) {}
     }
 }

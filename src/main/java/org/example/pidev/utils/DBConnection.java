@@ -7,15 +7,15 @@ import java.sql.SQLException;
 @SuppressWarnings("InstantiationOfUtilityClass")
 public class DBConnection {
 
+    private static final String URL = "jdbc:mysql://localhost:3306/smartfarm";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+
     private static Connection connection;
     private static DBConnection instance;
 
     // constructeur privé (Singleton)
     private DBConnection() {
-        final String URL = "jdbc:mysql://localhost:3307/smartfarm";
-        final String USER = "root";
-        final String PASSWORD = "";
-
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
             System.out.println("✅ Connected to database successfully");
@@ -33,19 +33,22 @@ public class DBConnection {
         return instance;
     }
 
-    // retourner la connexion
+    // retourner la connexion - reconnecte automatiquement si fermée
     public static Connection getConnection() {
-        if (instance == null) {
-            instance = new DBConnection();
-        }
-        // Check if connection is still valid, reconnect if needed
         try {
             if (connection == null || connection.isClosed()) {
-                instance = null; // Reset singleton
-                getConnection(); // Recursive call to reconnect
+                System.out.println("🔄 Reconnexion à la base de données...");
+                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                System.out.println("✅ Reconnecté à la base de données");
             }
         } catch (SQLException e) {
-            System.out.println("❌ Error checking connection: " + e.getMessage());
+            System.out.println("❌ Error reconnecting: " + e.getMessage());
+            // Last attempt
+            try {
+                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            } catch (SQLException ex) {
+                System.out.println("❌ Critical: Cannot connect to database: " + ex.getMessage());
+            }
         }
         return connection;
     }

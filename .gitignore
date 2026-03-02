@@ -37,3 +37,26 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Logs & temp ###
+*.log
+build_log.txt
+build_output.txt
+build_output2.txt
+seed_log.txt
+seed_result.txt
+launcher_debug.log
+git_status.txt
+git_info.txt
+mysql_check.txt
+test_out.txt
+test_output.txt
+cp.txt
+
+### Face images (privacy) ###
+faces/*.jpg
+faces/*.png
+
+### Uploads ###
+uploads/profiles/*.jpg
+uploads/profiles/*.png
