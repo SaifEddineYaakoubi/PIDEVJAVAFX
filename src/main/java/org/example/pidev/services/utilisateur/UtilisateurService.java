@@ -203,6 +203,16 @@ public class UtilisateurService implements IService<Utilisateur> {
             // Colonne n'existe pas, ignorer
         }
 
+        // Récupérer id_agriculteur (pour RESPONSABLE_STOCK)
+        try {
+            int idAgriculteur = rs.getInt("id_agriculteur");
+            if (!rs.wasNull()) {
+                user.setIdAgriculteur(idAgriculteur);
+            }
+        } catch (SQLException e) {
+            // Colonne n'existe pas encore, ignorer
+        }
+
         return user;
     }
 }

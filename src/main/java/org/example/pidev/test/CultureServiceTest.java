@@ -2,8 +2,8 @@ package org.example.pidev.test;
 
 import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
-import org.example.pidev.services.CultureService;
-import org.example.pidev.services.ParcelleService;
+import org.example.pidev.services.cultures.CultureService;
+import org.example.pidev.services.parcelles.ParcelleService;
 
 import java.time.LocalDate;
 import java.util.List;

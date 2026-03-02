@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS utilisateur (
     role ENUM('ADMIN','AGRICULTEUR','RESPONSABLE_STOCK') NOT NULL DEFAULT 'AGRICULTEUR',
     statut BOOLEAN NOT NULL DEFAULT TRUE,
     date_creation DATE NOT NULL,
-    face_image_path VARCHAR(255) DEFAULT NULL
+    face_image_path VARCHAR(255) DEFAULT NULL,
+    id_agriculteur INT DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- Table parcelle
@@ -56,7 +57,9 @@ CREATE TABLE IF NOT EXISTS recolte (
     date_recolte DATE NOT NULL,
     qualite VARCHAR(50) NOT NULL,
     type_culture VARCHAR(100) NOT NULL,
-    localisation VARCHAR(255) NOT NULL
+    localisation VARCHAR(255) NOT NULL,
+    id_user INT DEFAULT NULL,
+    FOREIGN KEY (id_user) REFERENCES utilisateur(id_user) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Table rendement
@@ -79,7 +82,9 @@ CREATE TABLE IF NOT EXISTS recolte_archive (
     type_culture VARCHAR(100) NOT NULL,
     localisation VARCHAR(255) NOT NULL,
     cause_supression VARCHAR(255) NOT NULL,
-    date_archivage DATE NOT NULL
+    date_archivage DATE NOT NULL,
+    id_user INT DEFAULT NULL,
+    FOREIGN KEY (id_user) REFERENCES utilisateur(id_user) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Table produit
@@ -88,7 +93,9 @@ CREATE TABLE IF NOT EXISTS produit (
     nom VARCHAR(100) NOT NULL,
     type VARCHAR(50) NOT NULL,
     unite VARCHAR(30) NOT NULL,
-    prix_unitaire DOUBLE NOT NULL
+    prix_unitaire DOUBLE NOT NULL,
+    id_user INT DEFAULT NULL,
+    FOREIGN KEY (id_user) REFERENCES utilisateur(id_user) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Table stock
@@ -98,7 +105,9 @@ CREATE TABLE IF NOT EXISTS stock (
     date_entree DATE NOT NULL,
     date_expiration DATE,
     id_produit INT NOT NULL,
-    FOREIGN KEY (id_produit) REFERENCES produit(id_produit) ON DELETE CASCADE
+    id_user INT DEFAULT NULL,
+    FOREIGN KEY (id_produit) REFERENCES produit(id_produit) ON DELETE CASCADE,
+    FOREIGN KEY (id_user) REFERENCES utilisateur(id_user) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Table client
@@ -106,7 +115,9 @@ CREATE TABLE IF NOT EXISTS client (
     id_client INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     contact VARCHAR(150),
-    adresse VARCHAR(255)
+    adresse VARCHAR(255),
+    id_user INT DEFAULT NULL,
+    FOREIGN KEY (id_user) REFERENCES utilisateur(id_user) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Table vente
@@ -188,6 +199,15 @@ INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role, statut, date_cr
 ('Khlifi',       'Rim',      'rim.khlifi@mail.tn',       'rim123',         'AGRICULTEUR',        TRUE, '2025-06-25'),
 ('Ben Slimane',  'Omar',     'omar.benslimane@mail.tn',  'omar123',        'AGRICULTEUR',        TRUE, '2025-07-10');
 
+-- Ajouter la FK id_agriculteur après insertion des utilisateurs
+ALTER TABLE utilisateur ADD CONSTRAINT fk_user_agriculteur FOREIGN KEY (id_agriculteur) REFERENCES utilisateur(id_user) ON DELETE SET NULL;
+
+-- Lier les responsables stock aux agriculteurs
+-- Sana (user 5) gère le stock de Yassine (user 2)
+UPDATE utilisateur SET id_agriculteur = 2 WHERE id_user = 5;
+-- Nour (user 7) gère le stock de Karim (user 4)
+UPDATE utilisateur SET id_agriculteur = 4 WHERE id_user = 7;
+
 -- ============================================================
 -- 4. PARCELLES (localisations réelles en Tunisie)
 -- ============================================================
@@ -244,22 +264,22 @@ INSERT INTO culture (type_culture, date_plantation, date_recolte_prevue, etat_cr
 -- 6. RÉCOLTES (données historiques réalistes — kg)
 -- ============================================================
 
-INSERT INTO recolte (quantite, date_recolte, qualite, type_culture, localisation) VALUES
+INSERT INTO recolte (quantite, date_recolte, qualite, type_culture, localisation, id_user) VALUES
 -- Saison 2025
-(4500.0,  '2025-06-20', 'Excellente',  'Blé dur',            'Mornag, Ben Arous'),
-(8200.0,  '2025-06-15', 'Bonne',       'Orge',               'Béja Nord, Béja'),
-(3100.0,  '2025-11-20', 'Excellente',  'Olivier',            'Sfax Sud, Sfax'),
-(2800.0,  '2025-02-10', 'Bonne',       'Oranges Maltaises',  'Hammamet, Nabeul'),
-(6500.0,  '2025-05-20', 'Moyenne',     'Tomates',            'Sidi Bouzid Centre'),
-(1200.0,  '2025-10-20', 'Excellente',  'Deglet Nour',        'Tozeur Centre, Tozeur'),
-(3800.0,  '2025-06-10', 'Bonne',       'Blé tendre',         'Tabarka, Jendouba'),
-(1950.0,  '2025-03-05', 'Bonne',       'Citrons Beldi',      'Kélibia, Nabeul'),
-(4200.0,  '2025-04-15', 'Excellente',  'Pommes de terre',    'Kairouan Sud, Kairouan'),
-(2600.0,  '2025-05-10', 'Moyenne',     'Pois chiches',       'Kasserine Nord, Kasserine'),
+(4500.0,  '2025-06-20', 'Excellente',  'Blé dur',            'Mornag, Ben Arous',       2),
+(8200.0,  '2025-06-15', 'Bonne',       'Orge',               'Béja Nord, Béja',         2),
+(3100.0,  '2025-11-20', 'Excellente',  'Olivier',            'Sfax Sud, Sfax',          3),
+(2800.0,  '2025-02-10', 'Bonne',       'Oranges Maltaises',  'Hammamet, Nabeul',        3),
+(6500.0,  '2025-05-20', 'Moyenne',     'Tomates',            'Sidi Bouzid Centre',      6),
+(1200.0,  '2025-10-20', 'Excellente',  'Deglet Nour',        'Tozeur Centre, Tozeur',   9),
+(3800.0,  '2025-06-10', 'Bonne',       'Blé tendre',         'Tabarka, Jendouba',       4),
+(1950.0,  '2025-03-05', 'Bonne',       'Citrons Beldi',      'Kélibia, Nabeul',         4),
+(4200.0,  '2025-04-15', 'Excellente',  'Pommes de terre',    'Kairouan Sud, Kairouan',  8),
+(2600.0,  '2025-05-10', 'Moyenne',     'Pois chiches',       'Kasserine Nord, Kasserine', 10),
 -- Saison 2026 (début)
-(1500.0,  '2026-01-25', 'Excellente',  'Clémentines',        'Grombalia, Nabeul'),
-(800.0,   '2026-02-15', 'Bonne',       'Oranges Maltaises',  'Hammamet, Nabeul'),
-(2100.0,  '2026-02-28', 'Bonne',       'Fèves',              'Menzel Bourguiba, Bizerte');
+(1500.0,  '2026-01-25', 'Excellente',  'Clémentines',        'Grombalia, Nabeul',       8),
+(800.0,   '2026-02-15', 'Bonne',       'Oranges Maltaises',  'Hammamet, Nabeul',        3),
+(2100.0,  '2026-02-28', 'Bonne',       'Fèves',              'Menzel Bourguiba, Bizerte', 9);
 
 -- ============================================================
 -- 7. RENDEMENTS (liés aux récoltes)
@@ -284,95 +304,95 @@ INSERT INTO rendement (surface_exploitee, quantite_totale, productivite, id_reco
 -- 8. ARCHIVES RÉCOLTES (anciennes récoltes archivées)
 -- ============================================================
 
-INSERT INTO recolte_archive (id_recolte_original, quantite, date_recolte, qualite, type_culture, localisation, cause_supression, date_archivage) VALUES
-(100, 3200.0, '2024-06-18', 'Moyenne',    'Blé dur',     'Mornag, Ben Arous',       'Fin de saison — données consolidées',     '2024-12-31'),
-(101, 5800.0, '2024-06-10', 'Bonne',      'Orge',        'Béja Nord, Béja',         'Clôture exercice annuel 2024',            '2024-12-31'),
-(102, 2500.0, '2024-11-15', 'Excellente', 'Olivier',     'Sfax Sud, Sfax',          'Archivage saison oléicole 2024',          '2025-01-15'),
-(103, 4800.0, '2024-05-20', 'Moyenne',    'Tomates',     'Sidi Bouzid Centre',      'Récolte abîmée partiellement — archivée', '2024-07-01'),
-(104,  900.0, '2024-10-10', 'Bonne',      'Deglet Nour', 'Tozeur Centre, Tozeur',   'Saison terminée',                         '2025-01-10');
+INSERT INTO recolte_archive (id_recolte_original, quantite, date_recolte, qualite, type_culture, localisation, cause_supression, date_archivage, id_user) VALUES
+(100, 3200.0, '2024-06-18', 'Moyenne',    'Blé dur',     'Mornag, Ben Arous',       'Fin de saison — données consolidées',     '2024-12-31', 2),
+(101, 5800.0, '2024-06-10', 'Bonne',      'Orge',        'Béja Nord, Béja',         'Clôture exercice annuel 2024',            '2024-12-31', 2),
+(102, 2500.0, '2024-11-15', 'Excellente', 'Olivier',     'Sfax Sud, Sfax',          'Archivage saison oléicole 2024',          '2025-01-15', 3),
+(103, 4800.0, '2024-05-20', 'Moyenne',    'Tomates',     'Sidi Bouzid Centre',      'Récolte abîmée partiellement — archivée', '2024-07-01', 6),
+(104,  900.0, '2024-10-10', 'Bonne',      'Deglet Nour', 'Tozeur Centre, Tozeur',   'Saison terminée',                         '2025-01-10', 9);
 
 -- ============================================================
 -- 9. PRODUITS (produits agricoles tunisiens)
 -- ============================================================
 
-INSERT INTO produit (nom, type, unite, prix_unitaire) VALUES
-('Huile d\'olive extra vierge',  'Huile',        'Litre',     18.50),
-('Huile d\'olive courante',      'Huile',        'Litre',     12.00),
-('Blé dur',                      'Céréale',      'Kg',         0.85),
-('Orge',                         'Céréale',      'Kg',         0.65),
-('Dattes Deglet Nour',           'Fruit sec',    'Kg',        15.00),
-('Oranges Maltaises',            'Agrume',       'Kg',         2.50),
-('Citrons Beldi',                'Agrume',       'Kg',         3.00),
-('Clémentines',                  'Agrume',       'Kg',         2.80),
-('Tomates fraîches',             'Légume',       'Kg',         1.80),
-('Piments forts',                'Légume',       'Kg',         4.50),
-('Pommes de terre',              'Légume',       'Kg',         1.20),
-('Oignons',                      'Légume',       'Kg',         1.00),
-('Fèves fraîches',               'Légumineuse',  'Kg',         2.20),
-('Pois chiches secs',            'Légumineuse',  'Kg',         5.50),
-('Harissa traditionnelle',       'Condiment',    'Kg',         8.00),
-('Amandes décortiquées',         'Fruit sec',    'Kg',        32.00),
-('Grenades',                     'Fruit',        'Kg',         3.50),
-('Vin Muscat de Tunisie',        'Boisson',      'Bouteille', 22.00),
-('Engrais NPK 15-15-15',        'Intrant',      'Kg',         1.80),
-('Semences blé certifiées',      'Intrant',      'Kg',         2.50);
+INSERT INTO produit (nom, type, unite, prix_unitaire, id_user) VALUES
+('Huile d\'olive extra vierge',  'Huile',        'Litre',     18.50, 2),
+('Huile d\'olive courante',      'Huile',        'Litre',     12.00, 3),
+('Blé dur',                      'Céréale',      'Kg',         0.85, 2),
+('Orge',                         'Céréale',      'Kg',         0.65, 2),
+('Dattes Deglet Nour',           'Fruit sec',    'Kg',        15.00, 6),
+('Oranges Maltaises',            'Agrume',       'Kg',         2.50, 3),
+('Citrons Beldi',                'Agrume',       'Kg',         3.00, 4),
+('Clémentines',                  'Agrume',       'Kg',         2.80, 8),
+('Tomates fraîches',             'Légume',       'Kg',         1.80, 6),
+('Piments forts',                'Légume',       'Kg',         4.50, 6),
+('Pommes de terre',              'Légume',       'Kg',         1.20, 8),
+('Oignons',                      'Légume',       'Kg',         1.00, 9),
+('Fèves fraîches',               'Légumineuse',  'Kg',         2.20, 9),
+('Pois chiches secs',            'Légumineuse',  'Kg',         5.50, 10),
+('Harissa traditionnelle',       'Condiment',    'Kg',         8.00, 4),
+('Amandes décortiquées',         'Fruit sec',    'Kg',        32.00, 8),
+('Grenades',                     'Fruit',        'Kg',         3.50, 9),
+('Vin Muscat de Tunisie',        'Boisson',      'Bouteille', 22.00, 8),
+('Engrais NPK 15-15-15',        'Intrant',      'Kg',         1.80, 2),
+('Semences blé certifiées',      'Intrant',      'Kg',         2.50, 2);
 
 -- ============================================================
 -- 10. STOCKS (entrées réalistes)
 -- ============================================================
 
-INSERT INTO stock (quantite, date_entree, date_expiration, id_produit) VALUES
+INSERT INTO stock (quantite, date_entree, date_expiration, id_produit, id_user) VALUES
 -- Huiles
-(520.0,   '2025-12-10', '2027-12-10', 1),
-(800.0,   '2025-12-15', '2027-06-15', 2),
+(520.0,   '2025-12-10', '2027-12-10', 1,  2),
+(800.0,   '2025-12-15', '2027-06-15', 2,  3),
 -- Céréales
-(4200.0,  '2025-06-25', '2026-06-25', 3),
-(3500.0,  '2025-06-20', '2026-06-20', 4),
+(4200.0,  '2025-06-25', '2026-06-25', 3,  2),
+(3500.0,  '2025-06-20', '2026-06-20', 4,  2),
 -- Dattes
-(950.0,   '2025-10-25', '2026-10-25', 5),
+(950.0,   '2025-10-25', '2026-10-25', 5,  6),
 -- Agrumes
-(1200.0,  '2026-02-01', '2026-03-15', 6),
-(680.0,   '2026-01-20', '2026-03-01', 7),
-(450.0,   '2026-01-25', '2026-02-28', 8),
+(1200.0,  '2026-02-01', '2026-03-15', 6,  3),
+(680.0,   '2026-01-20', '2026-03-01', 7,  4),
+(450.0,   '2026-01-25', '2026-02-28', 8,  8),
 -- Légumes
-(2800.0,  '2025-05-25', '2025-06-15', 9),
-(350.0,   '2025-06-05', '2025-07-05', 10),
-(3100.0,  '2026-01-10', '2026-04-10', 11),
-(1800.0,  '2025-11-15', '2026-03-15', 12),
+(2800.0,  '2025-05-25', '2025-06-15', 9,  6),
+(350.0,   '2025-06-05', '2025-07-05', 10, 6),
+(3100.0,  '2026-01-10', '2026-04-10', 11, 8),
+(1800.0,  '2025-11-15', '2026-03-15', 12, 9),
 -- Légumineuses
-(900.0,   '2026-02-28', '2026-04-15', 13),
-(1500.0,  '2025-05-15', '2026-05-15', 14),
+(900.0,   '2026-02-28', '2026-04-15', 13, 9),
+(1500.0,  '2025-05-15', '2026-05-15', 14, 10),
 -- Condiments
-(200.0,   '2025-09-01', '2026-09-01', 15),
+(200.0,   '2025-09-01', '2026-09-01', 15, 4),
 -- Fruits secs
-(180.0,   '2025-08-20', '2026-08-20', 16),
-(600.0,   '2025-09-15', '2026-01-15', 17),
+(180.0,   '2025-08-20', '2026-08-20', 16, 8),
+(600.0,   '2025-09-15', '2026-01-15', 17, 9),
 -- Vin
-(300.0,   '2025-08-25', '2028-08-25', 18),
+(300.0,   '2025-08-25', '2028-08-25', 18, 8),
 -- Intrants
-(5000.0,  '2025-10-01', '2027-10-01', 19),
-(2000.0,  '2025-10-15', '2026-10-15', 20);
+(5000.0,  '2025-10-01', '2027-10-01', 19, 2),
+(2000.0,  '2025-10-15', '2026-10-15', 20, 2);
 
 -- ============================================================
 -- 11. CLIENTS (clients tunisiens réalistes)
 -- ============================================================
 
-INSERT INTO client (nom, contact, adresse) VALUES
-('Bouazizi Mehdi',       'mehdi.bouazizi@gmail.com',      '12 Rue de la Liberté, Tunis'),
-('Mansouri Leila',       'leila.mansouri@yahoo.fr',       '45 Avenue Habib Bourguiba, Sousse'),
-('Chaabane Walid',       'walid.chaabane@hotmail.com',    '8 Rue Ibn Khaldoun, Sfax'),
-('Ferchichi Amira',      'amira.ferchichi@mail.tn',       '23 Rue de France, Bizerte'),
-('Dridi Sofiane',        'sofiane.dridi@gmail.com',       'Route de Gafsa Km5, Kasserine'),
-('Haddad Ines',          'ines.haddad@outlook.com',       '56 Avenue Mohamed V, Tunis'),
-('Ben Romdhane Nabil',   'nabil.benromdhane@mail.tn',     '3 Rue de l\'Indépendance, Nabeul'),
-('Mejri Sarra',          'sarra.mejri@gmail.com',         '17 Boulevard de l\'Environnement, Gabès'),
-('Karray Bilel',         'bilel.karray@yahoo.fr',         '90 Avenue Farhat Hached, Sfax'),
-('Ayari Hana',           'hana.ayari@mail.tn',            '5 Place de la République, Tozeur'),
-('Sassi Mohamed',        'mohamed.sassi@gmail.com',       '28 Rue de Marseille, Tunis'),
-('Brahmi Sonia',         'sonia.brahmi@hotmail.com',      '14 Avenue du 1er Juin, Sousse'),
-('Chaari Youssef',       'youssef.chaari@mail.tn',        '61 Rue de Carthage, Kairouan'),
-('Hammami Rania',        'rania.hammami@gmail.com',       '33 Avenue de la Liberté, Tunis'),
-('Mbarki Tarek',         'tarek.mbarki@yahoo.fr',         '7 Rue de Jérusalem, Nabeul');
+INSERT INTO client (nom, contact, adresse, id_user) VALUES
+('Bouazizi Mehdi',       'mehdi.bouazizi@gmail.com',      '12 Rue de la Liberté, Tunis',                    2),
+('Mansouri Leila',       'leila.mansouri@yahoo.fr',       '45 Avenue Habib Bourguiba, Sousse',              2),
+('Chaabane Walid',       'walid.chaabane@hotmail.com',    '8 Rue Ibn Khaldoun, Sfax',                       3),
+('Ferchichi Amira',      'amira.ferchichi@mail.tn',       '23 Rue de France, Bizerte',                      4),
+('Dridi Sofiane',        'sofiane.dridi@gmail.com',       'Route de Gafsa Km5, Kasserine',                  6),
+('Haddad Ines',          'ines.haddad@outlook.com',       '56 Avenue Mohamed V, Tunis',                     2),
+('Ben Romdhane Nabil',   'nabil.benromdhane@mail.tn',     '3 Rue de l\'Indépendance, Nabeul',               8),
+('Mejri Sarra',          'sarra.mejri@gmail.com',         '17 Boulevard de l\'Environnement, Gabès',        6),
+('Karray Bilel',         'bilel.karray@yahoo.fr',         '90 Avenue Farhat Hached, Sfax',                  3),
+('Ayari Hana',           'hana.ayari@mail.tn',            '5 Place de la République, Tozeur',                4),
+('Sassi Mohamed',        'mohamed.sassi@gmail.com',       '28 Rue de Marseille, Tunis',                     8),
+('Brahmi Sonia',         'sonia.brahmi@hotmail.com',      '14 Avenue du 1er Juin, Sousse',                  4),
+('Chaari Youssef',       'youssef.chaari@mail.tn',        '61 Rue de Carthage, Kairouan',                   6),
+('Hammami Rania',        'rania.hammami@gmail.com',       '33 Avenue de la Liberté, Tunis',                 2),
+('Mbarki Tarek',         'tarek.mbarki@yahoo.fr',         '7 Rue de Jérusalem, Nabeul',                     8);
 
 -- ============================================================
 -- 12. VENTES (transactions réalistes en DT — Dinar Tunisien)

@@ -222,24 +222,24 @@ public class LoginController {
 
         switch (role) {
             case "ADMIN":
-                fxmlPath = "/Utilisateur.fxml";
+                fxmlPath = "/utilisateur/Utilisateur.fxml";
                 windowTitle = "Smart Farm - Gestion Utilisateurs (Admin)";
                 break;
 
             case "RESPONSABLE_STOCK":
-                fxmlPath = "/consulterproduit.fxml";
+                fxmlPath = "/produits/consulterproduit.fxml";
                 windowTitle = "Smart Farm - Gestion des Stocks et Produits (Responsable Stock)";
                 break;
 
             case "AGRICULTEUR":
                 // Rediriger vers le Dashboard unifié (parcelles, cultures, récoltes, rendements)
-                fxmlPath = "/Dashboard.fxml";
+                fxmlPath = "/recoltes/Dashboard.fxml";
                 windowTitle = "Smart Farm - Espace Agriculteur";
                 break;
 
             default:
                 // Par défaut, rediriger vers le Dashboard unifié
-                fxmlPath = "/Dashboard.fxml";
+                fxmlPath = "/recoltes/Dashboard.fxml";
                 windowTitle = "Smart Farm - Dashboard";
                 break;
         }
@@ -258,7 +258,7 @@ public class LoginController {
                 scene.getStylesheets().add(cssResourceUrl.toExternalForm());
             }
             // Aussi charger le CSS principal smartfarmm.css
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) {
                 scene.getStylesheets().add(css2.toExternalForm());
             }
@@ -315,7 +315,7 @@ public class LoginController {
 
     private void navigateToChatbot() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chatbot_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/chatbot_view.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) emailField.getScene().getWindow();
@@ -323,7 +323,7 @@ public class LoginController {
 
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             stage.setScene(scene);

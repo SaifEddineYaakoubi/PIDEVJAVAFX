@@ -1,4 +1,4 @@
-package org.example.pidev.controllers.Stock;
+package org.example.pidev.controllers.stock;
 
 
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.Properties;
 
 import org.example.pidev.models.Produit;
 import org.example.pidev.models.Stock;
-import org.example.pidev.services.ProduitService;
-import org.example.pidev.services.StockService;
-import org.example.pidev.services.VoiceRSSService;
+import org.example.pidev.services.produits.ProduitService;
+import org.example.pidev.services.stock.StockService;
+import org.example.pidev.services.recoltes.VoiceRSSService;
 
 import jakarta.mail.Message;
 import jakarta.mail.PasswordAuthentication;
@@ -330,7 +330,7 @@ public class ConsulterStockController {
     @FXML
     private void navigateToConsulterProduit() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/consulterproduit.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/produits/consulterproduit.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) listStock.getScene().getWindow();
             Scene newScene = new Scene(root);
@@ -398,7 +398,7 @@ public class ConsulterStockController {
     @FXML
     private void ajouterStock() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterstock.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/stock/ajouterstock.fxml"));
             Parent root = loader.load();
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
@@ -489,7 +489,7 @@ public class ConsulterStockController {
         ObservableList<Stock> stocks = FXCollections.observableArrayList(stockService.getAll());
         Stock selected = stocks.get(selectedIndex);
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierstock.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/stock/modifierstock.fxml"));
             Parent root = loader.load();
             // Pass the selected stock to the modifier controller
             ModifierStockController controller = loader.getController();
@@ -542,7 +542,7 @@ public class ConsulterStockController {
     @FXML
     private void handleChatbot() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chatbot_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/chatbot_view.fxml"));
             Parent chatRoot = loader.load();
 
             Stage stage = (Stage) listStock.getScene().getWindow();
@@ -550,7 +550,7 @@ public class ConsulterStockController {
 
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             stage.setScene(scene);
@@ -570,7 +570,7 @@ public class ConsulterStockController {
     @FXML
     private void handleProfil() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/profile_view.fxml"));
             Parent profileRoot = loader.load();
 
             Object ctrl = loader.getController();
@@ -589,7 +589,7 @@ public class ConsulterStockController {
             Scene scene = new Scene(profileRoot);
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
             profileStage.setScene(scene);
             profileStage.setResizable(false);
@@ -612,7 +612,7 @@ public class ConsulterStockController {
             try {
                 org.example.pidev.utils.Session.clear();
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/LoginView.fxml"));
                 Parent loginRoot = loader.load();
 
                 Stage stage = (Stage) listStock.getScene().getWindow();
@@ -621,7 +621,7 @@ public class ConsulterStockController {
                 Scene loginScene = new Scene(loginRoot, 600, 500);
                 var css1 = getClass().getResource("/styles/smartfarm.css");
                 if (css1 != null) loginScene.getStylesheets().add(css1.toExternalForm());
-                var css2 = getClass().getResource("/smartfarmm.css");
+                var css2 = getClass().getResource("/recoltes/smartfarmm.css");
                 if (css2 != null) loginScene.getStylesheets().add(css2.toExternalForm());
 
                 stage.setScene(loginScene);

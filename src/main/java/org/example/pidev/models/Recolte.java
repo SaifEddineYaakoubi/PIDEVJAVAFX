@@ -9,6 +9,7 @@ public class Recolte {
     private String qualite;
     private String typeCulture;
     private String localisation;
+    private int idUser;
 
     public Recolte() {
     }
@@ -77,6 +78,9 @@ public class Recolte {
     public void setLocalisation(String localisation) {
         this.localisation = localisation;
     }
+
+    public int getIdUser() { return idUser; }
+    public void setIdUser(int idUser) { this.idUser = idUser; }
 
     @Override
     public String toString() {

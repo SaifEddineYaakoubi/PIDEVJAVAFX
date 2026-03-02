@@ -6,6 +6,7 @@ public class Produit {
     private String type;
     private String unite;
     private double prixUnitaire;
+    private int idUser;
 
     public Produit() {
     }
@@ -64,6 +65,9 @@ public class Produit {
     public void setPrixUnitaire(double prixUnitaire) {
         this.prixUnitaire = prixUnitaire;
     }
+
+    public int getIdUser() { return idUser; }
+    public void setIdUser(int idUser) { this.idUser = idUser; }
 
     @Override
     public String toString() {

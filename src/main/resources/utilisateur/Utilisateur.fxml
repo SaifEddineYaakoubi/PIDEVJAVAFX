@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.*?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.pidev.controllers.utilisateur.UtilisateurController"
+            prefHeight="750.0" prefWidth="1200.0" styleClass="root" stylesheets="@../styles/smartfarm.css">
+
+    <!-- ========== SIDEBAR ========== -->
+    <left>
+        <VBox prefWidth="270" spacing="0"
+              style="-fx-background-color: linear-gradient(to bottom, #1B5E20, #0d3311);
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 4, 0);">
+
+            <!-- Logo -->
+            <VBox alignment="CENTER" spacing="6" style="-fx-padding: 32 20 20 20;">
+                <Label text="🌿" style="-fx-font-size: 42px; -fx-text-fill: white;"/>
+                <Label text="SMART FARM" style="-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: white;"/>
+                <Label text="Panneau d'administration" style="-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.55);"/>
+            </VBox>
+
+            <HBox style="-fx-background-color: rgba(255,255,255,0.08); -fx-pref-height: 1;"/>
+
+            <!-- Nav -->
+            <VBox spacing="4" style="-fx-padding: 18 14;">
+                <Label text="NAVIGATION" style="-fx-font-size: 9px; -fx-text-fill: rgba(255,255,255,0.35); -fx-font-weight: bold;"/>
+                <Button text="   👤  Profil" onAction="#openProfile" maxWidth="Infinity" prefHeight="42"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8);
+                               -fx-font-size: 13px; -fx-padding: 10 14; -fx-alignment: CENTER_LEFT;
+                               -fx-background-radius: 10; -fx-cursor: hand;"/>
+                <Button text="   👥  Utilisateurs" maxWidth="Infinity" prefHeight="42"
+                        style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white;
+                               -fx-font-size: 13px; -fx-font-weight: 700; -fx-padding: 10 14;
+                               -fx-alignment: CENTER_LEFT; -fx-background-radius: 10;"/>
+                <Button text="   🏷️  Badges" onAction="#openBadgeAssign" maxWidth="Infinity" prefHeight="42"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8);
+                               -fx-font-size: 13px; -fx-padding: 10 14; -fx-alignment: CENTER_LEFT;
+                               -fx-background-radius: 10; -fx-cursor: hand;"/>
+                <Button text="   🤖  Assistant IA" onAction="#openChatbot" maxWidth="Infinity" prefHeight="42"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8);
+                               -fx-font-size: 13px; -fx-padding: 10 14; -fx-alignment: CENTER_LEFT;
+                               -fx-background-radius: 10; -fx-cursor: hand;"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox style="-fx-background-color: rgba(255,255,255,0.08); -fx-pref-height: 1;"/>
+
+            <!-- Footer -->
+            <VBox alignment="CENTER" spacing="8" style="-fx-padding: 16; -fx-background-color: rgba(0,0,0,0.15);">
+                <Label fx:id="currentUserLabel" wrapText="true"
+                       style="-fx-text-fill: rgba(255,255,255,0.65); -fx-font-size: 11px; -fx-text-alignment: center;"/>
+                <Button text="🚪 Déconnexion" onAction="#handleLogout" maxWidth="Infinity" prefHeight="36"
+                        style="-fx-background-color: rgba(239,68,68,0.18); -fx-text-fill: #fca5a5;
+                               -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10;
+                               -fx-cursor: hand; -fx-border-color: rgba(239,68,68,0.25); -fx-border-radius: 10;"/>
+                <Label text="© 2026 Smart Farm" style="-fx-text-fill: rgba(255,255,255,0.3); -fx-font-size: 9px;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 28 32; -fx-background-color: #f8fafc;">
+
+            <!-- Header Row -->
+            <HBox alignment="CENTER_LEFT" spacing="14">
+                <VBox spacing="4">
+                    <Label text="Gestion des Utilisateurs"
+                           style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #1e293b;"/>
+                    <Label text="Ajoutez, modifiez ou supprimez les comptes utilisateurs"
+                           style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="➕  Nouveau" onAction="#showAddModal" prefHeight="40"
+                        styleClass="btn-success"
+                        style="-fx-font-size: 13px; -fx-padding: 10 22; -fx-background-radius: 10;"/>
+            </HBox>
+
+            <!-- Search & Filter Bar -->
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 14;
+                         -fx-padding: 14 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0, 0, 3);
+                         -fx-border-color: #e2e8f0; -fx-border-radius: 14;">
+                <Label text="🔍" style="-fx-font-size: 16px;"/>
+                <TextField fx:id="searchField" promptText="Rechercher par nom ou email..."
+                           HBox.hgrow="ALWAYS" onKeyReleased="#handleSearch"
+                           style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;
+                                  -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 14;
+                                  -fx-font-size: 13px; -fx-prompt-text-fill: #94a3b8;"/>
+                <ComboBox fx:id="roleFilter" promptText="Rôle" onAction="#handleFilterChange"
+                          prefWidth="180"
+                          style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;
+                                 -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 4 8;">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Tous"/>
+                            <String fx:value="ADMIN"/>
+                            <String fx:value="AGRICULTEUR"/>
+                            <String fx:value="RESPONSABLE_STOCK"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+
+            <!-- User List -->
+            <VBox VBox.vgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 14;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 12, 0, 0, 3);
+                         -fx-border-color: #e2e8f0; -fx-border-radius: 14; -fx-padding: 4;">
+                <ListView fx:id="usersList" VBox.vgrow="ALWAYS" editable="false"
+                          style="-fx-background-color: transparent; -fx-background-radius: 12;"/>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="12" alignment="CENTER_RIGHT">
+                <Button text="✏️  Modifier" onAction="#showEditModal" prefHeight="38"
+                        style="-fx-background-color: linear-gradient(to right, #2E7D32, #43A047);
+                               -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 700;
+                               -fx-padding: 9 20; -fx-background-radius: 10; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.25), 6, 0, 0, 2);"/>
+                <Button text="🗑  Supprimer" onAction="#handleDeleteUser" prefHeight="38"
+                        style="-fx-background-color: linear-gradient(to right, #ef4444, #dc2626);
+                               -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 700;
+                               -fx-padding: 9 20; -fx-background-radius: 10; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(239,68,68,0.25), 6, 0, 0, 2);"/>
+            </HBox>
+
+        </VBox>
+    </center>
+</BorderPane>
+

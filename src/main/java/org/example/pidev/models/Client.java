@@ -10,6 +10,7 @@ public class Client {
     private String ville;
     private Double totalAchats;
     private String statutFidelite;
+    private int idUser;
 
     public Client() {
     }
@@ -147,6 +148,9 @@ public class Client {
     public void setContact(String contact) {
         this.email = contact;
     }
+
+    public int getIdUser() { return idUser; }
+    public void setIdUser(int idUser) { this.idUser = idUser; }
 
     @Override
     public String toString() {

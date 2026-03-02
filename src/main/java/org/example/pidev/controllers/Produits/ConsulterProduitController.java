@@ -1,10 +1,10 @@
 
 
-package org.example.pidev.controllers.Produits;
+package org.example.pidev.controllers.produits;
 
 
 import org.example.pidev.models.Produit;
-import org.example.pidev.services.ProduitService;
+import org.example.pidev.services.produits.ProduitService;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,8 +27,8 @@ public class ConsulterProduitController {
     @FXML private javafx.scene.layout.StackPane barAutre;
     @FXML private javafx.scene.control.Label lblPrixIndicatif;
     private final ProduitService produitService = new ProduitService();
-    private final org.example.pidev.services.ImageProduitService imageProduitService = new org.example.pidev.services.ImageProduitService();
-    private final org.example.pidev.services.USDAFoodService usdaFoodService = new org.example.pidev.services.USDAFoodService("hDaCa3Tq2g75SW0EQAVaAulI7LvHWxmluCCOfAre");
+    private final org.example.pidev.services.produits.ImageProduitService imageProduitService = new org.example.pidev.services.produits.ImageProduitService();
+    private final org.example.pidev.services.produits.USDAFoodService usdaFoodService = new org.example.pidev.services.produits.USDAFoodService("hDaCa3Tq2g75SW0EQAVaAulI7LvHWxmluCCOfAre");
 
     @FXML
     private void initialize() {
@@ -111,7 +111,7 @@ public class ConsulterProduitController {
     @FXML
     private void navigateToConsulterStock() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/consulterstock.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/stock/consulterstock.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.stage.Stage stage = (javafx.stage.Stage) listProduits.getScene().getWindow();
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
@@ -155,7 +155,7 @@ public class ConsulterProduitController {
     @FXML
     private void ajouterProduit() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/ajouterproduit.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/produits/ajouterproduit.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Ajouter un produit");
@@ -238,10 +238,10 @@ public class ConsulterProduitController {
         try {
             ObservableList<Produit> produits = javafx.collections.FXCollections.observableArrayList(produitService.getAll());
             Produit selected = produits.get(selectedIndex);
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/modifierproduit.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/produits/modifierproduit.fxml"));
             javafx.scene.Parent root = loader.load();
             // Passer le produit sélectionné au contrôleur de modification
-            org.example.pidev.controllers.Produits.ModifierProduitController controller = loader.getController();
+            org.example.pidev.controllers.produits.ModifierProduitController controller = loader.getController();
             controller.setProduit(selected);
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Modifier le produit");
@@ -426,7 +426,7 @@ public class ConsulterProduitController {
     @FXML
     private void handleChatbot() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/chatbot_view.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/utilisateur/chatbot_view.fxml"));
             javafx.scene.Parent chatRoot = loader.load();
 
             javafx.stage.Stage stage = (javafx.stage.Stage) listProduits.getScene().getWindow();
@@ -434,7 +434,7 @@ public class ConsulterProduitController {
 
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             stage.setScene(scene);
@@ -454,7 +454,7 @@ public class ConsulterProduitController {
     @FXML
     private void handleProfil() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/utilisateur/profile_view.fxml"));
             javafx.scene.Parent profileRoot = loader.load();
 
             Object ctrl = loader.getController();
@@ -473,7 +473,7 @@ public class ConsulterProduitController {
             javafx.scene.Scene scene = new javafx.scene.Scene(profileRoot);
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
             profileStage.setScene(scene);
             profileStage.setResizable(false);
@@ -496,7 +496,7 @@ public class ConsulterProduitController {
             try {
                 org.example.pidev.utils.Session.clear();
 
-                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/LoginView.fxml"));
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/utilisateur/LoginView.fxml"));
                 javafx.scene.Parent loginRoot = loader.load();
 
                 javafx.stage.Stage stage = (javafx.stage.Stage) listProduits.getScene().getWindow();
@@ -505,7 +505,7 @@ public class ConsulterProduitController {
                 javafx.scene.Scene loginScene = new javafx.scene.Scene(loginRoot, 600, 500);
                 var css1 = getClass().getResource("/styles/smartfarm.css");
                 if (css1 != null) loginScene.getStylesheets().add(css1.toExternalForm());
-                var css2 = getClass().getResource("/smartfarmm.css");
+                var css2 = getClass().getResource("/recoltes/smartfarmm.css");
                 if (css2 != null) loginScene.getStylesheets().add(css2.toExternalForm());
 
                 stage.setScene(loginScene);

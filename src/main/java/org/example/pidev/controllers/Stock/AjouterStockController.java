@@ -1,9 +1,9 @@
-package org.example.pidev.controllers.Stock;
+package org.example.pidev.controllers.stock;
 
 import org.example.pidev.models.Produit;
 import org.example.pidev.models.Stock;
-import org.example.pidev.services.ProduitService;
-import org.example.pidev.services.StockService;
+import org.example.pidev.services.produits.ProduitService;
+import org.example.pidev.services.stock.StockService;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

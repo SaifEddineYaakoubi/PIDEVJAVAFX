@@ -61,7 +61,7 @@ module org.example.pidev {
     // ========================================
     requires itextpdf;
     requires jakarta.mail;
-    requires java.mail;           // javax.mail for Ahmed module
+    // javax.mail removed - using jakarta.mail/angus-mail instead
     requires kernel;              // iText v8 kernel for Ahmed module
     requires layout;              // iText v8 layout for Ahmed module
 
@@ -104,19 +104,24 @@ module org.example.pidev {
     exports org.example.pidev.services;
     exports org.example.pidev.interfaces;
     exports org.example.pidev.utils;
+
+    // Exports pour les services par module
     exports org.example.pidev.services.utilisateur;
+    exports org.example.pidev.services.recoltes;
+    exports org.example.pidev.services.parcelles;
+    exports org.example.pidev.services.cultures;
+    exports org.example.pidev.services.produits;
+    exports org.example.pidev.services.stock;
+    exports org.example.pidev.services.ventes;
 
-    // Exports pour les controllers
-    exports org.example.pidev.controllers;
-    exports org.example.pidev.controllers.culture;
+    // Exports pour les controllers par module
+    exports org.example.pidev.controllers.recoltes;
+    exports org.example.pidev.controllers.cultures;
     exports org.example.pidev.controllers.parcelles;
+    exports org.example.pidev.controllers.produits;
+    exports org.example.pidev.controllers.stock;
+    exports org.example.pidev.controllers.ventes;
     exports org.example.pidev.controllers.utilisateur;
-    exports org.example.pidev.controllers.Produits;
-    exports org.example.pidev.controllers.Stock;
-    exports org.example.pidev.controllers.ahmed;
-
-    // Exports pour les services ahmed
-    exports org.example.pidev.services.ahmed;
 
     // ========================================
     // Package Opens for FXML Access
@@ -125,17 +130,15 @@ module org.example.pidev {
     opens org.example.pidev.test to javafx.fxml;
     opens org.example.pidev.utils to javafx.fxml;
 
-    // Controllers - Package général
-    opens org.example.pidev.controllers to javafx.fxml;  // Présent dans le second module-info
-
-    // Controllers - Sous-packages spécifiques
-    opens org.example.pidev.controllers.culture to javafx.fxml;
+    // Controllers - Sous-packages par module
+    opens org.example.pidev.controllers.recoltes to javafx.fxml;
+    opens org.example.pidev.controllers.cultures to javafx.fxml;
     opens org.example.pidev.controllers.parcelles to javafx.fxml;
+    opens org.example.pidev.controllers.produits to javafx.fxml;
+    opens org.example.pidev.controllers.stock to javafx.fxml;
+    opens org.example.pidev.controllers.ventes to javafx.fxml;
     opens org.example.pidev.controllers.utilisateur to javafx.fxml;
-    opens org.example.pidev.controllers.Produits to javafx.fxml;
-    opens org.example.pidev.controllers.Stock to javafx.fxml;
-    opens org.example.pidev.controllers.ahmed to javafx.fxml;
 
-    // Services ahmed
-    opens org.example.pidev.services.ahmed to javafx.fxml;
+    // Services
+    opens org.example.pidev.services.ventes to javafx.fxml;
 }

@@ -1,7 +1,7 @@
 package org.example.pidev.test;
 
 import org.example.pidev.models.Parcelle;
-import org.example.pidev.services.ParcelleService;
+import org.example.pidev.services.parcelles.ParcelleService;
 
 import java.util.List;
 

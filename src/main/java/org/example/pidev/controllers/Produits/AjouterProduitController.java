@@ -1,7 +1,7 @@
-package org.example.pidev.controllers.Produits;
+package org.example.pidev.controllers.produits;
 
 import org.example.pidev.models.Produit;
-import org.example.pidev.services.ProduitService;
+import org.example.pidev.services.produits.ProduitService;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

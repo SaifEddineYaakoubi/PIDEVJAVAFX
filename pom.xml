@@ -281,12 +281,7 @@
             <version>${jakarta.mail.version}</version>
         </dependency>
 
-        <!-- javax.mail (Ahmed module - legacy) -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
-        </dependency>
+        <!-- javax.mail removed - using jakarta.mail/angus-mail instead -->
 
         <!-- ======================================== -->
         <!-- iText v8 (Ahmed module - PDF export)     -->

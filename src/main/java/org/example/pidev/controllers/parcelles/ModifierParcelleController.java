@@ -9,9 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.example.pidev.models.Parcelle;
-import org.example.pidev.services.GeoLocationService;
-import org.example.pidev.services.GeoLocationService.LocationResult;
-import org.example.pidev.services.ParcelleService;
+import org.example.pidev.services.recoltes.GeoLocationService;
+import org.example.pidev.services.recoltes.GeoLocationService.LocationResult;
+import org.example.pidev.services.parcelles.ParcelleService;
 import org.example.pidev.utils.ActionHistoryService;
 import org.example.pidev.utils.AnimationUtils;
 
@@ -24,7 +24,10 @@ import java.util.TimerTask;
 public class ModifierParcelleController implements Initializable {
 
     // ID de l'utilisateur connecté (par défaut = 1)
-    private static final int CURRENT_USER_ID = 1;
+    // ID utilisateur dynamique via Session
+    private int getCurrentUserId() {
+        return org.example.pidev.utils.Session.getOwnerUserId();
+    }
 
     @FXML
     private TextField tfNom;
@@ -233,7 +236,7 @@ public class ModifierParcelleController implements Initializable {
             currentParcelle.setSuperficie(superficie);
             currentParcelle.setLocalisation(localisation.trim());
             currentParcelle.setEtat(etat);
-            currentParcelle.setIdUser(CURRENT_USER_ID);
+            currentParcelle.setIdUser(getCurrentUserId());
 
             parcelleService.update(currentParcelle);
 

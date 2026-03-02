@@ -127,14 +127,14 @@ public class ProfileController {
             Session.clear();
 
             // Charger la vue de login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/LoginView.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 600, 500);
 
             // Charger les CSS
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             // Obtenir le Stage du modal et son owner (fenêtre principale)

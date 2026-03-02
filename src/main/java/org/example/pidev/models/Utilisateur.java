@@ -12,6 +12,7 @@ public class Utilisateur {
     private boolean statut;
     private LocalDate dateCreation;
     private String faceImagePath;
+    private int idAgriculteur; // For RESPONSABLE_STOCK: the agriculteur they work for
 
     public Utilisateur() {
     }
@@ -111,6 +112,27 @@ public class Utilisateur {
 
     public void setDateCreation(LocalDate dateCreation) {
         this.dateCreation = dateCreation;
+    }
+
+    public int getIdAgriculteur() {
+        return idAgriculteur;
+    }
+
+    public void setIdAgriculteur(int idAgriculteur) {
+        this.idAgriculteur = idAgriculteur;
+    }
+
+    /**
+     * Retourne l'ID utilisateur propriétaire des données:
+     * - Pour un AGRICULTEUR: son propre idUser
+     * - Pour un RESPONSABLE_STOCK: l'idAgriculteur auquel il est rattaché
+     * - Pour un ADMIN: 0 (voit tout)
+     */
+    public int getOwnerUserId() {
+        if (role == Role.RESPONSABLE_STOCK && idAgriculteur > 0) {
+            return idAgriculteur;
+        }
+        return idUser;
     }
 
     @Override

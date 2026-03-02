@@ -323,14 +323,14 @@ public class UtilisateurController {
     private void handleLogout() {
         try {
             Session.clear();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/LoginView.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) usersList.getScene().getWindow();
             stage.setMaximized(false);
             Scene scene = new Scene(root, 600, 500);
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Smart Farm - Connexion");
@@ -351,7 +351,7 @@ public class UtilisateurController {
     @FXML
     private void openProfile() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/profile_view.fxml"));
             Parent root = loader.load();
 
             ProfileController controller = loader.getController();
@@ -364,7 +364,7 @@ public class UtilisateurController {
             Scene scene = new Scene(root);
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
             stage.setScene(scene);
             stage.setResizable(false);
@@ -379,7 +379,7 @@ public class UtilisateurController {
 
     private void openModal(Utilisateur user, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/UserForm.fxml"));
             Parent root = loader.load();
 
             UserFormController controller = loader.getController();
@@ -425,7 +425,7 @@ public class UtilisateurController {
     @FXML
     private void openBadges() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BadgeView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/BadgeView.fxml"));
             Parent root = loader.load();
 
             // Passer l'utilisateur sélectionné si présent
@@ -456,7 +456,7 @@ public class UtilisateurController {
     @FXML
     private void openBadgeAssign() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BadgeAssignView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/BadgeAssignView.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();
@@ -478,7 +478,7 @@ public class UtilisateurController {
     @FXML
     private void openChatbot() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chatbot_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/chatbot_view.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) usersList.getScene().getWindow();
@@ -486,7 +486,7 @@ public class UtilisateurController {
 
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             stage.setScene(scene);

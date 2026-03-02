@@ -29,10 +29,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.example.pidev.models.Culture;
 import org.example.pidev.models.Parcelle;
-import org.example.pidev.services.CultureService;
-import org.example.pidev.services.ParcelleService;
-import org.example.pidev.services.WeatherService;
-import org.example.pidev.services.GeoLocationService;
+import org.example.pidev.services.cultures.CultureService;
+import org.example.pidev.services.parcelles.ParcelleService;
+import org.example.pidev.services.recoltes.WeatherService;
+import org.example.pidev.services.recoltes.GeoLocationService;
 import org.example.pidev.utils.ActionHistoryService;
 import org.example.pidev.utils.AnimationUtils;
 import org.example.pidev.utils.ThemeManager;
@@ -614,7 +614,7 @@ public class ConsulterParcelleController implements Initializable {
         if (selected == null) { showMessage("⚠️ Veuillez sélectionner une parcelle à modifier.", "#FF9800"); return; }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierparcelle.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/parcelles/modifierparcelle.fxml"));
             Parent root = loader.load();
             ModifierParcelleController controller = loader.getController();
             controller.setParcelle(selected);
@@ -679,7 +679,7 @@ public class ConsulterParcelleController implements Initializable {
     @FXML
     void navigateToAjouterParcelle(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterparcelle.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/parcelles/ajouterparcelle.fxml"));
             Parent root = loader.load();
             Stage popupStage = new Stage();
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
@@ -699,12 +699,12 @@ public class ConsulterParcelleController implements Initializable {
 
     @FXML
     void navigateToConsulterCulture(ActionEvent event) {
-        navigateTo("/consulterculture.fxml", "Liste des Cultures");
+        navigateTo("/cultures/consulterculture.fxml", "Liste des Cultures");
     }
 
     @FXML
     void navigateToDashboard(ActionEvent event) {
-        navigateTo("/Dashboard.fxml", "Dashboard");
+        navigateTo("/recoltes/Dashboard.fxml", "Dashboard");
     }
 
     private void navigateTo(String fxmlPath, String title) {
@@ -799,7 +799,7 @@ public class ConsulterParcelleController implements Initializable {
         try {
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
         } catch (Exception ignored) {}
     }

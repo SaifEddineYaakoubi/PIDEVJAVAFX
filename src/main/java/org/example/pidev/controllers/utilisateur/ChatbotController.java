@@ -334,7 +334,7 @@ public class ChatbotController implements Initializable {
             Session.clear();
 
             // Load login view
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/LoginView.fxml"));
             Parent root = loader.load();
 
             // Obtenir le stage de manière sûre
@@ -359,7 +359,7 @@ public class ChatbotController implements Initializable {
             // Charger les CSS
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             stage.setScene(scene);
@@ -388,13 +388,13 @@ public class ChatbotController implements Initializable {
 
             // Vérifier le rôle de l'utilisateur pour rediriger vers la bonne interface
             if (currentUser != null && "ADMIN".equalsIgnoreCase(currentUser.getRole().name())) {
-                fxmlPath = "/Utilisateur.fxml";
+                fxmlPath = "/utilisateur/Utilisateur.fxml";
                 windowTitle = "Smart Farm - Gestion Utilisateurs (Admin)";
             } else if (currentUser != null && "RESPONSABLE_STOCK".equalsIgnoreCase(currentUser.getRole().name())) {
-                fxmlPath = "/consulterproduit.fxml";
+                fxmlPath = "/produits/consulterproduit.fxml";
                 windowTitle = "Smart Farm - Gestion des Stocks et Produits";
             } else {
-                fxmlPath = "/Dashboard.fxml";
+                fxmlPath = "/recoltes/Dashboard.fxml";
                 windowTitle = "Smart Farm - Espace Agriculteur";
             }
 
@@ -404,7 +404,7 @@ public class ChatbotController implements Initializable {
 
             if (loader.getLocation() == null) {
                 System.err.println("❌ Fichier FXML introuvable: " + fxmlPath);
-                loader = new FXMLLoader(getClass().getResource("/Utilisateur.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/utilisateur/Utilisateur.fxml"));
             }
 
             Parent root = loader.load();
@@ -437,7 +437,7 @@ public class ChatbotController implements Initializable {
             // Charger les CSS
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             stage.setScene(scene);

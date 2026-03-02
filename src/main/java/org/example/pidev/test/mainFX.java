@@ -140,10 +140,10 @@ public class mainFX extends Application {
         try {
             log("📊 Loading Dashboard...");
 
-            URL fxmlUrl = getClass().getResource("/Dashboard.fxml");
+            URL fxmlUrl = getClass().getResource("/recoltes/Dashboard.fxml");
             if (fxmlUrl == null) {
                 log("⚠️ Dashboard.fxml not found, trying DashboardDefault.fxml...");
-                fxmlUrl = getClass().getResource("/DashboardDefault.fxml");
+                fxmlUrl = getClass().getResource("/recoltes/DashboardDefault.fxml");
             }
             if (fxmlUrl == null) {
                 log("❌ No Dashboard FXML found.");
@@ -180,7 +180,7 @@ public class mainFX extends Application {
         try {
             log("📱 Loading Login View...");
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/utilisateur/LoginView.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 600, 650);
             chargerCSS(scene);
@@ -207,7 +207,7 @@ public class mainFX extends Application {
         try {
             log("📱 Loading Parcelles View...");
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/consulterparcelle.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/parcelles/consulterparcelle.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
@@ -234,7 +234,7 @@ public class mainFX extends Application {
         try {
             log("📱 Loading Produits View...");
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/consulterproduit.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/produits/consulterproduit.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
@@ -281,7 +281,7 @@ public class mainFX extends Application {
             var css1 = getClass().getResource("/styles/smartfarm.css");
             if (css1 != null) scene.getStylesheets().add(css1.toExternalForm());
 
-            var css2 = getClass().getResource("/smartfarmm.css");
+            var css2 = getClass().getResource("/recoltes/smartfarmm.css");
             if (css2 != null) scene.getStylesheets().add(css2.toExternalForm());
 
             if (css1 == null && css2 == null) {

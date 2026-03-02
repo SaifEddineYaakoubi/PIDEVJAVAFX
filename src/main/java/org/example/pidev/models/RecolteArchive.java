@@ -15,6 +15,7 @@ public class RecolteArchive {
     private String localisation;
     private String causeSupression;  // Raison de la suppression
     private LocalDate dateArchivage;   // Date d'archivage
+    private int idUser;
 
     // =====================
     // Constructeurs
@@ -79,6 +80,9 @@ public class RecolteArchive {
 
     public LocalDate getDateArchivage() { return dateArchivage; }
     public void setDateArchivage(LocalDate dateArchivage) { this.dateArchivage = dateArchivage; }
+
+    public int getIdUser() { return idUser; }
+    public void setIdUser(int idUser) { this.idUser = idUser; }
 
     @Override
     public String toString() {

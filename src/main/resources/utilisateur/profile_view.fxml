@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.pidev.controllers.utilisateur.ProfileController"
+            prefWidth="460" prefHeight="420" styleClass="profile-root"
+            stylesheets="@../styles/smartfarm.css">
+
+    <VBox alignment="TOP_CENTER" spacing="0"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+          styleClass="profile-card">
+
+        <!-- Profile Header -->
+        <VBox alignment="CENTER" spacing="10" styleClass="profile-header">
+            <ImageView fx:id="profileImageView" fitWidth="90" fitHeight="90"
+                       preserveRatio="true" styleClass="profile-avatar"/>
+            <Label text="Mon Profil" styleClass="profile-title"/>
+        </VBox>
+
+        <!-- Profile Details -->
+        <VBox spacing="0" styleClass="profile-details">
+            <HBox styleClass="profile-row">
+                <Label text="👤" styleClass="profile-icon"/>
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Nom complet" styleClass="profile-detail-label"/>
+                    <Label fx:id="lblName" text="-" styleClass="profile-detail-value"/>
+                </VBox>
+            </HBox>
+            <HBox styleClass="profile-row">
+                <Label text="📧" styleClass="profile-icon"/>
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Email" styleClass="profile-detail-label"/>
+                    <Label fx:id="lblEmail" text="-" styleClass="profile-detail-value"/>
+                </VBox>
+            </HBox>
+            <HBox styleClass="profile-row">
+                <Label text="🎖" styleClass="profile-icon"/>
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Rôle" styleClass="profile-detail-label"/>
+                    <Label fx:id="lblRole" text="-" styleClass="profile-detail-value"/>
+                </VBox>
+            </HBox>
+            <HBox styleClass="profile-row">
+                <Label text="🟢" styleClass="profile-icon"/>
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Statut du compte" styleClass="profile-detail-label"/>
+                    <Label fx:id="lblActive" text="-" styleClass="profile-detail-value"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Actions -->
+        <HBox spacing="12" alignment="CENTER" styleClass="profile-actions">
+            <Button text="🚪 Déconnexion" onAction="#handleLogout" styleClass="profile-btn-logout" prefWidth="140"/>
+            <Button text="Fermer" onAction="#handleClose" styleClass="profile-btn-close" prefWidth="110"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>
