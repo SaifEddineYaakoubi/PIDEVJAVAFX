@@ -132,7 +132,7 @@ public class ConsulterParcelleController implements Initializable {
         // Cell factory avec tooltips et drag & drop
         listViewParcelles.setCellFactory(param -> createParcelleCell());
 
-        cbFiltre.setItems(FXCollections.observableArrayList("Tous", "Active", "Repos", "Exploitée"));
+        cbFiltre.setItems(FXCollections.observableArrayList("Tous", "Active", "Repos", "Exploitee"));
         cbFiltre.setValue("Tous");
         cbFiltre.setOnAction(e -> applyFilters());
 
@@ -259,7 +259,8 @@ public class ConsulterParcelleController implements Initializable {
                     switch (parcelle.getEtat().toLowerCase()) {
                         case "active": etatStyle += "-fx-background-color: #C8E6C9; -fx-text-fill: #2E7D32;"; break;
                         case "repos": etatStyle += "-fx-background-color: #FFE0B2; -fx-text-fill: #E65100;"; break;
-                        case "exploitée": etatStyle += "-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0;"; break;
+                        case "exploitée":
+                        case "exploitee": etatStyle += "-fx-background-color: #BBDEFB; -fx-text-fill: #1565C0;"; break;
                         default: etatStyle += "-fx-background-color: #E0E0E0; -fx-text-fill: #616161;";
                     }
                     lblEtat.setStyle(etatStyle);
@@ -474,7 +475,11 @@ public class ConsulterParcelleController implements Initializable {
         double superficieTotale = parcellesList.stream().mapToDouble(Parcelle::getSuperficie).sum();
         long actives = parcellesList.stream().filter(p -> "active".equalsIgnoreCase(p.getEtat())).count();
         long repos = parcellesList.stream().filter(p -> "repos".equalsIgnoreCase(p.getEtat())).count();
-        long exploitees = parcellesList.stream().filter(p -> "exploitée".equalsIgnoreCase(p.getEtat())).count();
+        // Accept both "exploitée" (old schema) and "exploitee" (Symfony schema)
+        long exploitees = parcellesList.stream().filter(p -> {
+            String etat = p.getEtat();
+            return etat != null && (etat.equalsIgnoreCase("exploitée") || etat.equalsIgnoreCase("exploitee"));
+        }).count();
 
         lblTotalParcelles.setText(String.valueOf(total));
         lblSuperficieTotale.setText(String.format("%.0f m²", superficieTotale));
@@ -502,7 +507,13 @@ public class ConsulterParcelleController implements Initializable {
             }
 
             if (filterEtat != null && !"Tous".equals(filterEtat)) {
-                matchesFilter = parcelle.getEtat().equalsIgnoreCase(filterEtat);
+                // Accept both "exploitée" (old) and "exploitee" (Symfony) when filtering
+                if (filterEtat.equalsIgnoreCase("exploitee") || filterEtat.equalsIgnoreCase("exploitée")) {
+                    matchesFilter = parcelle.getEtat() != null &&
+                            (parcelle.getEtat().equalsIgnoreCase("exploitee") || parcelle.getEtat().equalsIgnoreCase("exploitée"));
+                } else {
+                    matchesFilter = parcelle.getEtat().equalsIgnoreCase(filterEtat);
+                }
             }
 
             return matchesSearch && matchesFilter;

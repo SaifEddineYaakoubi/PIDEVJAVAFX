@@ -79,8 +79,8 @@ public class AjouterParcelleController implements Initializable {
         parcelleService = new ParcelleService();
         geoLocationService = new GeoLocationService();
 
-        // Remplir le ComboBox avec les états possibles
-        cbEtat.setItems(FXCollections.observableArrayList("active", "repos", "exploitée"));
+        // Remplir le ComboBox avec les états possibles (Symfony uses "exploitee" without accent)
+        cbEtat.setItems(FXCollections.observableArrayList("active", "repos", "exploitee"));
 
         // Effacer les messages quand l'utilisateur tape
         tfNom.textProperty().addListener((obs, old, newVal) -> clearMessages());

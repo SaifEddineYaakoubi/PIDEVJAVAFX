@@ -18,14 +18,15 @@ public class ProduitService implements IService<Produit> {
      */
     public int countProduitsByAttributs(String nom, String type, String unite) {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
-        String query = ownerId > 0
+        boolean scoped = ownerId > 0;
+        String query = scoped
             ? "SELECT COUNT(*) FROM produit WHERE nom = ? AND type = ? AND unite = ? AND id_user = ?"
             : "SELECT COUNT(*) FROM produit WHERE nom = ? AND type = ? AND unite = ?";
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
+        try (PreparedStatement pst = DBConnection.getConnection().prepareStatement(query)) {
             pst.setString(1, nom);
             pst.setString(2, type);
             pst.setString(3, unite);
-            if (ownerId > 0) pst.setInt(4, ownerId);
+            if (scoped) pst.setInt(4, ownerId);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -35,21 +36,19 @@ public class ProduitService implements IService<Produit> {
         }
         return 0;
     }
-    /**
-     * Recherche un produit existant par nom, type, unité et prix.
-     * Retourne le produit trouvé ou null si aucun.
-     */
+
     public Produit findProduitIdentique(Produit produit) {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
-        String query = ownerId > 0
+        boolean scoped = ownerId > 0;
+        String query = scoped
             ? "SELECT * FROM produit WHERE nom = ? AND type = ? AND unite = ? AND prix_unitaire = ? AND id_user = ?"
             : "SELECT * FROM produit WHERE nom = ? AND type = ? AND unite = ? AND prix_unitaire = ?";
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
+        try (PreparedStatement pst = DBConnection.getConnection().prepareStatement(query)) {
             pst.setString(1, produit.getNom());
             pst.setString(2, produit.getType());
             pst.setString(3, produit.getUnite());
             pst.setDouble(4, produit.getPrixUnitaire());
-            if (ownerId > 0) pst.setInt(5, ownerId);
+            if (scoped) pst.setInt(5, ownerId);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 Produit p = new Produit(
@@ -100,7 +99,7 @@ public class ProduitService implements IService<Produit> {
     public boolean add(Produit produit) {
         String query = "INSERT INTO produit (nom, type, unite, prix_unitaire, id_user) VALUES (?, ?, ?, ?, ?)";
         try {
-            PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, produit.getNom());
             pst.setString(2, produit.getType());
             pst.setString(3, produit.getUnite());
@@ -126,7 +125,7 @@ public class ProduitService implements IService<Produit> {
         }
         String query = "UPDATE produit SET nom = ?, type = ?, unite = ?, prix_unitaire = ? WHERE id_produit = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setString(1, produit.getNom());
             pst.setString(2, produit.getType());
             pst.setString(3, produit.getUnite());
@@ -143,7 +142,7 @@ public class ProduitService implements IService<Produit> {
     public boolean delete(int id) {
         String query = "DELETE FROM produit WHERE id_produit = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setInt(1, id);
             int rowsAffected = pst.executeUpdate();
             if (rowsAffected > 0) {
@@ -161,7 +160,7 @@ public class ProduitService implements IService<Produit> {
     public Produit getById(int id) {
         String query = "SELECT * FROM produit WHERE id_produit = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -182,13 +181,14 @@ public class ProduitService implements IService<Produit> {
     @Override
     public List<Produit> getAll() {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        System.out.println("[ProduitService.getAll] ownerId=" + ownerId);
         if (ownerId > 0) {
             return getByUserId(ownerId);
         }
         List<Produit> produits = new ArrayList<>();
         String query = "SELECT * FROM produit";
         try {
-            Statement st = connection.createStatement();
+            java.sql.Statement st = DBConnection.getConnection().createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 Produit produit = new Produit(
@@ -207,14 +207,11 @@ public class ProduitService implements IService<Produit> {
         return produits;
     }
 
-    /**
-     * Récupère les produits d'un utilisateur spécifique
-     */
     public List<Produit> getByUserId(int idUser) {
         List<Produit> produits = new ArrayList<>();
         String query = "SELECT * FROM produit WHERE id_user = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setInt(1, idUser);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -228,6 +225,7 @@ public class ProduitService implements IService<Produit> {
                 produit.setIdUser(rs.getInt("id_user"));
                 produits.add(produit);
             }
+            System.out.println("[ProduitService] getByUserId(" + idUser + ") → " + produits.size() + " produit(s)");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des produits par user: " + e.getMessage());
         }

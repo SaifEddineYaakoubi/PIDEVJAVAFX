@@ -127,11 +127,12 @@ public class AjouterCultureController implements Initializable {
         RadioButton selected = (RadioButton) toggleGroupEtat.getSelectedToggle();
         String text = selected.getText();
         // Extraire le texte sans l'emoji - utiliser les valeurs attendues par CultureService
+        // Symfony schema uses "maturite" (without accent), old schema used "mature"
         if (text.contains("Germination")) return "germination";
         if (text.contains("Croissance")) return "croissance";
         if (text.contains("Floraison")) return "floraison";
-        if (text.contains("Maturité")) return "mature";  // Le service attend "mature" et non "maturité"
-        return text;
+        if (text.contains("Maturité") || text.contains("Maturite") || text.contains("Mature")) return "maturite";
+        return text.toLowerCase();
     }
 
     @FXML

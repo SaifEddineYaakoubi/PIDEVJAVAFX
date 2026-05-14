@@ -11,8 +11,13 @@ public class Utilisateur {
     private Role role;
     private boolean statut;
     private LocalDate dateCreation;
-    private String faceImagePath;
-    private int idAgriculteur; // For RESPONSABLE_STOCK: the agriculteur they work for
+
+    // Symfony schema fields
+    private String faceDescriptor;     // longtext - JSON array of face detection values
+    private boolean faceEnabled;       // tinyint - whether face recognition is enabled
+    private String profilePicture;     // varchar - path to profile picture
+    private LocalDate dateNaissance;   // date - birth date
+    private String sexe;               // varchar - 'homme'/'femme'
 
     public Utilisateur() {
     }
@@ -38,12 +43,56 @@ public class Utilisateur {
         this.dateCreation = dateCreation;
     }
 
-    public String getFaceImagePath() {
-        return faceImagePath;
+    public String getFaceDescriptor() {
+        return faceDescriptor;
     }
 
-    public void setFaceImagePath(String faceImagePath) {
-        this.faceImagePath = faceImagePath;
+    public void setFaceDescriptor(String faceDescriptor) {
+        this.faceDescriptor = faceDescriptor;
+    }
+
+    public boolean isFaceEnabled() {
+        return faceEnabled;
+    }
+
+    public void setFaceEnabled(boolean faceEnabled) {
+        this.faceEnabled = faceEnabled;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    /**
+     * Backward-compatible alias used by controllers adapted to Symfony schema.
+     * Some controllers refer to "faceImagePath" while the model stores it in profilePicture.
+     */
+    public String getFaceImagePath() {
+        return this.profilePicture;
+    }
+
+    public void setFaceImagePath(String path) {
+        this.profilePicture = path;
+    }
+
+    public LocalDate getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(LocalDate dateNaissance) {
+        this.dateNaissance = dateNaissance;
+    }
+
+    public String getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(String sexe) {
+        this.sexe = sexe;
     }
 
     public int getIdUser() {
@@ -115,24 +164,31 @@ public class Utilisateur {
     }
 
     public int getIdAgriculteur() {
-        return idAgriculteur;
+        return this.idUser; // For backward compatibility - returns self
     }
 
     public void setIdAgriculteur(int idAgriculteur) {
-        this.idAgriculteur = idAgriculteur;
+        // For backward compatibility - do nothing
     }
 
     /**
-     * Retourne l'ID utilisateur propriétaire des données:
-     * - Pour un AGRICULTEUR: son propre idUser
-     * - Pour un RESPONSABLE_STOCK: l'idAgriculteur auquel il est rattaché
-     * - Pour un ADMIN: 0 (voit tout)
+     * Retourne l'ID utilisateur propriétaire des données
      */
     public int getOwnerUserId() {
-        if (role == Role.RESPONSABLE_STOCK && idAgriculteur > 0) {
-            return idAgriculteur;
+        // Conserver la logique suivante:
+        // - ADMIN voit tout -> retourner 0 pour indiquer "pas d'isolation"
+        // - AGRICULTEUR voit ses propres données -> retourner son id
+        // - RESPONSABLE_STOCK pour l'instant retourne son propre id (peut être
+        //   lié à un agriculteur spécifique si une relation existait)
+        if (this.role == null) return this.idUser;
+        switch (this.role) {
+            case ADMIN:
+                return 0;
+            case RESPONSABLE_STOCK:
+            case AGRICULTEUR:
+            default:
+                return this.idUser;
         }
-        return idUser;
     }
 
     @Override

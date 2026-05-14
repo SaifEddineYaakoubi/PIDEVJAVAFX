@@ -13,8 +13,8 @@ public class ParcelleService implements IService<Parcelle> {
 
     private Connection connection;
 
-    // États valides pour une parcelle
-    private static final List<String> ETATS_VALIDES = Arrays.asList("active", "repos", "exploitée");
+    // États valides pour une parcelle (Symfony uses "exploitee" without accent, JavaFX accepts both)
+    private static final List<String> ETATS_VALIDES = Arrays.asList("active", "repos", "exploitée", "exploitee");
 
     // Constantes de validation
     private static final int NOM_MIN_LENGTH = 2;
@@ -26,6 +26,12 @@ public class ParcelleService implements IService<Parcelle> {
 
     public ParcelleService() {
         connection = DBConnection.getConnection();
+    }
+
+    // Toujours utiliser une connexion fraîche
+    private Connection getConn() {
+        connection = DBConnection.getConnection();
+        return connection;
     }
 
     // ==========================================
@@ -105,10 +111,11 @@ public class ParcelleService implements IService<Parcelle> {
 
     /**
      * Valide l'ID de l'utilisateur
+     * Note: id_user = 0 is allowed for parcelles not linked to a specific user (Symfony compatibility)
      */
     public void validerIdUser(int idUser) throws IllegalArgumentException {
-        if (idUser <= 0) {
-            throw new IllegalArgumentException("L'ID de l'utilisateur doit être un nombre positif.");
+        if (idUser < 0) {
+            throw new IllegalArgumentException("L'ID de l'utilisateur ne peut pas être négatif.");
         }
     }
 
@@ -120,15 +127,16 @@ public class ParcelleService implements IService<Parcelle> {
     public boolean add(Parcelle parcelle) throws IllegalArgumentException {
         // Validation des données avant insertion (lance une exception si invalide)
         valider(parcelle);
-
         String query = "INSERT INTO parcelle (nom, superficie, localisation, etat, id_user) VALUES (?, ?, ?, ?, ?)";
+
         try {
-            PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, parcelle.getNom().trim());
             pst.setDouble(2, parcelle.getSuperficie());
             pst.setString(3, parcelle.getLocalisation().trim());
             pst.setString(4, parcelle.getEtat().toLowerCase());
             pst.setInt(5, parcelle.getIdUser());
+
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -151,16 +159,17 @@ public class ParcelleService implements IService<Parcelle> {
         if (parcelle.getIdParcelle() <= 0) {
             throw new IllegalArgumentException("L'ID de la parcelle doit être un nombre positif.");
         }
-
         String query = "UPDATE parcelle SET nom = ?, superficie = ?, localisation = ?, etat = ?, id_user = ? WHERE id_parcelle = ?";
+
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setString(1, parcelle.getNom().trim());
             pst.setDouble(2, parcelle.getSuperficie());
             pst.setString(3, parcelle.getLocalisation().trim());
             pst.setString(4, parcelle.getEtat().toLowerCase());
             pst.setInt(5, parcelle.getIdUser());
             pst.setInt(6, parcelle.getIdParcelle());
+
             pst.executeUpdate();
             System.out.println("✅ Parcelle mise à jour avec succès");
         } catch (SQLException e) {
@@ -172,7 +181,7 @@ public class ParcelleService implements IService<Parcelle> {
     public boolean delete(int id) {
         String query = "DELETE FROM parcelle WHERE id_parcelle = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             int rowsAffected = pst.executeUpdate();
             if (rowsAffected > 0) {
@@ -182,7 +191,6 @@ public class ParcelleService implements IService<Parcelle> {
             return false;
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la suppression de la parcelle: " + e.getMessage());
-            // Lancer une exception pour permettre au contrôleur de gérer l'erreur
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -191,7 +199,7 @@ public class ParcelleService implements IService<Parcelle> {
     public Parcelle getById(int id) {
         String query = "SELECT * FROM parcelle WHERE id_parcelle = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -213,24 +221,19 @@ public class ParcelleService implements IService<Parcelle> {
     @Override
     public List<Parcelle> getAll() {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        System.out.println("[ParcelleService.getAll] ownerId=" + ownerId);
+        // ownerId > 0 → utilisateur non-admin → filtrer par id_user
         if (ownerId > 0) {
             return getByUserId(ownerId);
         }
+        // ADMIN (ownerId == 0) → tout afficher
         List<Parcelle> parcelles = new ArrayList<>();
         String query = "SELECT * FROM parcelle";
         try {
-            Statement st = connection.createStatement();
+            Statement st = getConn().createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
-                Parcelle parcelle = new Parcelle(
-                        rs.getInt("id_parcelle"),
-                        rs.getString("nom"),
-                        rs.getDouble("superficie"),
-                        rs.getString("localisation"),
-                        rs.getString("etat"),
-                        rs.getInt("id_user")
-                );
-                parcelles.add(parcelle);
+                parcelles.add(mapRow(rs));
             }
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des parcelles: " + e.getMessage());
@@ -245,23 +248,27 @@ public class ParcelleService implements IService<Parcelle> {
         List<Parcelle> parcelles = new ArrayList<>();
         String query = "SELECT * FROM parcelle WHERE id_user = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idUser);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                Parcelle parcelle = new Parcelle(
-                        rs.getInt("id_parcelle"),
-                        rs.getString("nom"),
-                        rs.getDouble("superficie"),
-                        rs.getString("localisation"),
-                        rs.getString("etat"),
-                        rs.getInt("id_user")
-                );
-                parcelles.add(parcelle);
+                parcelles.add(mapRow(rs));
             }
+            System.out.println("[ParcelleService] getByUserId(" + idUser + ") → " + parcelles.size() + " parcelle(s)");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des parcelles par user: " + e.getMessage());
         }
         return parcelles;
+    }
+
+    private Parcelle mapRow(ResultSet rs) throws SQLException {
+        return new Parcelle(
+                rs.getInt("id_parcelle"),
+                rs.getString("nom"),
+                rs.getDouble("superficie"),
+                rs.getString("localisation"),
+                rs.getString("etat"),
+                rs.getInt("id_user")
+        );
     }
 }

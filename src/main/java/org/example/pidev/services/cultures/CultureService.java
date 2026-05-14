@@ -15,8 +15,9 @@ public class CultureService implements IService<Culture> {
     private Connection connection;
 
     // États de croissance valides
+    // Symfony schema uses "maturite" while old schema used "mature" — accept both
     private static final List<String> ETATS_CROISSANCE_VALIDES = Arrays.asList(
-            "germination", "croissance", "floraison", "mature", "récolté"
+            "germination", "croissance", "floraison", "mature", "maturite", "récolté", "recolte"
     );
 
     // Constantes de validation
@@ -25,6 +26,11 @@ public class CultureService implements IService<Culture> {
 
     public CultureService() {
         connection = DBConnection.getConnection();
+    }
+
+    private Connection getConn() {
+        connection = DBConnection.getConnection();
+        return connection;
     }
 
     // ==========================================
@@ -78,13 +84,13 @@ public class CultureService implements IService<Culture> {
         if (dateRecoltePrevue.isEqual(datePlantation)) {
             throw new IllegalArgumentException("La date de récolte prévue doit être différente de la date de plantation.");
         }
-        // Vérification que la date de plantation n'est pas trop ancienne (max 5 ans)
-        if (datePlantation.isBefore(LocalDate.now().minusYears(5))) {
-            throw new IllegalArgumentException("La date de plantation ne peut pas être antérieure à 5 ans.");
+        // Vérification que la date de plantation n'est pas trop ancienne (max 10 ans — arbres fruitiers, oliviers, etc.)
+        if (datePlantation.isBefore(LocalDate.now().minusYears(10))) {
+            throw new IllegalArgumentException("La date de plantation ne peut pas être antérieure à 10 ans.");
         }
-        // Vérification que la date de récolte n'est pas trop lointaine (max 5 ans)
-        if (dateRecoltePrevue.isAfter(LocalDate.now().plusYears(5))) {
-            throw new IllegalArgumentException("La date de récolte prévue ne peut pas être supérieure à 5 ans dans le futur.");
+        // Vérification que la date de récolte n'est pas trop lointaine (max 10 ans)
+        if (dateRecoltePrevue.isAfter(LocalDate.now().plusYears(10))) {
+            throw new IllegalArgumentException("La date de récolte prévue ne peut pas être supérieure à 10 ans dans le futur.");
         }
     }
 
@@ -115,12 +121,11 @@ public class CultureService implements IService<Culture> {
 
     @Override
     public boolean add(Culture culture) throws IllegalArgumentException {
-        // Validation des données avant insertion (lance une exception si invalide)
         valider(culture);
 
         String query = "INSERT INTO culture (type_culture, date_plantation, date_recolte_prevue, etat_croissance, id_parcelle) VALUES (?, ?, ?, ?, ?)";
         try {
-            PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, culture.getTypeCulture().trim());
             pst.setDate(2, Date.valueOf(culture.getDatePlantation()));
             pst.setDate(3, Date.valueOf(culture.getDateRecoltePrevue()));
@@ -143,7 +148,6 @@ public class CultureService implements IService<Culture> {
 
     @Override
     public void update(Culture culture) throws IllegalArgumentException {
-        // Validation des données avant mise à jour (lance une exception si invalide)
         valider(culture);
         if (culture.getIdCulture() <= 0) {
             throw new IllegalArgumentException("L'ID de la culture doit être un nombre positif.");
@@ -151,7 +155,7 @@ public class CultureService implements IService<Culture> {
 
         String query = "UPDATE culture SET type_culture = ?, date_plantation = ?, date_recolte_prevue = ?, etat_croissance = ?, id_parcelle = ? WHERE id_culture = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setString(1, culture.getTypeCulture().trim());
             pst.setDate(2, Date.valueOf(culture.getDatePlantation()));
             pst.setDate(3, Date.valueOf(culture.getDateRecoltePrevue()));
@@ -166,11 +170,10 @@ public class CultureService implements IService<Culture> {
         }
     }
 
-
     public boolean delete(int id) {
         String query = "DELETE FROM culture WHERE id_culture = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             int rowsAffected = pst.executeUpdate();
             if (rowsAffected > 0) {
@@ -188,18 +191,11 @@ public class CultureService implements IService<Culture> {
     public Culture getById(int id) {
         String query = "SELECT * FROM culture WHERE id_culture = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                return new Culture(
-                        rs.getInt("id_culture"),
-                        rs.getString("type_culture"),
-                        rs.getDate("date_plantation") != null ? rs.getDate("date_plantation").toLocalDate() : null,
-                        rs.getDate("date_recolte_prevue") != null ? rs.getDate("date_recolte_prevue").toLocalDate() : null,
-                        rs.getString("etat_croissance"),
-                        rs.getInt("id_parcelle")
-                );
+                return mapRow(rs);
             }
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération de la culture: " + e.getMessage());
@@ -210,24 +206,17 @@ public class CultureService implements IService<Culture> {
     @Override
     public List<Culture> getAll() {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        System.out.println("[CultureService.getAll] ownerId=" + ownerId);
         if (ownerId > 0) {
             return getByUserId(ownerId);
         }
         List<Culture> cultures = new ArrayList<>();
         String query = "SELECT * FROM culture";
         try {
-            Statement st = connection.createStatement();
+            Statement st = getConn().createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
-                Culture culture = new Culture(
-                        rs.getInt("id_culture"),
-                        rs.getString("type_culture"),
-                        rs.getDate("date_plantation") != null ? rs.getDate("date_plantation").toLocalDate() : null,
-                        rs.getDate("date_recolte_prevue") != null ? rs.getDate("date_recolte_prevue").toLocalDate() : null,
-                        rs.getString("etat_croissance"),
-                        rs.getInt("id_parcelle")
-                );
-                cultures.add(culture);
+                cultures.add(mapRow(rs));
             }
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des cultures: " + e.getMessage());
@@ -242,23 +231,27 @@ public class CultureService implements IService<Culture> {
         List<Culture> cultures = new ArrayList<>();
         String query = "SELECT c.* FROM culture c JOIN parcelle p ON c.id_parcelle = p.id_parcelle WHERE p.id_user = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idUser);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                Culture culture = new Culture(
-                        rs.getInt("id_culture"),
-                        rs.getString("type_culture"),
-                        rs.getDate("date_plantation") != null ? rs.getDate("date_plantation").toLocalDate() : null,
-                        rs.getDate("date_recolte_prevue") != null ? rs.getDate("date_recolte_prevue").toLocalDate() : null,
-                        rs.getString("etat_croissance"),
-                        rs.getInt("id_parcelle")
-                );
-                cultures.add(culture);
+                cultures.add(mapRow(rs));
             }
+            System.out.println("[CultureService] getByUserId(" + idUser + ") → " + cultures.size() + " culture(s)");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des cultures par user: " + e.getMessage());
         }
         return cultures;
+    }
+
+    private Culture mapRow(ResultSet rs) throws SQLException {
+        return new Culture(
+                rs.getInt("id_culture"),
+                rs.getString("type_culture"),
+                rs.getDate("date_plantation") != null ? rs.getDate("date_plantation").toLocalDate() : null,
+                rs.getDate("date_recolte_prevue") != null ? rs.getDate("date_recolte_prevue").toLocalDate() : null,
+                rs.getString("etat_croissance"),
+                rs.getInt("id_parcelle")
+        );
     }
 }

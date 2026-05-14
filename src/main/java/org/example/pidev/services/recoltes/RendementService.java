@@ -10,7 +10,7 @@ import java.util.List;
 
 public class RendementService implements IService<Rendement> {
 
-    private final Connection connection;
+    private Connection connection;
 
     // Constantes de validation
     private static final double SURFACE_MIN = 0.01;
@@ -18,6 +18,11 @@ public class RendementService implements IService<Rendement> {
 
     public RendementService() {
         connection = DBConnection.getConnection();
+    }
+
+    private Connection getConn() {
+        connection = DBConnection.getConnection();
+        return connection;
     }
 
     // =====================
@@ -78,7 +83,7 @@ public class RendementService implements IService<Rendement> {
 
         String query = "INSERT INTO rendement (surface_exploitee, quantite_totale, productivite, id_recolte) VALUES (?, ?, ?, ?)";
         try {
-            PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pst.setDouble(1, rendement.getSurfaceExploitee());
             pst.setDouble(2, rendement.getQuantiteTotale());
             pst.setDouble(3, rendement.getProductivite());
@@ -112,7 +117,7 @@ public class RendementService implements IService<Rendement> {
 
         String query = "UPDATE rendement SET surface_exploitee = ?, quantite_totale = ?, productivite = ?, id_recolte = ? WHERE id_rendement = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setDouble(1, rendement.getSurfaceExploitee());
             pst.setDouble(2, rendement.getQuantiteTotale());
             pst.setDouble(3, rendement.getProductivite());
@@ -128,7 +133,7 @@ public class RendementService implements IService<Rendement> {
     public boolean delete(int id) {
         String query = "DELETE FROM rendement WHERE id_rendement = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             pst.executeUpdate();
             System.out.println("✅ Rendement supprimé avec succès");
@@ -143,7 +148,7 @@ public class RendementService implements IService<Rendement> {
     public Rendement getById(int id) {
         String query = "SELECT * FROM rendement WHERE id_rendement = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -152,7 +157,7 @@ public class RendementService implements IService<Rendement> {
                         rs.getDouble("surface_exploitee"),
                         rs.getDouble("quantite_totale"),
                         rs.getDouble("productivite"),
-                        rs.getInt("id_recolte")
+                        org.example.pidev.utils.DbSchemaSupport.getInt(rs, "id_recolte", 0)
                 );
             }
         } catch (SQLException e) {
@@ -164,23 +169,17 @@ public class RendementService implements IService<Rendement> {
     @Override
     public List<Rendement> getAll() {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        System.out.println("[RendementService.getAll] ownerId=" + ownerId);
         if (ownerId > 0) {
             return getByUserId(ownerId);
         }
         List<Rendement> rendements = new ArrayList<>();
         String query = "SELECT * FROM rendement";
         try {
-            Statement st = connection.createStatement();
+            Statement st = getConn().createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
-                Rendement r = new Rendement(
-                        rs.getInt("id_rendement"),
-                        rs.getDouble("surface_exploitee"),
-                        rs.getDouble("quantite_totale"),
-                        rs.getDouble("productivite"),
-                        rs.getInt("id_recolte")
-                );
-                rendements.add(r);
+                rendements.add(mapRow(rs));
             }
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des rendements: " + e.getMessage());
@@ -188,30 +187,31 @@ public class RendementService implements IService<Rendement> {
         return rendements;
     }
 
-    /**
-     * Récupère les rendements d'un utilisateur via ses récoltes
-     */
     public List<Rendement> getByUserId(int idUser) {
         List<Rendement> rendements = new ArrayList<>();
         String query = "SELECT rd.* FROM rendement rd JOIN recolte r ON rd.id_recolte = r.id_recolte WHERE r.id_user = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idUser);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                Rendement r = new Rendement(
-                        rs.getInt("id_rendement"),
-                        rs.getDouble("surface_exploitee"),
-                        rs.getDouble("quantite_totale"),
-                        rs.getDouble("productivite"),
-                        rs.getInt("id_recolte")
-                );
-                rendements.add(r);
+                rendements.add(mapRow(rs));
             }
+            System.out.println("[RendementService] getByUserId(" + idUser + ") → " + rendements.size() + " rendement(s)");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des rendements par user: " + e.getMessage());
         }
         return rendements;
+    }
+
+    private Rendement mapRow(ResultSet rs) throws SQLException {
+        return new Rendement(
+                rs.getInt("id_rendement"),
+                rs.getDouble("surface_exploitee"),
+                rs.getDouble("quantite_totale"),
+                rs.getDouble("productivite"),
+                rs.getInt("id_recolte")
+        );
     }
 
     // =====================
@@ -225,7 +225,7 @@ public class RendementService implements IService<Rendement> {
         List<Rendement> rendements = new ArrayList<>();
         String query = "SELECT * FROM rendement WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -250,7 +250,7 @@ public class RendementService implements IService<Rendement> {
     public double getProductiviteMoyenne(int idRecolte) {
         String query = "SELECT AVG(productivite) as moyenne FROM rendement WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -366,7 +366,7 @@ public class RendementService implements IService<Rendement> {
     public double getProductiviteTotale(int idRecolte) {
         String query = "SELECT SUM(productivite) as total FROM rendement WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -388,7 +388,7 @@ public class RendementService implements IService<Rendement> {
     public double getQuantiteTotalePourRecolte(int idRecolte) {
         String query = "SELECT SUM(quantite_totale) as total FROM rendement WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -410,7 +410,7 @@ public class RendementService implements IService<Rendement> {
     public double getSurfaceTotalePourRecolte(int idRecolte) {
         String query = "SELECT SUM(surface_exploitee) as total FROM rendement WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -432,7 +432,7 @@ public class RendementService implements IService<Rendement> {
     public Rendement getRendementMaximum(int idRecolte) {
         String query = "SELECT * FROM rendement WHERE id_recolte = ? ORDER BY productivite DESC LIMIT 1";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -441,7 +441,7 @@ public class RendementService implements IService<Rendement> {
                         rs.getDouble("surface_exploitee"),
                         rs.getDouble("quantite_totale"),
                         rs.getDouble("productivite"),
-                        rs.getInt("id_recolte")
+                        org.example.pidev.utils.DbSchemaSupport.getInt(rs, "id_recolte", 0)
                 );
             }
         } catch (SQLException e) {
@@ -459,7 +459,7 @@ public class RendementService implements IService<Rendement> {
     public Rendement getRendementMinimum(int idRecolte) {
         String query = "SELECT * FROM rendement WHERE id_recolte = ? ORDER BY productivite ASC LIMIT 1";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idRecolte);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -468,7 +468,7 @@ public class RendementService implements IService<Rendement> {
                         rs.getDouble("surface_exploitee"),
                         rs.getDouble("quantite_totale"),
                         rs.getDouble("productivite"),
-                        rs.getInt("id_recolte")
+                        org.example.pidev.utils.DbSchemaSupport.getInt(rs, "id_recolte", 0)
                 );
             }
         } catch (SQLException e) {

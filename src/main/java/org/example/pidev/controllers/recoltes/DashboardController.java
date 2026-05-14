@@ -99,7 +99,9 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
-        System.out.println("✅ DashboardController initialisé");
+        System.out.println("=== DashboardController.initialize() ===");
+        System.out.println("[Dashboard] Session user: " + (Session.getCurrentUser() != null ? Session.getCurrentUser().getEmail() + " id=" + Session.getCurrentUser().getIdUser() + " role=" + Session.getCurrentUser().getRole() : "NULL"));
+        System.out.println("[Dashboard] ownerUserId: " + Session.getOwnerUserId());
         try {
             recolteService = new RecolteService();
             rendementService = new RendementService();

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 public class RecolteService implements IService<Recolte> {
 
-    private final Connection connection;
+    private Connection connection;
 
     // Constantes de validation
     private static final int QUALITE_MIN_LENGTH = 2;
@@ -17,6 +17,11 @@ public class RecolteService implements IService<Recolte> {
 
     public RecolteService() {
         connection = DBConnection.getConnection();
+    }
+
+    private Connection getConn() {
+        connection = DBConnection.getConnection();
+        return connection;
     }
 
     // =====================
@@ -104,7 +109,7 @@ public class RecolteService implements IService<Recolte> {
 
         String query = "INSERT INTO recolte (quantite, date_recolte, qualite, type_culture, localisation, id_user) VALUES (?, ?, ?, ?, ?, ?)";
         try {
-            PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pst.setDouble(1, recolte.getQuantite());
             pst.setDate(2, Date.valueOf(recolte.getDateRecolte()));
             pst.setString(3, recolte.getQualite().trim());
@@ -140,7 +145,7 @@ public class RecolteService implements IService<Recolte> {
 
         String query = "UPDATE recolte SET quantite = ?, date_recolte = ?, qualite = ?, type_culture = ?, localisation = ? WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setDouble(1, recolte.getQuantite());
             pst.setDate(2, Date.valueOf(recolte.getDateRecolte()));
             pst.setString(3, recolte.getQualite().trim());
@@ -154,44 +159,32 @@ public class RecolteService implements IService<Recolte> {
         }
     }
 
-
     public boolean delete(int id) {
-        // Par défaut, utiliser une cause générique
         deleteWithReason(id, "Suppression manuelle");
         return true;
     }
 
-    /**
-     * Supprimer une récolte avec raison d'archivage
-     * @param id ID de la récolte à supprimer
-     * @param causeSupression Raison de la suppression
-     */
     public void deleteWithReason(int id, String causeSupression) {
-        // Validation de la cause
         if (causeSupression == null || causeSupression.trim().isEmpty()) {
             System.out.println("❌ Erreur: La cause de suppression ne peut pas être vide");
             return;
         }
-
         if (causeSupression.trim().length() < 3) {
             System.out.println("❌ Erreur: La cause doit contenir au moins 3 caractères");
             return;
         }
-
         if (causeSupression.trim().length() > 255) {
             System.out.println("❌ Erreur: La cause est trop longue (max 255 caractères)");
             return;
         }
 
         try {
-            // 1. Récupérer la récolte avant suppression
             Recolte recolte = getById(id);
             if (recolte == null) {
                 System.out.println("❌ Erreur: Récolte introuvable (ID: " + id + ")");
                 return;
             }
 
-            // 2. Archiver la récolte
             RecolteArchiveService archiveService = new RecolteArchiveService();
             boolean archiveSuccess = archiveService.archiver(recolte, causeSupression);
 
@@ -200,14 +193,12 @@ public class RecolteService implements IService<Recolte> {
                 return;
             }
 
-            // 3. Supprimer la récolte de la table principale
             String query = "DELETE FROM recolte WHERE id_recolte = ?";
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             pst.executeUpdate();
 
             System.out.println("✅ Récolte supprimée et archivée avec succès");
-            System.out.println("   Cause: " + causeSupression);
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la suppression de la récolte: " + e.getMessage());
         }
@@ -217,11 +208,11 @@ public class RecolteService implements IService<Recolte> {
     public Recolte getById(int id) {
         String query = "SELECT * FROM recolte WHERE id_recolte = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                return new Recolte(
+                Recolte r = new Recolte(
                         rs.getInt("id_recolte"),
                         rs.getDouble("quantite"),
                         rs.getDate("date_recolte") != null ? rs.getDate("date_recolte").toLocalDate() : null,
@@ -229,6 +220,8 @@ public class RecolteService implements IService<Recolte> {
                         rs.getString("type_culture"),
                         rs.getString("localisation")
                 );
+                try { r.setIdUser(rs.getInt("id_user")); } catch (SQLException ignored) {}
+                return r;
             }
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération de la récolte: " + e.getMessage());
@@ -239,13 +232,14 @@ public class RecolteService implements IService<Recolte> {
     @Override
     public List<Recolte> getAll() {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        System.out.println("[RecolteService.getAll] ownerId=" + ownerId);
         if (ownerId > 0) {
             return getByUserId(ownerId);
         }
         List<Recolte> recoltes = new ArrayList<>();
         String query = "SELECT * FROM recolte";
         try {
-            Statement st = connection.createStatement();
+            Statement st = getConn().createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 Recolte r = new Recolte(
@@ -265,14 +259,11 @@ public class RecolteService implements IService<Recolte> {
         return recoltes;
     }
 
-    /**
-     * Récupère les récoltes d'un utilisateur spécifique
-     */
     public List<Recolte> getByUserId(int idUser) {
         List<Recolte> recoltes = new ArrayList<>();
         String query = "SELECT * FROM recolte WHERE id_user = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = getConn().prepareStatement(query);
             pst.setInt(1, idUser);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -287,6 +278,7 @@ public class RecolteService implements IService<Recolte> {
                 r.setIdUser(rs.getInt("id_user"));
                 recoltes.add(r);
             }
+            System.out.println("[RecolteService] getByUserId(" + idUser + ") → " + recoltes.size() + " récolte(s)");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des récoltes par user: " + e.getMessage());
         }

@@ -41,17 +41,18 @@ public class StockService implements IService<Stock> {
      */
     public double getTotalQuantiteByProduitAttributs(String nom, String type, String unite) {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        boolean scoped = ownerId > 0;
         String query;
-        if (ownerId > 0) {
+        if (scoped) {
             query = "SELECT SUM(s.quantite) FROM stock s JOIN produit p ON s.id_produit = p.id_produit WHERE p.nom = ? AND p.type = ? AND p.unite = ? AND s.id_user = ?";
         } else {
             query = "SELECT SUM(s.quantite) FROM stock s JOIN produit p ON s.id_produit = p.id_produit WHERE p.nom = ? AND p.type = ? AND p.unite = ?";
         }
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
+        try (PreparedStatement pst = DBConnection.getConnection().prepareStatement(query)) {
             pst.setString(1, nom);
             pst.setString(2, type);
             pst.setString(3, unite);
-            if (ownerId > 0) {
+            if (scoped) {
                 pst.setInt(4, ownerId);
             }
             ResultSet rs = pst.executeQuery();
@@ -73,7 +74,7 @@ public class StockService implements IService<Stock> {
     public boolean add(Stock stock) {
         String query = "INSERT INTO stock (quantite, date_entree, date_expiration, id_produit, id_user) VALUES (?, ?, ?, ?, ?)";
         try {
-            PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pst.setDouble(1, stock.getQuantite());
             pst.setDate(2, stock.getDateEntree() != null ? java.sql.Date.valueOf(stock.getDateEntree()) : null);
             pst.setDate(3, stock.getDateExpiration() != null ? java.sql.Date.valueOf(stock.getDateExpiration()) : null);
@@ -99,7 +100,7 @@ public class StockService implements IService<Stock> {
         }
         String query = "UPDATE stock SET quantite = ?, date_entree = ?, date_expiration = ?, id_produit = ? WHERE id_stock = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setDouble(1, stock.getQuantite());
             pst.setDate(2, stock.getDateEntree() != null ? java.sql.Date.valueOf(stock.getDateEntree()) : null);
             pst.setDate(3, stock.getDateExpiration() != null ? java.sql.Date.valueOf(stock.getDateExpiration()) : null);
@@ -116,7 +117,7 @@ public class StockService implements IService<Stock> {
     public boolean delete(int id) {
         String query = "DELETE FROM stock WHERE id_stock = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setInt(1, id);
             int rowsAffected = pst.executeUpdate();
             if (rowsAffected > 0) {
@@ -134,7 +135,7 @@ public class StockService implements IService<Stock> {
     public Stock getById(int id) {
         String query = "SELECT * FROM stock WHERE id_stock = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -155,13 +156,14 @@ public class StockService implements IService<Stock> {
     @Override
     public List<Stock> getAll() {
         int ownerId = org.example.pidev.utils.Session.getOwnerUserId();
+        System.out.println("[StockService.getAll] ownerId=" + ownerId);
         if (ownerId > 0) {
             return getByUserId(ownerId);
         }
         List<Stock> stocks = new ArrayList<>();
         String query = "SELECT * FROM stock";
         try {
-            Statement st = connection.createStatement();
+            java.sql.Statement st = DBConnection.getConnection().createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 Stock stock = new Stock(
@@ -180,14 +182,11 @@ public class StockService implements IService<Stock> {
         return stocks;
     }
 
-    /**
-     * Récupère les stocks d'un utilisateur spécifique
-     */
     public List<Stock> getByUserId(int idUser) {
         List<Stock> stocks = new ArrayList<>();
         String query = "SELECT * FROM stock WHERE id_user = ?";
         try {
-            PreparedStatement pst = connection.prepareStatement(query);
+            PreparedStatement pst = DBConnection.getConnection().prepareStatement(query);
             pst.setInt(1, idUser);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -201,6 +200,7 @@ public class StockService implements IService<Stock> {
                 stock.setIdUser(rs.getInt("id_user"));
                 stocks.add(stock);
             }
+            System.out.println("[StockService] getByUserId(" + idUser + ") → " + stocks.size() + " stock(s)");
         } catch (SQLException e) {
             System.out.println("❌ Erreur lors de la récupération des stocks par user: " + e.getMessage());
         }

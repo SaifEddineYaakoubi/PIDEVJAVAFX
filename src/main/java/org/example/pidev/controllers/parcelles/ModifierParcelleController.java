@@ -81,8 +81,8 @@ public class ModifierParcelleController implements Initializable {
         parcelleService = new ParcelleService();
         geoLocationService = new GeoLocationService();
 
-        // Remplir le ComboBox avec les états possibles
-        cbEtat.setItems(FXCollections.observableArrayList("active", "repos", "exploitée"));
+        // Remplir le ComboBox avec les états possibles (Symfony uses "exploitee" without accent)
+        cbEtat.setItems(FXCollections.observableArrayList("active", "repos", "exploitee"));
 
         // Effacer les messages d'erreur quand l'utilisateur tape
         tfNom.textProperty().addListener((obs, old, newVal) -> clearMessages());
@@ -189,7 +189,12 @@ public class ModifierParcelleController implements Initializable {
         tfNom.setText(parcelle.getNom());
         tfSuperficie.setText(String.valueOf(parcelle.getSuperficie()));
         tfLocalisation.setText(parcelle.getLocalisation());
-        cbEtat.setValue(parcelle.getEtat());
+        // Normalize etat: Symfony uses "exploitee", old schema used "exploitée"
+        String etat = parcelle.getEtat();
+        if (etat != null) {
+            etat = etat.replace("exploitée", "exploitee").replace("Exploitée", "exploitee");
+        }
+        cbEtat.setValue(etat);
 
         if (lblInfo != null) lblInfo.setText("Modification de: " + parcelle.getNom());
 

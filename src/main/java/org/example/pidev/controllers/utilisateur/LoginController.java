@@ -14,7 +14,6 @@ import org.example.pidev.utils.PasswordUtils;
 import org.example.pidev.utils.Session;
 
 import java.io.IOException;
-import java.util.List;
 
 public class LoginController {
 
@@ -56,28 +55,50 @@ public class LoginController {
         }
 
         try {
-            List<Utilisateur> users = service.getAll();
+            // Use getByEmail for direct lookup instead of loading all users
+            Utilisateur u = service.getByEmail(email);
 
-            for (Utilisateur u : users) {
-                if (u.getEmail().equals(email) && u.isStatut()
-                        && PasswordUtils.verify(password, u.getMotDePasse())) {
+            System.out.println("[Login] Tentative pour: " + email);
 
-                    // Auto-migration : si l'ancien mdp était en clair, le hacher maintenant
-                    if (!PasswordUtils.isHashed(u.getMotDePasse())) {
-                        u.setMotDePasse(PasswordUtils.hash(password));
-                        service.update(u);
-                        System.out.println("🔒 Mot de passe migré vers BCrypt pour: " + u.getEmail());
-                    }
-
-                    // Stocker l'utilisateur connecté
-                    Session.setCurrentUser(u);
-                    handleLoginSuccess(u);
-                    return;
-                }
+            if (u == null) {
+                System.out.println("[Login] Utilisateur introuvable: " + email);
+                showMessage("Email ou mot de passe incorrect ou compte inactif!", Alert.AlertType.ERROR);
+                return;
             }
-            showMessage("Email ou mot de passe incorrect ou compte inactif!", Alert.AlertType.ERROR);
+
+            System.out.println("[Login] Utilisateur trouvé: id=" + u.getIdUser() + " role=" + u.getRole() + " statut=" + u.isStatut());
+            System.out.println("[Login] Hash BD: " + u.getMotDePasse());
+
+            if (!u.isStatut()) {
+                System.out.println("[Login] Compte inactif");
+                showMessage("Email ou mot de passe incorrect ou compte inactif!", Alert.AlertType.ERROR);
+                return;
+            }
+
+            boolean passwordOk = PasswordUtils.verify(password, u.getMotDePasse());
+            System.out.println("[Login] Mot de passe valide: " + passwordOk);
+
+            if (!passwordOk) {
+                showMessage("Email ou mot de passe incorrect ou compte inactif!", Alert.AlertType.ERROR);
+                return;
+            }
+
+            // Auto-migration : si l'ancien mdp était en clair, le hacher maintenant
+            if (!PasswordUtils.isHashed(u.getMotDePasse())) {
+                u.setMotDePasse(PasswordUtils.hash(password));
+                service.update(u);
+                System.out.println("[Login] Mot de passe migré vers BCrypt pour: " + u.getEmail());
+            }
+
+            System.out.println("[Login] Connexion réussie! ownerUserId=" + u.getOwnerUserId());
+
+            // Stocker l'utilisateur connecté
+            Session.setCurrentUser(u);
+            handleLoginSuccess(u);
+
         } catch (Exception e) {
             System.err.println("Erreur lors de la connexion: " + e.getMessage());
+            e.printStackTrace();
             showMessage("Erreur lors de la connexion: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }

@@ -310,7 +310,7 @@ public class ConsulterStockController {
 
     // Récupère le mail de l'utilisateur d'id 22
     private String getMailUtilisateur22() {
-        org.example.pidev.models.Utilisateur u = utilisateurService.getById(29);
+        org.example.pidev.models.Utilisateur u = utilisateurService.getById(5);
         if (u != null && u.getEmail() != null) {
             return u.getEmail();
         } else {

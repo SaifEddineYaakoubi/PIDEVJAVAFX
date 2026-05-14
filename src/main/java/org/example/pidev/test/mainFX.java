@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nu.pattern.OpenCV;
+import org.example.pidev.utils.DbSchemaSupport;
 import org.example.pidev.utils.FaceRecognitionUtil;
 import org.example.pidev.utils.Session;
 
@@ -69,6 +70,9 @@ public class mainFX extends Application {
         // Nettoyer le log précédent
         try (PrintWriter out = new PrintWriter(new FileWriter(LOG_FILE))) { out.print(""); } catch (IOException ignored) {}
 
+        // Vider le cache des colonnes pour éviter des valeurs obsolètes entre sessions
+        DbSchemaSupport.clearCache();
+        log("🔄 Schema column cache cleared");
         // Quand la fenêtre principale est fermée → quitter l'application
         javafx.application.Platform.setImplicitExit(true);
         stage.setOnCloseRequest(event -> {

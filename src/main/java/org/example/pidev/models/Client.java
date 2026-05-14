@@ -1,25 +1,50 @@
 package org.example.pidev.models;
 
+/**
+ * Symfony schema aligned Client model
+ * Fields: id_client, nom, contact, adresse, id_user, badge
+ */
 public class Client {
     private int idClient;
     private String nom;
-    private String prenom;
-    private String email;
-    private String telephone;
+    private String contact;           // Email or phone (Symfony schema)
     private String adresse;
-    private String ville;
-    private Double totalAchats;
-    private String statutFidelite;
-    private int idUser;
+    private int idUser;               // FK to utilisateur
+    private String badge;             // Badge level: gold, silver, bronze, etc.
+
+    // Backward compatibility fields (legacy)
+    private String prenom;            // Not in Symfony schema
+    private String email;             // Mapped to contact
+    private String telephone;         // Mapped to contact
+    private String ville;             // Not in Symfony schema
+    private Double totalAchats;       // Not in Symfony schema
+    private String statutFidelite;    // Not in Symfony schema
 
     public Client() {
     }
 
+    public Client(int idClient, String nom, String contact, String adresse, int idUser) {
+        this.idClient = idClient;
+        this.nom = nom;
+        this.contact = contact;
+        this.adresse = adresse;
+        this.idUser = idUser;
+    }
+
+    public Client(String nom, String contact, String adresse, int idUser) {
+        this.nom = nom;
+        this.contact = contact;
+        this.adresse = adresse;
+        this.idUser = idUser;
+    }
+
+    // Constructors for backward compatibility
     public Client(int idClient, String nom, String prenom, String email, String telephone, String adresse, String ville) {
         this.idClient = idClient;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.contact = email;  // Map to contact
         this.telephone = telephone;
         this.adresse = adresse;
         this.ville = ville;
@@ -29,26 +54,26 @@ public class Client {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.contact = email;  // Map to contact
         this.telephone = telephone;
         this.adresse = adresse;
         this.ville = ville;
     }
 
-    // Constructeur legacy pour compatibilité
     public Client(int idClient, String nom, String contact, String adresse) {
         this.idClient = idClient;
         this.nom = nom;
-        this.email = contact;
+        this.contact = contact;
         this.adresse = adresse;
     }
 
     public Client(String nom, String contact, String adresse) {
         this.nom = nom;
-        this.email = contact;
+        this.contact = contact;
         this.adresse = adresse;
     }
 
-    // Getters et Setters
+    // Getters and Setters
     public int getIdClient() {
         return idClient;
     }
@@ -65,6 +90,40 @@ public class Client {
         this.nom = nom;
     }
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+        this.email = contact;  // Keep email in sync
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
+
+    // Legacy getter methods for backward compatibility
     public String getPrenom() {
         return prenom;
     }
@@ -74,11 +133,12 @@ public class Client {
     }
 
     public String getEmail() {
-        return email;
+        return contact;  // Return contact field
     }
 
     public void setEmail(String email) {
         this.email = email;
+        this.contact = email;  // Keep contact in sync
     }
 
     public String getTelephone() {
@@ -87,14 +147,6 @@ public class Client {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
-    }
-
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
     }
 
     public String getVille() {
@@ -140,17 +192,6 @@ public class Client {
         }
     }
 
-    // Getter legacy
-    public String getContact() {
-        return email;
-    }
-
-    public void setContact(String contact) {
-        this.email = contact;
-    }
-
-    public int getIdUser() { return idUser; }
-    public void setIdUser(int idUser) { this.idUser = idUser; }
 
     @Override
     public String toString() {

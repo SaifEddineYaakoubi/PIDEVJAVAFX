@@ -28,8 +28,16 @@ public class Session {
      * - ADMIN → 0 (voit tout)
      */
     public static int getOwnerUserId() {
-        if (currentUser == null) return 0;
-        return currentUser.getOwnerUserId();
+        if (currentUser == null) {
+            System.out.println("[Session.getOwnerUserId] currentUser=null → 0");
+            return 0;
+        }
+        int id = currentUser.getOwnerUserId();
+        System.out.println("[Session.getOwnerUserId] user=" + currentUser.getEmail()
+                + " role=" + currentUser.getRole()
+                + " idUser=" + currentUser.getIdUser()
+                + " → ownerUserId=" + id);
+        return id;
     }
 
     /**

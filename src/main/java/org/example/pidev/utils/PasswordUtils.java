@@ -10,6 +10,7 @@ public class PasswordUtils {
 
     // Coût BCrypt (12 = bon compromis sécurité/performance)
     private static final int BCRYPT_COST = 12;
+    private static final String BCRYPT_REGEX = "^\\$2[aby]\\$\\d{2}\\$[./A-Za-z0-9]{53}$";
 
     /**
      * Hache un mot de passe en clair avec BCrypt.
@@ -30,25 +31,45 @@ public class PasswordUtils {
         if (plainPassword == null || hashedPassword == null) {
             return false;
         }
-        // Si le hash ne commence pas par "$2" c'est un ancien mot de passe en clair
-        // → comparaison directe pour rétro-compatibilité
-        if (!hashedPassword.startsWith("$2")) {
-            return plainPassword.equals(hashedPassword);
+        // Hash BCrypt valide → vérification sécurisée
+        if (isValidBcryptHash(hashedPassword)) {
+            try {
+                return BCrypt.checkpw(plainPassword, normalizeBcryptHash(hashedPassword));
+            } catch (Exception e) {
+                System.err.println("❌ Erreur vérification BCrypt: " + e.getMessage());
+                return false;
+            }
         }
-        try {
-            return BCrypt.checkpw(plainPassword, hashedPassword);
-        } catch (Exception e) {
-            System.err.println("❌ Erreur vérification BCrypt: " + e.getMessage());
+
+        // Chaîne qui ressemble à BCrypt mais est mal formée → échec fermé
+        if (looksLikeBcryptHash(hashedPassword)) {
+            System.err.println("⚠️ Mot de passe stocké au format BCrypt invalide ou corrompu");
             return false;
         }
+
+        // Ancien mot de passe en clair → comparaison directe pour rétro-compatibilité
+        return plainPassword.equals(hashedPassword);
     }
 
     /**
-     * Vérifie si un mot de passe est déjà haché (format BCrypt).
-     * @param password le mot de passe à vérifier
-     * @return true si c'est déjà un hash BCrypt
+     * Vérifie si le mot de passe est un hash BCrypt syntaxiquement valide.
      */
     public static boolean isHashed(String password) {
+        return isValidBcryptHash(password);
+    }
+
+    private static boolean isValidBcryptHash(String password) {
+        return password != null && password.matches(BCRYPT_REGEX);
+    }
+
+    private static boolean looksLikeBcryptHash(String password) {
         return password != null && password.startsWith("$2");
+    }
+
+    private static String normalizeBcryptHash(String hash) {
+        if (hash.startsWith("$2y$") || hash.startsWith("$2b$")) {
+            return "$2a$" + hash.substring(4);
+        }
+        return hash;
     }
 }

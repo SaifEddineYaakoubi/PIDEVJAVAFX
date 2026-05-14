@@ -26,11 +26,15 @@ public class ProfileController {
 
     private Utilisateur user;
     private FileStorageService fileStorageService;
+    private org.example.pidev.services.utilisateur.FaceImageService faceImageService;
+    private org.example.pidev.services.utilisateur.UtilisateurService utilisateurService;
 
     @FXML
     public void initialize() {
-        // Initialiser le service de stockage
+        // Initialiser les services
         fileStorageService = new FileStorageService();
+        faceImageService = new org.example.pidev.services.utilisateur.FaceImageService();
+        utilisateurService = new org.example.pidev.services.utilisateur.UtilisateurService();
 
         // Arrondir l'image (optionnel - pour un effet avatar)
         makeImageCircular();
@@ -57,31 +61,119 @@ public class ProfileController {
     }
 
     /**
+     * Upload and save profile picture for current user
+     */
+    public boolean uploadProfilePicture(String picturePath) {
+        if (user == null || utilisateurService == null) return false;
+
+        try {
+            // Update user's profile picture path
+            boolean success = utilisateurService.updateProfilePicture(user.getIdUser(), picturePath);
+            if (success) {
+                user.setProfilePicture(picturePath);
+                loadProfileImage();
+                System.out.println("✅ Photo de profil mise à jour");
+                return true;
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de la mise à jour de la photo: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Enable face recognition for current user
+     */
+    public boolean enableFaceRecognition(String faceDescriptor) {
+        if (user == null || utilisateurService == null) return false;
+
+        try {
+            boolean success = utilisateurService.enableFaceRecognition(user.getIdUser(), faceDescriptor);
+            if (success) {
+                user.setFaceDescriptor(faceDescriptor);
+                user.setFaceEnabled(true);
+                System.out.println("✅ Reconnaissance faciale activée");
+                return true;
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de l'activation de la reconnaissance faciale: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Disable face recognition for current user
+     */
+    public boolean disableFaceRecognition() {
+        if (user == null || utilisateurService == null) return false;
+
+        try {
+            boolean success = utilisateurService.disableFaceRecognition(user.getIdUser());
+            if (success) {
+                user.setFaceEnabled(false);
+                System.out.println("✅ Reconnaissance faciale désactivée");
+                return true;
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de la désactivation de la reconnaissance faciale: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Check if user has face recognition enabled
+     */
+    public boolean isFaceRecognitionEnabled() {
+        if (utilisateurService == null) return false;
+        return user != null && utilisateurService.isFaceRecognitionEnabled(user.getIdUser());
+    }
+
+    /**
      * Charge la photo de profil de l'utilisateur
+     * Priorité: face_images table > profile_picture column > default image
      */
     private void loadProfileImage() {
-        if (user != null && user.getFaceImagePath() != null && !user.getFaceImagePath().isEmpty()) {
-            try {
-                // Récupérer le fichier de la photo
-                File photoFile = fileStorageService.getProfileImage(user.getFaceImagePath());
+        if (user == null) {
+            setDefaultImage();
+            return;
+        }
 
-                if (photoFile.exists()) {
-                    // Charger l'image
-                    Image image = new Image(photoFile.toURI().toString());
-                    profileImageView.setImage(image);
-                    System.out.println("✅ Photo chargée avec succès: " + user.getFaceImagePath());
-                } else {
-                    System.out.println("⚠️ Fichier photo non trouvé: " + user.getFaceImagePath());
-                    setDefaultImage();
+        // Essayer de charger la photo depuis la table face_images (Symfony schema)
+        if (faceImageService != null && faceImageService.hasFaceImage(user.getIdUser())) {
+            try {
+                String facePath = faceImageService.getFacePath(user.getIdUser());
+                if (facePath != null && !facePath.isEmpty()) {
+                    File photoFile = fileStorageService.getProfileImage(facePath);
+                    if (photoFile.exists()) {
+                        Image image = new Image(photoFile.toURI().toString());
+                        profileImageView.setImage(image);
+                        System.out.println("✅ Photo chargée depuis face_images: " + facePath);
+                        return;
+                    }
                 }
             } catch (Exception e) {
-                System.err.println("❌ Erreur lors du chargement de la photo: " + e.getMessage());
-                setDefaultImage();
+                System.err.println("⚠️ Erreur chargement face_images: " + e.getMessage());
             }
-        } else {
-            System.out.println("ℹ️ Aucune photo associée à l'utilisateur");
-            setDefaultImage();
         }
+
+        // Fallback: Charger depuis le champ profile_picture
+        if (user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
+            try {
+                File photoFile = fileStorageService.getProfileImage(user.getProfilePicture());
+                if (photoFile.exists()) {
+                    Image image = new Image(photoFile.toURI().toString());
+                    profileImageView.setImage(image);
+                    System.out.println("✅ Photo chargée depuis profile_picture: " + user.getProfilePicture());
+                    return;
+                }
+            } catch (Exception e) {
+                System.err.println("⚠️ Erreur chargement profile_picture: " + e.getMessage());
+            }
+        }
+
+        // Aucune photo trouvée
+        System.out.println("ℹ️ Aucune photo trouvée pour l'utilisateur");
+        setDefaultImage();
     }
 
     /**

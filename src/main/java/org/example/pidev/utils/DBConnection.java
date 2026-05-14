@@ -7,7 +7,9 @@ import java.sql.SQLException;
 @SuppressWarnings("InstantiationOfUtilityClass")
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/smartfarm";
+    // Convertit les valeurs DATE/DATETIME invalides (ex: 0000-00-00) en null
+    // afin d'éviter l'exception MySQL "Zero date value prohibited" à la lecture.
+    private static final String URL = "jdbc:mysql://localhost:3306/smartfarm?zeroDateTimeBehavior=CONVERT_TO_NULL";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
